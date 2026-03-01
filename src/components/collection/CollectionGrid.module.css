@@ -1,0 +1,93 @@
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 24px;
+	width: 100%;
+}
+
+.item {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.imageWrapper {
+	position: relative;
+}
+
+.badge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 700;
+	color: white;
+	background: var(--primary);
+	border-radius: 14px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1;
+}
+
+.removeButton {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: none;
+	border-radius: 6px;
+	background: rgba(239, 68, 68, 0.9);
+	color: white;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.15s;
+	z-index: 1;
+}
+
+.imageWrapper:hover .removeButton {
+	opacity: 1;
+}
+
+.removeButton:hover {
+	background: rgba(220, 38, 38, 1);
+}
+
+.cardName {
+	font-size: 14px;
+	color: var(--foreground);
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+	.grid {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: 16px;
+	}
+
+	.removeButton {
+		opacity: 1;
+	}
+}
+
+@media (max-width: 480px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+
+	.cardName {
+		font-size: 12px;
+	}
+}

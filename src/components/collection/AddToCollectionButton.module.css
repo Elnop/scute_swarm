@@ -1,0 +1,58 @@
+.container {
+	margin: 16px 0;
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 16px;
+	background: var(--surface);
+	border: 1px solid var(--primary);
+	border-radius: 10px;
+}
+
+.label {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--primary);
+}
+
+.quantityControls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.quantityButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--surface);
+	color: var(--foreground);
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition:
+		background-color 0.15s,
+		border-color 0.15s;
+}
+
+.quantityButton:hover {
+	background: var(--primary);
+	border-color: var(--primary);
+	color: white;
+}
+
+.quantity {
+	min-width: 24px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--foreground);
+}

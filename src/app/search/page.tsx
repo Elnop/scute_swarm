@@ -12,6 +12,7 @@ import { SearchBar } from '@/components/search/SearchBar';
 import { FilterModal } from '@/components/search/FilterModal';
 import { CardGrid } from '@/components/cards/CardGrid';
 import { Spinner } from '@/components/ui/Spinner';
+import { useCollection } from '@/hooks/useCollection';
 import styles from './page.module.css';
 
 const VALID_COLORS = new Set(['W', 'U', 'B', 'R', 'G']);
@@ -70,6 +71,9 @@ export default function SearchPage() {
 						<Link href="/" className={styles.logo}>
 							MTG Snap
 						</Link>
+						<Link href="/collection" className={styles.navLink}>
+							Collection
+						</Link>
 					</header>
 					<main className={styles.main}>
 						<div className={styles.loading}>
@@ -87,6 +91,7 @@ export default function SearchPage() {
 function SearchPageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const { getStats } = useCollection();
 
 	// Initialize state from URL params
 	const [name, setName] = useState(() => searchParams.get('name') ?? '');
@@ -200,6 +205,8 @@ function SearchPageContent() {
 		(oracleText ? 1 : 0) +
 		(cmc ? 1 : 0);
 
+	const collectionStats = getStats();
+
 	const hasFilters =
 		name || colors.length > 0 || type || set || rarities.length > 0 || oracleText || cmc;
 	const showEmptyState = !hasFilters && !isLoading && cards.length === 0;
@@ -209,6 +216,12 @@ function SearchPageContent() {
 			<header className={styles.header}>
 				<Link href="/" className={styles.logo}>
 					MTG Snap
+				</Link>
+				<Link href="/collection" className={styles.navLink}>
+					Collection
+					{collectionStats.totalCards > 0 && (
+						<span className={styles.collectionBadge}>{collectionStats.totalCards}</span>
+					)}
 				</Link>
 			</header>
 

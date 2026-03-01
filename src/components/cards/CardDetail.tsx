@@ -4,6 +4,7 @@ import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall'
 import { useSymbols } from '@/hooks/useSymbols';
 import { SymbolText } from '@/components/ui/SymbolText';
 import { CardImage } from './CardImage';
+import { AddToCollectionButton } from '@/components/collection/AddToCollectionButton';
 import styles from './CardDetail.module.css';
 
 export interface CardDetailProps {
@@ -149,6 +150,8 @@ export function CardDetail({ card }: CardDetailProps) {
 						</div>
 					</div>
 				)}
+
+				<AddToCollectionButton card={card} />
 
 				<div className={styles.legalities}>
 					<h3 className={styles.legalitiesTitle}>Legalities</h3>
