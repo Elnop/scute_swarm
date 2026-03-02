@@ -4,9 +4,13 @@ import { useState, useCallback, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
-import { useCardSearch, type ScryfallSortOrder, type ScryfallSortDir } from '@/hooks/useCardSearch';
+import {
+	useScryfallCardSearch,
+	type ScryfallSortOrder,
+	type ScryfallSortDir,
+} from '@/lib/scryfall/hooks/useScryfallCardSearch';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { useSets } from '@/hooks/useSets';
+import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
 import { useDebounce } from '@/hooks/useDebounce';
 import { SearchBar } from '@/components/search/SearchBar';
 import { FilterModal } from '@/components/search/FilterModal';
@@ -144,19 +148,20 @@ function SearchPageContent() {
 		});
 	}, [debouncedName, colors, colorMatch, type, set, rarities, oracleText, cmc, order, dir, router]);
 
-	const { sets, isLoading: setsLoading } = useSets();
-	const { cards, isLoading, isLoadingMore, error, hasMore, totalCards, loadMore } = useCardSearch({
-		name,
-		colors,
-		colorMatch,
-		type,
-		set,
-		rarities,
-		oracleText,
-		cmc,
-		order,
-		dir,
-	});
+	const { sets, isLoading: setsLoading } = useScryfallSets();
+	const { cards, isLoading, isLoadingMore, error, hasMore, totalCards, loadMore } =
+		useScryfallCardSearch({
+			name,
+			colors,
+			colorMatch,
+			type,
+			set,
+			rarities,
+			oracleText,
+			cmc,
+			order,
+			dir,
+		});
 
 	const { sentinelRef } = useInfiniteScroll({
 		onLoadMore: loadMore,

@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { ScryfallColor, ScryfallSet } from '@/lib/scryfall/types/scryfall';
-import type { ScryfallSortOrder, ScryfallSortDir } from '@/hooks/useCardSearch';
+import type {
+	ScryfallSortOrder,
+	ScryfallSortDir,
+} from '@/lib/scryfall/hooks/useScryfallCardSearch';
 import { ColorFilter } from './ColorFilter';
 import { RarityFilter } from './RarityFilter';
 import { TypeFilter } from './TypeFilter';

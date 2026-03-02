@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import type { ScryfallSet } from '@/lib/scryfall/types/scryfall';
 import { getAllSets } from '@/lib/scryfall/endpoints/sets';
 
-export function useSets() {
+export function useScryfallSets() {
 	const [sets, setSets] = useState<ScryfallSet[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);

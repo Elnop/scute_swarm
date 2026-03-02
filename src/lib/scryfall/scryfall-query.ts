@@ -67,7 +67,7 @@ export function buildScryfallQuery(params: ScryfallQueryParams): string {
 	return parts.join(' ');
 }
 
-export function getCardImageUri(card: {
+export function getScryfallCardImageUri(card: {
 	image_uris?: { normal?: string; small?: string; large?: string };
 	card_faces?: Array<{ image_uris?: { normal?: string; small?: string; large?: string } }>;
 }): string {
@@ -76,7 +76,7 @@ export function getCardImageUri(card: {
 	);
 }
 
-export function getCardImageUriBySize(
+export function getScryfallCardImageUriBySize(
 	card: {
 		image_uris?: { normal?: string; small?: string; large?: string };
 		card_faces?: Array<{ image_uris?: { normal?: string; small?: string; large?: string } }>;

@@ -8,6 +8,13 @@ import type {
 	ScryfallLegalities,
 	ScryfallImageUris,
 	ScryfallPrices,
+	ScryfallLayout,
+	ScryfallCardFace,
+	ScryfallRelatedCard,
+	ScryfallGame,
+	ScryfallBorderColor,
+	ScryfallFrame,
+	ScryfallFrameEffect,
 } from './scryfall';
 
 export type MTGCardRarity = 'common' | 'uncommon' | 'rare' | 'mythic' | 'special' | 'bonus';
@@ -16,17 +23,16 @@ export interface MTGCard {
 	id: string;
 	name: string;
 	set: string;
-	setName?: string;
-	collectorNumber?: string;
+	set_name?: string;
+	collector_number?: string;
 	rarity?: MTGCardRarity;
-	manaCost?: string;
-	convertedManaCost?: number;
-	type: string;
-	subtypes?: string[];
+	mana_cost?: string;
+	cmc?: number;
+	type_line: string;
 	power?: string;
 	toughness?: string;
-	text?: string;
-	flavor?: string;
+	oracle_text?: string;
+	flavor_text?: string;
 	imageUrl?: string;
 	prices?: {
 		usd?: string;
@@ -37,7 +43,7 @@ export interface MTGCard {
 	scryfallId?: ScryfallUUID;
 	oracleId?: ScryfallUUID;
 	colors?: ScryfallColors;
-	colorIdentity?: ScryfallColors;
+	color_identity?: ScryfallColors;
 	keywords?: string[];
 	legalities?: ScryfallLegalities;
 	scryfallData?: ScryfallCard;
@@ -57,13 +63,26 @@ export interface EnhancedMTGCard extends Omit<MTGCard, 'scryfallData'> {
 	imageUris?: ScryfallImageUris;
 	allPrices?: ScryfallPrices;
 	artist?: string;
-	collectorNumber?: string;
 	released?: string;
 	fullArt?: boolean;
 	foil?: boolean;
 	nonfoil?: boolean;
 	reserved?: boolean;
 	etched?: boolean;
+	layout?: ScryfallLayout;
+	card_faces?: ScryfallCardFace[];
+	all_parts?: ScryfallRelatedCard[];
+	games?: ScryfallGame[];
+	finishes?: string[];
+	border_color?: ScryfallBorderColor;
+	frame?: ScryfallFrame;
+	frame_effects?: ScryfallFrameEffect[];
+	promo?: boolean;
+	reprint?: boolean;
+	loyalty?: string;
+	defense?: string;
+	edhrec_rank?: number;
+	related_uris?: Record<string, string>;
 }
 
 export interface MTGSet {

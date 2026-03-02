@@ -1,7 +1,7 @@
 'use client';
 
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
-import { useSymbols } from '@/hooks/useSymbols';
+import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
 import { SymbolText } from '@/components/ui/SymbolText';
 import { CardImage } from './CardImage';
 import { AddToCollectionButton } from '@/components/collection/AddToCollectionButton';
@@ -34,7 +34,7 @@ function splitOracleText(text: string | undefined): string[] {
 }
 
 export function CardDetail({ card }: CardDetailProps) {
-	const symbolMap = useSymbols();
+	const symbolMap = useScryfallSymbols();
 	const colors = card.colors ?? card.color_identity ?? [];
 	const oracleLines = splitOracleText(card.oracle_text);
 

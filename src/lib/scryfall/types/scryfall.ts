@@ -49,11 +49,11 @@ export type ScryfallFrameEffect =
 	| 'fandfc'
 	| 'upsidedowndfc';
 export type ScryfallFrame = '1993' | '1997' | '2003' | '2015' | 'future';
-export type ScryfallSecurityStamp = 'oval' | 'triangle' | 'acorn' | 'arena' | 'heart';
-export type ScryfallBorderColor = 'black' | 'white' | 'borderless' | 'silver' | 'gold';
+export type ScryfallSecurityStamp = 'oval' | 'triangle' | 'acorn' | 'arena' | 'heart' | 'circle';
+export type ScryfallBorderColor = 'black' | 'white' | 'borderless' | 'silver' | 'gold' | 'yellow';
 export type ScryfallImageStatus = 'missing' | 'placeholder' | 'lowres' | 'highres_scan';
 export type ScryfallLegality = 'legal' | 'not_legal' | 'restricted' | 'banned';
-export type ScryfallGame = 'paper' | 'arena' | 'mtgo';
+export type ScryfallGame = 'paper' | 'arena' | 'mtgo' | 'astral' | 'sega';
 export type ScryfallFormat =
 	| 'standard'
 	| 'future'
@@ -157,6 +157,7 @@ export interface ScryfallCard {
 	// Visual data
 	image_uris?: ScryfallImageUris;
 	image_status: ScryfallImageStatus;
+	highres_image: boolean;
 	mana_cost?: string;
 	cmc: number;
 	type_line: string;
@@ -212,9 +213,9 @@ export interface ScryfallCard {
 	power?: string;
 	toughness?: string;
 	loyalty?: string;
+	defense?: string;
 	life_modifier?: string;
 	hand_modifier?: string;
-	color_indicator_names?: string[];
 
 	// Pricing & availability
 	prices: ScryfallPrices;
@@ -226,6 +227,15 @@ export interface ScryfallCard {
 
 	// Additional
 	watermark?: string;
+	flavor_name?: string;
+	printed_name?: string;
+	printed_text?: string;
+	printed_type_line?: string;
+	variation_of?: ScryfallUUID;
+	promo_types?: string[];
+	attraction_lights?: number[];
+	game_changer?: boolean;
+	content_warning?: boolean;
 	preview?: {
 		previewed_at: string;
 		source_uri: string;

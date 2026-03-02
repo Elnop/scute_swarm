@@ -3,8 +3,8 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import { searchCards } from '@/lib/scryfall/endpoints/cards';
-import { buildScryfallQuery } from '@/lib/utils/scryfall-query';
-import { useDebounce } from './useDebounce';
+import { buildScryfallQuery } from '@/lib/scryfall/scryfall-query';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export type ScryfallSortOrder =
 	| 'name'
@@ -38,7 +38,7 @@ export interface SearchFilters {
 	dir?: ScryfallSortDir;
 }
 
-interface UseCardSearchResult {
+interface UseScryfallCardSearchResult {
 	cards: ScryfallCard[];
 	isLoading: boolean;
 	isLoadingMore: boolean;
@@ -49,7 +49,7 @@ interface UseCardSearchResult {
 	reset: () => void;
 }
 
-export function useCardSearch(filters: SearchFilters): UseCardSearchResult {
+export function useScryfallCardSearch(filters: SearchFilters): UseScryfallCardSearchResult {
 	const [cards, setCards] = useState<ScryfallCard[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);

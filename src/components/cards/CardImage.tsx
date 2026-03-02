@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import { getCardImageUriBySize } from '@/lib/utils/scryfall-query';
+import { getScryfallCardImageUriBySize } from '@/lib/scryfall/scryfall-query';
 import styles from './CardImage.module.css';
 
 export interface CardImageProps {
@@ -35,7 +35,7 @@ export function CardImage({
 		card.card_faces && card.card_faces.length > 1 && card.card_faces[0].image_uris;
 	const imageUri = isDoubleFaced
 		? (card.card_faces![currentFace].image_uris?.[size] ?? '')
-		: getCardImageUriBySize(card, size);
+		: getScryfallCardImageUriBySize(card, size);
 
 	const { width, height } = sizeMap[size];
 

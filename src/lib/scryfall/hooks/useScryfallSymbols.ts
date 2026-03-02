@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getAllSymbols } from '@/lib/scryfall/endpoints/symbols';
 import type { ScryfallCardSymbol } from '@/lib/scryfall/types/scryfall';
 
-export function useSymbols(): Record<string, ScryfallCardSymbol> {
+export function useScryfallSymbols(): Record<string, ScryfallCardSymbol> {
 	const [symbolMap, setSymbolMap] = useState<Record<string, ScryfallCardSymbol>>({});
 
 	useEffect(() => {
