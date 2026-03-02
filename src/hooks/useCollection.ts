@@ -2,30 +2,42 @@
 
 import { useCallback, useSyncExternalStore } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import type { Card, CollectionStats } from '@/types/card';
-import { toStoredCard } from '@/types/card';
+import type { CollectionEntry } from '@/types/card';
 
 const STORAGE_KEY = 'mtg-snap-collection';
 
-type CollectionData = Record<string, Card>;
+type CollectionData = Record<string, CollectionEntry>;
 
 const EMPTY: CollectionData = {};
 let listeners: Array<() => void> = [];
 let cachedSnapshot: CollectionData | null = null;
 
-// Migrate legacy entries that stored { card: ScryfallCard, quantity, dateAdded }
-// to the flat Card shape where card data is top-level.
-function migrateEntry(raw: unknown): Card {
+// Migrate legacy entries to slim CollectionEntry shape
+function migrateEntry(raw: unknown): CollectionEntry {
 	if (
 		raw &&
 		typeof raw === 'object' &&
 		'card' in raw &&
 		typeof (raw as Record<string, unknown>).card === 'object'
 	) {
-		const legacy = raw as { card: ScryfallCard; quantity: number; dateAdded: string };
-		return { ...legacy.card, quantity: legacy.quantity, dateAdded: legacy.dateAdded };
+		// Legacy format 1: { card: ScryfallCard, quantity, dateAdded }
+		const legacy = raw as { card: { id: string }; quantity: number; dateAdded: string };
+		return {
+			id: legacy.card.id,
+			quantity: legacy.quantity ?? 1,
+			dateAdded: legacy.dateAdded ?? new Date().toISOString(),
+		};
 	}
-	return raw as Card;
+	// Legacy format 2: StoredCard (flat) — keep only CollectionEntry fields, discard Scryfall data
+	const flat = raw as Record<string, unknown>;
+	return {
+		id: flat.id as string,
+		quantity: (flat.quantity as number) ?? 1,
+		dateAdded: (flat.dateAdded as string) ?? new Date().toISOString(),
+		isFoil: flat.isFoil as boolean | undefined,
+		condition: flat.condition as string | undefined,
+		tags: flat.tags as string[] | undefined,
+	};
 }
 
 function getSnapshot(): CollectionData {
@@ -40,9 +52,17 @@ function getSnapshot(): CollectionData {
 		const migrated: CollectionData = {};
 		let needsWrite = false;
 		for (const [id, entry] of Object.entries(parsed)) {
-			const card = migrateEntry(entry);
-			migrated[id] = card;
-			if (entry !== card) needsWrite = true;
+			const migratedEntry = migrateEntry(entry);
+			migrated[id] = migratedEntry;
+			// Detect if migration changed the entry (legacy format detected)
+			if (
+				entry !== migratedEntry &&
+				typeof entry === 'object' &&
+				entry !== null &&
+				('card' in (entry as object) || 'name' in (entry as object))
+			) {
+				needsWrite = true;
+			}
 		}
 		if (needsWrite) {
 			try {
@@ -96,8 +116,8 @@ export function useCollection() {
 		saveCollection({
 			...current,
 			[card.id]: {
-				...toStoredCard(card),
-				quantity: existing ? (existing.quantity ?? 0) + 1 : 1,
+				id: card.id,
+				quantity: existing ? existing.quantity + 1 : 1,
 				dateAdded: existing?.dateAdded ?? new Date().toISOString(),
 			},
 		});
@@ -114,14 +134,14 @@ export function useCollection() {
 		const current = getSnapshot();
 		const existing = current[cardId];
 		if (!existing) return;
-		if ((existing.quantity ?? 0) <= 1) {
+		if (existing.quantity <= 1) {
 			const next = { ...current };
 			delete next[cardId];
 			saveCollection(next);
 		} else {
 			saveCollection({
 				...current,
-				[cardId]: { ...existing, quantity: (existing.quantity ?? 0) - 1 },
+				[cardId]: { ...existing, quantity: existing.quantity - 1 },
 			});
 		}
 	}, []);
@@ -133,56 +153,26 @@ export function useCollection() {
 		[collection]
 	);
 
-	const getStats = useCallback((): CollectionStats => {
-		const entries = Object.values(collection);
-		const sets = new Set<string>();
-		const rarityDistribution: Record<string, number> = {};
-		let totalCards = 0;
-
-		for (const entry of entries) {
-			const qty = entry.quantity ?? 0;
-			totalCards += qty;
-			sets.add(entry.set);
-			const rarity = entry.rarity;
-			rarityDistribution[rarity] = (rarityDistribution[rarity] ?? 0) + qty;
-		}
-
-		return {
-			totalCards,
-			uniqueCards: entries.length,
-			uniqueByEdition: entries.length,
-			setCount: sets.size,
-			rarityDistribution,
-		};
-	}, [collection]);
-
 	const clearCollection = useCallback(() => {
 		saveCollection({});
 	}, []);
 
-	const importCards = useCallback(
-		(
-			cards: Array<
-				ScryfallCard & { quantity: number; isFoil?: boolean; condition?: string; tags?: string[] }
-			>
-		) => {
-			const current = getSnapshot();
-			const next = { ...current };
-			for (const card of cards) {
-				const existing = next[card.id];
-				next[card.id] = {
-					...toStoredCard(card),
-					quantity: (existing?.quantity ?? 0) + card.quantity,
-					isFoil: card.isFoil,
-					condition: card.condition,
-					tags: card.tags,
-					dateAdded: existing?.dateAdded ?? new Date().toISOString(),
-				};
-			}
-			saveCollection(next);
-		},
-		[]
-	);
+	const importCards = useCallback((cards: Array<ScryfallCard & CollectionEntry>) => {
+		const current = getSnapshot();
+		const next = { ...current };
+		for (const card of cards) {
+			const existing = next[card.id];
+			next[card.id] = {
+				id: card.id,
+				quantity: (existing?.quantity ?? 0) + card.quantity,
+				isFoil: card.isFoil,
+				condition: card.condition,
+				tags: card.tags,
+				dateAdded: existing?.dateAdded ?? new Date().toISOString(),
+			};
+		}
+		saveCollection(next);
+	}, []);
 
 	const entries = Object.values(collection);
 
@@ -194,7 +184,6 @@ export function useCollection() {
 		removeCard,
 		decrementCard,
 		getQuantity,
-		getStats,
 		clearCollection,
 		importCards,
 	};

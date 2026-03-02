@@ -95,7 +95,7 @@ export default function SearchPage() {
 function SearchPageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { getStats } = useCollection();
+	const { entries: collectionEntries } = useCollection();
 
 	// Initialize state from URL params
 	const [name, setName] = useState(() => searchParams.get('name') ?? '');
@@ -210,7 +210,7 @@ function SearchPageContent() {
 		(oracleText ? 1 : 0) +
 		(cmc ? 1 : 0);
 
-	const collectionStats = getStats();
+	const totalCollectionCards = collectionEntries.reduce((sum, e) => sum + e.quantity, 0);
 
 	const hasFilters =
 		name || colors.length > 0 || type || set || rarities.length > 0 || oracleText || cmc;
@@ -224,8 +224,8 @@ function SearchPageContent() {
 				</Link>
 				<Link href="/collection" className={styles.navLink}>
 					Collection
-					{collectionStats.totalCards > 0 && (
-						<span className={styles.collectionBadge}>{collectionStats.totalCards}</span>
+					{totalCollectionCards > 0 && (
+						<span className={styles.collectionBadge}>{totalCollectionCards}</span>
 					)}
 				</Link>
 			</header>

@@ -3,21 +3,46 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { useCollection } from '@/hooks/useCollection';
+import { useCollectionCards } from '@/hooks/useCollectionCards';
 import { useMoxfieldImport } from '@/hooks/useMoxfieldImport';
 import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
 import { CollectionGrid } from '@/components/collection/CollectionGrid';
 import { ImportSummaryModal } from '@/components/collection/ImportSummaryModal';
 import { Button } from '@/components/ui/Button';
+import type { Card, CollectionStats } from '@/types/card';
 import styles from './page.module.css';
 
+function computeStats(cards: Card[]): CollectionStats {
+	const sets = new Set<string>();
+	const rarityDistribution: Record<string, number> = {};
+	let totalCards = 0;
+
+	for (const card of cards) {
+		const qty = card.quantity;
+		totalCards += qty;
+		sets.add(card.set);
+		rarityDistribution[card.rarity] = (rarityDistribution[card.rarity] ?? 0) + qty;
+	}
+
+	return {
+		totalCards,
+		uniqueCards: cards.length,
+		uniqueByEdition: cards.length,
+		setCount: sets.size,
+		rarityDistribution,
+	};
+}
+
 export default function CollectionPage() {
-	const { entries, isLoaded, decrementCard, getStats, importCards } = useCollection();
+	const { entries, isLoaded, decrementCard, importCards } = useCollection();
+	const { cards, isLoading: isHydrating, totalExpected } = useCollectionCards(entries);
 	const { status, result, importFile, reset } = useMoxfieldImport(importCards);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const stats = getStats();
+
+	const stats = computeStats(cards);
 
 	function handleExport() {
-		downloadCSV(serializeToMoxfieldCSV(entries), 'my-collection.csv');
+		downloadCSV(serializeToMoxfieldCSV(cards), 'my-collection.csv');
 	}
 
 	function handleImportClick() {
@@ -68,7 +93,7 @@ export default function CollectionPage() {
 				<div className={styles.titleSection}>
 					<div className={styles.titleLeft}>
 						<h1 className={styles.title}>My Collection</h1>
-						{entries.length > 0 && (
+						{entries.length > 0 && !isHydrating && (
 							<p className={styles.statsLine}>
 								{stats.totalCards} card{stats.totalCards !== 1 ? 's' : ''} &middot;{' '}
 								{stats.uniqueCards} unique &middot; {stats.setCount} set
@@ -78,7 +103,7 @@ export default function CollectionPage() {
 					</div>
 					<div className={styles.actions}>
 						{entries.length > 0 && (
-							<Button variant="secondary" onClick={handleExport} disabled={isBusy}>
+							<Button variant="secondary" onClick={handleExport} disabled={isBusy || isHydrating}>
 								Export CSV
 							</Button>
 						)}
@@ -105,7 +130,12 @@ export default function CollectionPage() {
 						</Link>
 					</div>
 				) : (
-					<CollectionGrid entries={entries} onDecrement={decrementCard} />
+					<CollectionGrid
+						entries={cards}
+						onDecrement={decrementCard}
+						isLoading={isHydrating}
+						totalExpected={totalExpected}
+					/>
 				)}
 			</main>
 

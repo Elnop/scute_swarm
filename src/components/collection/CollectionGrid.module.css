@@ -70,6 +70,33 @@
 	white-space: nowrap;
 }
 
+.skeletonImage {
+	width: 100%;
+	aspect-ratio: 63 / 88;
+	border-radius: 8px;
+	background: var(--border);
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonName {
+	height: 14px;
+	width: 70%;
+	margin: 0 auto;
+	border-radius: 4px;
+	background: var(--border);
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
+
 @media (max-width: 768px) {
 	.grid {
 		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

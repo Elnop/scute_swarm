@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { parseMoxfieldCSV } from '@/lib/moxfield/parse';
 import { getCardCollection } from '@/lib/scryfall/endpoints/cards';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
+import type { CollectionEntry } from '@/types/card';
 import type { ImportResult } from '@/lib/moxfield/types';
 
 export type ImportStatus = 'idle' | 'parsing' | 'fetching' | 'merging' | 'done' | 'error';
@@ -16,11 +17,7 @@ export interface ImportProgress {
 const BATCH_SIZE = 75;
 
 export function useMoxfieldImport(
-	importCards: (
-		cards: Array<
-			ScryfallCard & { quantity: number; isFoil?: boolean; condition?: string; tags?: string[] }
-		>
-	) => void
+	importCards: (cards: Array<ScryfallCard & CollectionEntry>) => void
 ) {
 	const [status, setStatus] = useState<ImportStatus>('idle');
 	const [progress, setProgress] = useState<ImportProgress>({ current: 0, total: 0 });
@@ -94,9 +91,7 @@ export function useMoxfieldImport(
 				setStatus('merging');
 
 				// Reconcile fetched cards with lookup map
-				const cardsToImport: Array<
-					ScryfallCard & { quantity: number; isFoil?: boolean; condition?: string; tags?: string[] }
-				> = [];
+				const cardsToImport: Array<ScryfallCard & CollectionEntry> = [];
 
 				for (const card of fetchedCards) {
 					const key = `${card.set.toLowerCase()}/${card.collector_number.toLowerCase()}`;
@@ -113,7 +108,9 @@ export function useMoxfieldImport(
 					// 'etched' foil maps to isFoil: true (etched is a variant of foil treatment)
 					cardsToImport.push({
 						...card,
+						id: card.id,
 						quantity: row.count,
+						dateAdded: new Date().toISOString(),
 						isFoil: row.foil === 'foil' || row.foil === 'etched',
 						condition: row.condition,
 						tags: row.tags,

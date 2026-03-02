@@ -8,10 +8,19 @@ import styles from './CollectionGrid.module.css';
 export interface CollectionGridProps {
 	entries: Card[];
 	onDecrement: (cardId: string) => void;
+	isLoading?: boolean;
+	totalExpected?: number;
 }
 
-export function CollectionGrid({ entries, onDecrement }: CollectionGridProps) {
+export function CollectionGrid({
+	entries,
+	onDecrement,
+	isLoading,
+	totalExpected,
+}: CollectionGridProps) {
 	const router = useRouter();
+
+	const skeletonCount = isLoading ? Math.max(0, (totalExpected ?? 0) - entries.length) : 0;
 
 	return (
 		<div className={styles.grid}>
@@ -45,6 +54,12 @@ export function CollectionGrid({ entries, onDecrement }: CollectionGridProps) {
 						</button>
 					</div>
 					<p className={styles.cardName}>{entry.name}</p>
+				</div>
+			))}
+			{Array.from({ length: skeletonCount }).map((_, i) => (
+				<div key={`sk-${i}`} className={styles.item}>
+					<div className={styles.skeletonImage} />
+					<div className={styles.skeletonName} />
 				</div>
 			))}
 		</div>
