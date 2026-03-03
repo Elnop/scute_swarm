@@ -1,12 +1,16 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useCollection } from '@/hooks/useCollection';
 import { useCollectionCards } from '@/hooks/useCollectionCards';
 import { useMoxfieldImport } from '@/hooks/useMoxfieldImport';
+import { useCollectionFilters, defaultCollectionFilters } from '@/hooks/useCollectionFilters';
+import type { CollectionFilters } from '@/hooks/useCollectionFilters';
+import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
 import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
 import { CollectionGrid } from '@/components/collection/CollectionGrid';
+import { CollectionFiltersAside } from '@/components/collection/CollectionFiltersAside';
 import { ImportSummaryModal } from '@/components/collection/ImportSummaryModal';
 import { Button } from '@/components/ui/Button';
 import type { Card, CollectionStats } from '@/types/card';
@@ -37,9 +41,22 @@ export default function CollectionPage() {
 	const { entries, isLoaded, decrementCard, importCards } = useCollection();
 	const { cards, isLoading: isHydrating, totalExpected } = useCollectionCards(entries);
 	const { status, result, importFile, reset } = useMoxfieldImport(importCards);
+	const { sets, isLoading: setsLoading } = useScryfallSets();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const stats = computeStats(cards);
+	const [filters, setFilters] = useState<CollectionFilters>(defaultCollectionFilters);
+	const filteredCards = useCollectionFilters(cards, filters);
+
+	const stats = computeStats(filteredCards);
+
+	const activeFilterCount =
+		filters.colors.length +
+		(filters.type ? 1 : 0) +
+		(filters.set ? 1 : 0) +
+		(filters.order !== 'name' || filters.dir !== 'auto' ? 1 : 0) +
+		filters.rarities.length +
+		(filters.oracleText ? 1 : 0) +
+		(filters.cmc ? 1 : 0);
 
 	function handleExport() {
 		downloadCSV(serializeToMoxfieldCSV(cards), 'my-collection.csv');
@@ -53,7 +70,6 @@ export default function CollectionPage() {
 		const file = e.target.files?.[0];
 		if (!file) return;
 		void importFile(file);
-		// Reset input so the same file can be re-imported if needed
 		e.target.value = '';
 	}
 
@@ -89,55 +105,65 @@ export default function CollectionPage() {
 				</nav>
 			</header>
 
-			<main className={styles.main}>
-				<div className={styles.titleSection}>
-					<div className={styles.titleLeft}>
-						<h1 className={styles.title}>My Collection</h1>
-						{entries.length > 0 && !isHydrating && (
-							<p className={styles.statsLine}>
-								{stats.totalCards} card{stats.totalCards !== 1 ? 's' : ''} &middot;{' '}
-								{stats.uniqueCards} unique &middot; {stats.setCount} set
-								{stats.setCount !== 1 ? 's' : ''}
-							</p>
-						)}
-					</div>
-					<div className={styles.actions}>
-						{entries.length > 0 && (
-							<Button variant="secondary" onClick={handleExport} disabled={isBusy || isHydrating}>
-								Export CSV
-							</Button>
-						)}
-						<Button variant="primary" onClick={handleImportClick} disabled={isBusy}>
-							{isBusy ? 'Importing…' : 'Import CSV'}
-						</Button>
-					</div>
-				</div>
-
-				<input
-					ref={fileInputRef}
-					type="file"
-					accept=".csv"
-					className={styles.fileInput}
-					onChange={handleFileChange}
+			<div className={styles.layout}>
+				<CollectionFiltersAside
+					filters={filters}
+					onChange={setFilters}
+					sets={sets}
+					setsLoading={setsLoading}
+					activeFilterCount={activeFilterCount}
 				/>
 
-				{entries.length === 0 ? (
-					<div className={styles.emptyState}>
-						<h2>Your collection is empty</h2>
-						<p>Search for cards or import a Moxfield CSV to get started.</p>
-						<Link href="/search">
-							<Button variant="primary">Search for cards</Button>
-						</Link>
+				<main className={styles.main}>
+					<div className={styles.titleSection}>
+						<div className={styles.titleLeft}>
+							<h1 className={styles.title}>My Collection</h1>
+							{entries.length > 0 && !isHydrating && (
+								<p className={styles.statsLine}>
+									{stats.totalCards} card{stats.totalCards !== 1 ? 's' : ''} &middot;{' '}
+									{stats.uniqueCards} unique &middot; {stats.setCount} set
+									{stats.setCount !== 1 ? 's' : ''}
+								</p>
+							)}
+						</div>
+						<div className={styles.actions}>
+							{entries.length > 0 && (
+								<Button variant="secondary" onClick={handleExport} disabled={isBusy || isHydrating}>
+									Export CSV
+								</Button>
+							)}
+							<Button variant="primary" onClick={handleImportClick} disabled={isBusy}>
+								{isBusy ? 'Importing…' : 'Import CSV'}
+							</Button>
+						</div>
 					</div>
-				) : (
-					<CollectionGrid
-						entries={cards}
-						onDecrement={decrementCard}
-						isLoading={isHydrating}
-						totalExpected={totalExpected}
+
+					<input
+						ref={fileInputRef}
+						type="file"
+						accept=".csv"
+						className={styles.fileInput}
+						onChange={handleFileChange}
 					/>
-				)}
-			</main>
+
+					{entries.length === 0 ? (
+						<div className={styles.emptyState}>
+							<h2>Your collection is empty</h2>
+							<p>Search for cards or import a Moxfield CSV to get started.</p>
+							<Link href="/search">
+								<Button variant="primary">Search for cards</Button>
+							</Link>
+						</div>
+					) : (
+						<CollectionGrid
+							entries={filteredCards}
+							onDecrement={decrementCard}
+							isLoading={isHydrating}
+							totalExpected={totalExpected}
+						/>
+					)}
+				</main>
+			</div>
 
 			<ImportSummaryModal status={status} result={result} onClose={reset} />
 		</div>

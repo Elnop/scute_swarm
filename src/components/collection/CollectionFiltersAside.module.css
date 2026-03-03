@@ -1,0 +1,145 @@
+.aside {
+	position: fixed;
+	top: 65px;
+	left: 0;
+	height: calc(100vh - 65px);
+	width: 280px;
+	min-width: 280px;
+	overflow-y: auto;
+	border-right: 1px solid var(--border);
+	padding: 24px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	background: var(--background);
+	flex-shrink: 0;
+	z-index: 10;
+}
+
+.asideHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.asideTitle {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--foreground);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+	background: var(--primary);
+	color: white;
+	border-radius: 10px;
+}
+
+.resetButton {
+	margin-top: auto;
+	padding: 10px 16px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--text-muted);
+	background: transparent;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	cursor: pointer;
+	transition:
+		color 0.15s,
+		border-color 0.15s,
+		background 0.15s;
+	width: 100%;
+}
+
+.resetButton:hover {
+	color: var(--foreground);
+	border-color: var(--text-muted);
+	background: var(--surface);
+}
+
+/* Mobile toggle button — hidden on desktop */
+.mobileToggle {
+	display: none;
+}
+
+.mobileClose {
+	display: none;
+}
+
+.overlay {
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.aside {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 200;
+		height: 100dvh;
+		transform: translateX(-100%);
+		transition: transform 0.25s ease;
+		box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+	}
+
+	.aside.mobileVisible {
+		transform: translateX(0);
+	}
+
+	.mobileToggle {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px 14px;
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--foreground);
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		cursor: pointer;
+		transition: border-color 0.15s;
+	}
+
+	.mobileToggle:hover {
+		border-color: var(--text-muted);
+	}
+
+	.mobileClose {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		font-size: 16px;
+		background: transparent;
+		border: none;
+		color: var(--text-muted);
+		cursor: pointer;
+		border-radius: 4px;
+	}
+
+	.mobileClose:hover {
+		color: var(--foreground);
+		background: var(--surface);
+	}
+
+	.overlay {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 199;
+		background: rgba(0, 0, 0, 0.5);
+	}
+}

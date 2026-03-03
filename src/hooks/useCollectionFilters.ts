@@ -1,0 +1,167 @@
+import { useMemo } from 'react';
+import type { Card } from '@/types/card';
+import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
+import type {
+	ScryfallSortOrder,
+	ScryfallSortDir,
+} from '@/lib/scryfall/hooks/useScryfallCardSearch';
+
+export interface CollectionFilters {
+	colors: ScryfallColor[];
+	colorMatch: 'exact' | 'include' | 'atMost';
+	type: string;
+	set: string;
+	rarities: string[];
+	oracleText: string;
+	cmc: string;
+	order: ScryfallSortOrder;
+	dir: ScryfallSortDir;
+}
+
+export const defaultCollectionFilters: CollectionFilters = {
+	colors: [],
+	colorMatch: 'include',
+	type: '',
+	set: '',
+	rarities: [],
+	oracleText: '',
+	cmc: '',
+	order: 'name',
+	dir: 'auto',
+};
+
+function parseCmc(raw: string): ((cmc: number) => boolean) | null {
+	if (!raw) return null;
+	const match = raw.match(/^(>=|<=|>|<|:)?(\d+)$/);
+	if (!match) return null;
+	const op = match[1] ?? ':';
+	const num = parseInt(match[2], 10);
+	switch (op) {
+		case '>=':
+			return (c) => c >= num;
+		case '<=':
+			return (c) => c <= num;
+		case '>':
+			return (c) => c > num;
+		case '<':
+			return (c) => c < num;
+		default:
+			return (c) => c === num;
+	}
+}
+
+function parseOracleTokens(raw: string): string[] {
+	// Normalize all quote variants to ASCII double-quote
+	const normalized = raw.replace(/["""]/g, '"');
+	const tokens: string[] = [];
+	const re = /"([^"]*)"?|(\S+)/g;
+	let match: RegExpExecArray | null;
+	while ((match = re.exec(normalized)) !== null) {
+		// match[1]: inside quotes (closed or unclosed), match[2]: bare word
+		const token = (match[1] ?? match[2]).replace(/"/g, '').trim().toLowerCase();
+		if (token) tokens.push(token);
+	}
+	return tokens;
+}
+
+function matchColors(
+	cardColors: ScryfallColor[] | undefined,
+	selected: ScryfallColor[],
+	mode: 'exact' | 'include' | 'atMost'
+): boolean {
+	if (selected.length === 0) return true;
+	const colors = cardColors ?? [];
+	switch (mode) {
+		case 'exact':
+			return colors.length === selected.length && selected.every((c) => colors.includes(c));
+		case 'include':
+			return selected.every((c) => colors.includes(c));
+		case 'atMost':
+			return colors.every((c) => selected.includes(c));
+	}
+}
+
+function getSortValue(card: Card, order: ScryfallSortOrder): string | number {
+	switch (order) {
+		case 'name':
+			return card.name.toLowerCase();
+		case 'cmc':
+			return card.cmc;
+		case 'rarity': {
+			const rarityOrder: Record<string, number> = {
+				common: 0,
+				uncommon: 1,
+				rare: 2,
+				mythic: 3,
+				special: 4,
+				bonus: 5,
+			};
+			return rarityOrder[card.rarity] ?? 0;
+		}
+		case 'set':
+			return `${card.set}-${card.collector_number.padStart(6, '0')}`;
+		case 'released':
+			return card.released_at;
+		case 'color':
+			return (card.colors ?? []).sort().join('');
+		case 'usd':
+			return parseFloat(card.prices.usd ?? '0');
+		case 'eur':
+			return parseFloat(card.prices.eur ?? '0');
+		case 'tix':
+			return parseFloat(card.prices.tix ?? '0');
+		case 'power':
+			return parseFloat(card.power ?? '0');
+		case 'toughness':
+			return parseFloat(card.toughness ?? '0');
+		case 'edhrec':
+			return card.edhrec_rank ?? 9999999;
+		case 'penny':
+			return card.penny_rank ?? 9999999;
+		case 'artist':
+			return (card.artist ?? '').toLowerCase();
+		default:
+			return card.name.toLowerCase();
+	}
+}
+
+export function useCollectionFilters(cards: Card[], filters: CollectionFilters): Card[] {
+	return useMemo(() => {
+		const cmcTest = parseCmc(filters.cmc);
+
+		let filtered = cards.filter((card) => {
+			if (!matchColors(card.colors, filters.colors, filters.colorMatch)) return false;
+			if (filters.type && !card.type_line.toLowerCase().includes(filters.type.toLowerCase()))
+				return false;
+			if (filters.set && card.set !== filters.set) return false;
+			if (filters.rarities.length > 0 && !filters.rarities.includes(card.rarity)) return false;
+			if (filters.oracleText) {
+				const tokens = parseOracleTokens(filters.oracleText);
+				const text = card.oracle_text?.toLowerCase() ?? '';
+				if (tokens.length > 0 && !tokens.every((t) => text.includes(t))) return false;
+			}
+			if (cmcTest && !cmcTest(card.cmc)) return false;
+			return true;
+		});
+
+		if (filtered.length <= 1) return filtered;
+
+		const dir = filters.dir;
+
+		filtered = [...filtered].sort((a, b) => {
+			const av = getSortValue(a, filters.order);
+			const bv = getSortValue(b, filters.order);
+			let cmp: number;
+			if (typeof av === 'number' && typeof bv === 'number') {
+				cmp = av - bv;
+			} else {
+				cmp = String(av).localeCompare(String(bv));
+			}
+			// 'auto' behaves like 'asc' for local filtering
+			if (dir === 'desc') cmp = -cmp;
+			return cmp;
+		});
+
+		return filtered;
+	}, [cards, filters]);
+}

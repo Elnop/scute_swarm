@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import styles from './CmcFilter.module.css';
 
 const operators = [
@@ -22,13 +23,19 @@ function parseValue(raw: string): { op: string; num: string } {
 }
 
 export function CmcFilter({ value, onChange }: CmcFilterProps) {
-	const { op, num } = parseValue(value);
+	const { op: parsedOp, num } = parseValue(value);
+	const [localOp, setLocalOp] = useState(parsedOp);
+
+	// When value is controlled externally (e.g. reset), parsedOp reflects the
+	// true state; use it when available, fall back to localOp when num is empty.
+	const op = value ? parsedOp : localOp;
 
 	const handleOpChange = (newOp: string) => {
-		if (!newOp || !num) {
-			onChange(newOp && num ? `${newOp}${num}` : '');
-		} else {
+		setLocalOp(newOp);
+		if (newOp && num) {
 			onChange(`${newOp}${num}`);
+		} else {
+			onChange('');
 		}
 	};
 

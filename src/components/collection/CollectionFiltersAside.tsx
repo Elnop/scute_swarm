@@ -1,0 +1,119 @@
+'use client';
+
+import { useState } from 'react';
+import type { ScryfallColor, ScryfallSet } from '@/lib/scryfall/types/scryfall';
+import { ColorFilter } from '@/components/search/ColorFilter';
+import { RarityFilter } from '@/components/search/RarityFilter';
+import { TypeFilter } from '@/components/search/TypeFilter';
+import { OracleTextFilter } from '@/components/search/OracleTextFilter';
+import { CmcFilter } from '@/components/search/CmcFilter';
+import { SetFilter } from '@/components/search/SetFilter';
+import { SortFilter } from '@/components/search/SortFilter';
+import type { CollectionFilters } from '@/hooks/useCollectionFilters';
+import { defaultCollectionFilters } from '@/hooks/useCollectionFilters';
+import styles from './CollectionFiltersAside.module.css';
+
+export interface CollectionFiltersAsideProps {
+	filters: CollectionFilters;
+	onChange: (filters: CollectionFilters) => void;
+	sets: ScryfallSet[];
+	setsLoading: boolean;
+	activeFilterCount: number;
+}
+
+export function CollectionFiltersAside({
+	filters,
+	onChange,
+	sets,
+	setsLoading,
+	activeFilterCount,
+}: CollectionFiltersAsideProps) {
+	const [mobileOpen, setMobileOpen] = useState(false);
+
+	function patch<K extends keyof CollectionFilters>(key: K, value: CollectionFilters[K]) {
+		onChange({ ...filters, [key]: value });
+	}
+
+	function handleReset() {
+		onChange(defaultCollectionFilters);
+	}
+
+	const isFiltered = activeFilterCount > 0;
+
+	return (
+		<>
+			<button
+				type="button"
+				className={styles.mobileToggle}
+				onClick={() => setMobileOpen((v) => !v)}
+				aria-expanded={mobileOpen}
+			>
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+					<path
+						d="M2 4h12M4 8h8M6 12h4"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+					/>
+				</svg>
+				Filtres
+				{isFiltered && <span className={styles.badge}>{activeFilterCount}</span>}
+			</button>
+
+			{mobileOpen && (
+				<div className={styles.overlay} onClick={() => setMobileOpen(false)} aria-hidden="true" />
+			)}
+
+			<aside className={`${styles.aside} ${mobileOpen ? styles.mobileVisible : ''}`}>
+				<div className={styles.asideHeader}>
+					<span className={styles.asideTitle}>
+						Filtres{isFiltered && <span className={styles.badge}>{activeFilterCount}</span>}
+					</span>
+					<button
+						type="button"
+						className={styles.mobileClose}
+						onClick={() => setMobileOpen(false)}
+						aria-label="Fermer les filtres"
+					>
+						✕
+					</button>
+				</div>
+
+				<ColorFilter
+					selected={filters.colors}
+					onChange={(colors: ScryfallColor[]) => patch('colors', colors)}
+					colorMatch={filters.colorMatch}
+					onColorMatchChange={(colorMatch) => patch('colorMatch', colorMatch)}
+				/>
+
+				<RarityFilter value={filters.rarities} onChange={(v) => patch('rarities', v)} />
+
+				<TypeFilter value={filters.type} onChange={(v) => patch('type', v)} />
+
+				<OracleTextFilter value={filters.oracleText} onChange={(v) => patch('oracleText', v)} />
+
+				<CmcFilter value={filters.cmc} onChange={(v) => patch('cmc', v)} />
+
+				<SetFilter
+					value={filters.set}
+					onChange={(v) => patch('set', v)}
+					sets={sets}
+					isLoading={setsLoading}
+				/>
+
+				<SortFilter
+					order={filters.order}
+					onOrderChange={(v) => patch('order', v)}
+					dir={filters.dir}
+					onDirChange={(v) => patch('dir', v)}
+				/>
+
+				{isFiltered && (
+					<button type="button" className={styles.resetButton} onClick={handleReset}>
+						Réinitialiser les filtres
+					</button>
+				)}
+			</aside>
+		</>
+	);
+}
