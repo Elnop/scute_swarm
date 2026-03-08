@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import {
 	useScryfallCardSearch,
@@ -71,14 +70,6 @@ export default function SearchPage() {
 		<Suspense
 			fallback={
 				<div className={styles.page}>
-					<header className={styles.header}>
-						<Link href="/" className={styles.logo}>
-							MTG Snap
-						</Link>
-						<Link href="/collection" className={styles.navLink}>
-							Collection
-						</Link>
-					</header>
 					<main className={styles.main}>
 						<div className={styles.loading}>
 							<Spinner size="lg" />
@@ -218,18 +209,6 @@ function SearchPageContent() {
 
 	return (
 		<div className={styles.page}>
-			<header className={styles.header}>
-				<Link href="/" className={styles.logo}>
-					MTG Snap
-				</Link>
-				<Link href="/collection" className={styles.navLink}>
-					Collection
-					{totalCollectionCards > 0 && (
-						<span className={styles.collectionBadge}>{totalCollectionCards}</span>
-					)}
-				</Link>
-			</header>
-
 			<main className={styles.main}>
 				<div className={styles.searchSection}>
 					<div className={styles.searchRow}>

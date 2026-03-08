@@ -80,37 +80,13 @@ export default function CollectionPage() {
 	}
 
 	if (!isLoaded) {
-		return (
-			<div className={styles.page}>
-				<header className={styles.header}>
-					<Link href="/" className={styles.logo}>
-						MTG Snap
-					</Link>
-					<nav className={styles.nav}>
-						<Link href="/search" className={styles.navLink}>
-							Search
-						</Link>
-					</nav>
-				</header>
-			</div>
-		);
+		return <div className={styles.page} />;
 	}
 
 	const isBusy = status === 'parsing' || status === 'fetching' || status === 'merging';
 
 	return (
 		<div className={styles.page}>
-			<header className={styles.header}>
-				<Link href="/" className={styles.logo}>
-					MTG Snap
-				</Link>
-				<nav className={styles.nav}>
-					<Link href="/search" className={styles.navLink}>
-						Search
-					</Link>
-				</nav>
-			</header>
-
 			<div className={styles.layout}>
 				<CollectionFiltersAside
 					filters={filters}

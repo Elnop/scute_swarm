@@ -1,8 +1,8 @@
 .aside {
 	position: fixed;
-	top: 65px;
+	top: var(--navbar-height);
 	left: 0;
-	height: calc(100vh - 65px);
+	height: calc(100vh - var(--navbar-height));
 	width: 280px;
 	min-width: 280px;
 	overflow-y: auto;

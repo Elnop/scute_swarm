@@ -6,6 +6,7 @@ import type {
 	ScryfallSortOrder,
 	ScryfallSortDir,
 } from '@/lib/scryfall/hooks/useScryfallCardSearch';
+import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
 import { ColorFilter } from './ColorFilter';
 import { RarityFilter } from './RarityFilter';
 import { TypeFilter } from './TypeFilter';
@@ -73,6 +74,7 @@ function FilterModalContent({
 	onApply,
 	onClose,
 }: FilterModalContentProps) {
+	const symbolMap = useScryfallSymbols();
 	const [draftColors, setDraftColors] = useState<ScryfallColor[]>(initialColors);
 	const [draftColorMatch, setDraftColorMatch] = useState<'exact' | 'include' | 'atMost'>(
 		initialColorMatch
@@ -134,6 +136,7 @@ function FilterModalContent({
 					onChange={setDraftColors}
 					colorMatch={draftColorMatch}
 					onColorMatchChange={setDraftColorMatch}
+					symbolMap={symbolMap}
 				/>
 				<RarityFilter value={draftRarities} onChange={setDraftRarities} />
 				<TypeFilter value={draftType} onChange={setDraftType} />

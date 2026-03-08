@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { ScryfallColor, ScryfallSet } from '@/lib/scryfall/types/scryfall';
+import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
 import { ColorFilter } from '@/components/search/ColorFilter';
 import { RarityFilter } from '@/components/search/RarityFilter';
 import { TypeFilter } from '@/components/search/TypeFilter';
@@ -28,6 +29,7 @@ export function CollectionFiltersAside({
 	setsLoading,
 	activeFilterCount,
 }: CollectionFiltersAsideProps) {
+	const symbolMap = useScryfallSymbols();
 	const [mobileOpen, setMobileOpen] = useState(false);
 
 	function patch<K extends keyof CollectionFilters>(key: K, value: CollectionFilters[K]) {
@@ -84,6 +86,7 @@ export function CollectionFiltersAside({
 					onChange={(colors: ScryfallColor[]) => patch('colors', colors)}
 					colorMatch={filters.colorMatch}
 					onColorMatchChange={(colorMatch) => patch('colorMatch', colorMatch)}
+					symbolMap={symbolMap}
 				/>
 
 				<RarityFilter value={filters.rarities} onChange={(v) => patch('rarities', v)} />

@@ -1,5 +1,6 @@
 :root {
 	color-scheme: dark;
+	--navbar-height: 57px;
 	--background: #0a0a0a;
 	--foreground: #ededed;
 	--primary: #6366f1;
@@ -35,6 +36,7 @@ body {
 	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	padding-top: var(--navbar-height);
 }
 
 * {

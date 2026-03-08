@@ -1,6 +1,7 @@
 'use client';
 
-import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
+import type { ScryfallColor, ScryfallCardSymbol } from '@/lib/scryfall/types/scryfall';
+import { ManaSymbol } from '@/components/ui/ManaSymbol';
 import styles from './ColorFilter.module.css';
 
 export interface ColorFilterProps {
@@ -8,6 +9,7 @@ export interface ColorFilterProps {
 	onChange: (colors: ScryfallColor[]) => void;
 	colorMatch?: 'exact' | 'include' | 'atMost';
 	onColorMatchChange?: (match: 'exact' | 'include' | 'atMost') => void;
+	symbolMap?: Record<string, ScryfallCardSymbol>;
 }
 
 const colors: { id: ScryfallColor; name: string; symbol: string }[] = [
@@ -29,6 +31,7 @@ export function ColorFilter({
 	onChange,
 	colorMatch = 'include',
 	onColorMatchChange,
+	symbolMap = {},
 }: ColorFilterProps) {
 	const handleToggle = (color: ScryfallColor) => {
 		if (selected.includes(color)) {
@@ -52,7 +55,7 @@ export function ColorFilter({
 						aria-pressed={selected.includes(color.id)}
 						title={color.name}
 					>
-						{color.symbol}
+						<ManaSymbol symbol={`{${color.id}}`} symbolMap={symbolMap} />
 					</button>
 				))}
 			</div>
