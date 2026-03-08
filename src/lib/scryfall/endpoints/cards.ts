@@ -73,6 +73,14 @@ export async function getCardBySetNumber(
 	return scryfallGet<ScryfallCard>(`/cards/${setCode}/${collectorNumber}`);
 }
 
+export async function getCardBySetNumberAndLang(
+	setCode: string,
+	collectorNumber: string,
+	lang: string
+): Promise<ScryfallCard> {
+	return scryfallGet<ScryfallCard>(`/cards/${setCode}/${collectorNumber}/${lang}`);
+}
+
 export async function getCardByMultiverseId(id: number): Promise<ScryfallCard> {
 	return scryfallGet<ScryfallCard>(`/cards/multiverse/${id}`);
 }

@@ -9,6 +9,9 @@ const BASE_URL = 'https://api.scryfall.com';
 const MAX_RETRIES = 3;
 const TIMEOUT = 30_000;
 
+// In-flight request deduplication: concurrent calls with the same URL share one fetch
+const inFlight = new Map<string, Promise<unknown>>();
+
 function buildUrl(endpoint: string, params?: Record<string, string>): string {
 	const url = new URL(`${BASE_URL}${endpoint}`);
 	if (params) {
@@ -47,18 +50,31 @@ async function parseErrorResponse(response: Response): Promise<ScryfallError> {
 	}
 }
 
-export async function scryfallGet<T>(
-	endpoint: string,
-	params?: Record<string, string>
-): Promise<T> {
+export function scryfallGet<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
 	const url = buildUrl(endpoint, params);
 
 	// Check cache
 	const cached = getCached<T>(url);
 	if (cached !== null) {
-		return cached;
+		return Promise.resolve(cached);
 	}
 
+	// Deduplicate concurrent requests for the same URL
+	const existing = inFlight.get(url);
+	if (existing) return existing as Promise<T>;
+
+	const promise = scryfallGetInner<T>(url);
+	inFlight.set(url, promise);
+	promise
+		.finally(() => inFlight.delete(url))
+		.catch(() => {
+			// Suppress unhandled rejection from the finally-derived promise;
+			// callers handle the rejection on the original promise reference.
+		});
+	return promise;
+}
+
+async function scryfallGetInner<T>(url: string): Promise<T> {
 	await enforceRateLimit();
 
 	let lastError: Error | null = null;
@@ -86,10 +102,11 @@ export async function scryfallGet<T>(
 		} catch (error) {
 			lastError = error instanceof Error ? error : new Error(String(error));
 
-			// Don't retry on client errors (4xx) except 429
+			// Don't retry on any client errors (4xx) — 429s are not retried either,
+			// as the rate-limiter should prevent them; retrying would worsen the situation.
 			if (error instanceof ScryfallApiError) {
 				const status = error.error.status;
-				if (status >= 400 && status < 500 && status !== 429) {
+				if (status >= 400 && status < 500) {
 					throw error;
 				}
 			}

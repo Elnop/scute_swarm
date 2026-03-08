@@ -15,11 +15,27 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 	const [cards, setCards] = useState<Card[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	// Stable key representing the current set of IDs so we only re-fetch on actual changes
+	// Stable key representing the current set of IDs so we only re-fetch on actual ID changes
 	const idsKey = entries
 		.map((e) => e.id)
 		.sort()
 		.join(',');
+
+	// Re-merge entry fields (quantity, condition, language, etc.) whenever entries change,
+	// without re-fetching Scryfall data that is already in the cards state.
+	useEffect(() => {
+		if (entries.length === 0) return;
+
+		setCards((prev) => {
+			if (prev.length === 0) return prev;
+			const entryMap = new Map<string, CollectionEntry>();
+			for (const entry of entries) entryMap.set(entry.id, entry);
+			return prev.map((card) => {
+				const entry = entryMap.get(card.id);
+				return entry ? { ...card, ...entry } : card;
+			});
+		});
+	}, [entries]);
 
 	useEffect(() => {
 		if (entries.length === 0) {
@@ -28,7 +44,7 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 			return;
 		}
 
-		let cancelled = false;
+		const cancelledRef = { current: false };
 		setIsLoading(true);
 
 		async function hydrate() {
@@ -42,7 +58,7 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 
 			// Phase 1: read from IndexedDB cache (~20-50ms)
 			const cachedMap = await getCardsFromCache(allIds);
-			if (cancelled) return;
+			if (cancelledRef.current) return;
 
 			const missIds = allIds.filter((id) => !cachedMap.has(id));
 
@@ -55,7 +71,7 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 
 			// If everything is cached, we're done
 			if (missIds.length === 0) {
-				if (!cancelled) {
+				if (!cancelledRef.current) {
 					setCards(cachedCards);
 					setIsLoading(false);
 				}
@@ -63,7 +79,7 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 			}
 
 			// Show cached cards immediately while fetching the rest
-			if (cachedCards.length > 0 && !cancelled) {
+			if (cachedCards.length > 0 && !cancelledRef.current) {
 				setCards(cachedCards);
 			}
 
@@ -76,7 +92,7 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 
 			// Launch all batches concurrently — they self-sequence via the rate-limiter
 			const settled = await Promise.allSettled(chunks.map((chunk) => getCardCollection(chunk)));
-			if (cancelled) return;
+			if (cancelledRef.current) return;
 
 			const fetchedScryfallCards = [];
 			for (const result of settled) {
@@ -98,21 +114,22 @@ export function useCollectionCards(entries: CollectionEntry[]): {
 				if (entry) fetchedCards.push({ ...scryfallCard, ...entry });
 			}
 
-			if (!cancelled) {
-				setCards([...cachedCards, ...fetchedCards]);
+			const mergedCards = [...cachedCards, ...fetchedCards];
+			if (!cancelledRef.current) {
+				setCards(mergedCards);
 				setIsLoading(false);
 			}
 		}
 
 		hydrate().catch((err) => {
-			if (!cancelled) {
+			if (!cancelledRef.current) {
 				console.error('[useCollectionCards] hydration failed:', err);
 				setIsLoading(false);
 			}
 		});
 
 		return () => {
-			cancelled = true;
+			cancelledRef.current = true;
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [idsKey]);

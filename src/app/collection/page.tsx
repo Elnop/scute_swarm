@@ -12,8 +12,9 @@ import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
 import { CollectionGrid } from '@/components/collection/CollectionGrid';
 import { CollectionFiltersAside } from '@/components/collection/CollectionFiltersAside';
 import { ImportSummaryModal } from '@/components/collection/ImportSummaryModal';
+import { CardCollectionModal } from '@/components/collection/CardCollectionModal';
 import { Button } from '@/components/ui/Button';
-import type { Card, CollectionStats } from '@/types/card';
+import type { Card, CollectionEntry, CollectionStats } from '@/types/card';
 import styles from './page.module.css';
 
 function computeStats(cards: Card[]): CollectionStats {
@@ -38,12 +39,22 @@ function computeStats(cards: Card[]): CollectionStats {
 }
 
 export default function CollectionPage() {
-	const { entries, isLoaded, decrementCard, importCards, clearCollection } = useCollection();
+	const {
+		entries,
+		isLoaded,
+		decrementCard,
+		removeCard,
+		updateEntry,
+		importCards,
+		clearCollection,
+	} = useCollection();
 	const { cards, isLoading: isHydrating, totalExpected } = useCollectionCards(entries);
 	const { status, result, importFile, reset } = useMoxfieldImport(importCards);
 	const { sets, isLoading: setsLoading } = useScryfallSets();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
+	const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+	const selectedCard = selectedCardId ? (cards.find((c) => c.id === selectedCardId) ?? null) : null;
 	const [filters, setFilters] = useState<CollectionFilters>(defaultCollectionFilters);
 	const filteredCards = useCollectionFilters(cards, filters);
 
@@ -149,6 +160,7 @@ export default function CollectionPage() {
 						<CollectionGrid
 							entries={filteredCards}
 							onDecrement={decrementCard}
+							onCardClick={(card) => setSelectedCardId(card.id)}
 							isLoading={isHydrating}
 							totalExpected={totalExpected}
 						/>
@@ -157,6 +169,17 @@ export default function CollectionPage() {
 			</div>
 
 			<ImportSummaryModal status={status} result={result} onClose={reset} />
+			<CardCollectionModal
+				card={selectedCard}
+				onClose={() => setSelectedCardId(null)}
+				onSave={(cardId, updates: Partial<CollectionEntry>) => {
+					updateEntry(cardId, updates);
+				}}
+				onRemove={(cardId) => {
+					removeCard(cardId);
+					setSelectedCardId(null);
+				}}
+			/>
 		</div>
 	);
 }

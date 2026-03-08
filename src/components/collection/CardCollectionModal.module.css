@@ -1,0 +1,425 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 16px;
+}
+
+.modal {
+	background: var(--card-bg, #1a1a2e);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	max-width: 1000px;
+	width: 100%;
+	max-height: 90vh;
+	overflow-y: auto;
+	position: relative;
+}
+
+.closeIcon {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	cursor: pointer;
+	padding: 4px;
+	line-height: 0;
+	border-radius: 4px;
+	transition: color 0.15s;
+	z-index: 1;
+}
+
+.closeIcon:hover {
+	color: var(--foreground);
+}
+
+.layout {
+	display: flex;
+	gap: 36px;
+	padding: 36px;
+}
+
+.imageCol {
+	flex-shrink: 0;
+	width: 260px;
+}
+
+.imageCol img {
+	border-radius: 8px;
+}
+
+.infoCol {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	min-width: 0;
+}
+
+.cardMeta {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.cardNameRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding-right: 28px;
+}
+
+.headerMana {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	flex-shrink: 0;
+}
+
+.colorPips {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+}
+
+.colorPip {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	display: inline-block;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	flex-shrink: 0;
+}
+
+.cardName {
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--foreground);
+	margin: 0;
+}
+
+.typeLine {
+	font-size: 14px;
+	color: var(--text-muted);
+	margin: 0;
+}
+
+.setLine {
+	font-size: 14px;
+	color: var(--text-muted);
+	margin: 0;
+}
+
+.rarity {
+	text-transform: capitalize;
+}
+
+.rarity.common {
+	color: #9ca3af;
+}
+
+.rarity.uncommon {
+	color: #60a5fa;
+}
+
+.rarity.rare {
+	color: #fbbf24;
+}
+
+.rarity.mythic {
+	color: #f97316;
+}
+
+.form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px 16px;
+}
+
+/* Tags field spans full width */
+.fieldFull {
+	grid-column: 1 / -1;
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+
+.quantityRow {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.qtyBtn {
+	background: var(--surface, rgba(255, 255, 255, 0.08));
+	border: 1px solid var(--border);
+	color: var(--foreground);
+	width: 30px;
+	height: 30px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.15s;
+	flex-shrink: 0;
+}
+
+.qtyBtn:hover {
+	background: var(--surface-hover, rgba(255, 255, 255, 0.12));
+}
+
+.qtyValue {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--foreground);
+	min-width: 20px;
+	text-align: center;
+}
+
+.select,
+.input {
+	background: var(--surface, rgba(255, 255, 255, 0.06));
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	color: var(--foreground);
+	font-size: 14px;
+	padding: 8px 10px;
+	width: 100%;
+	outline: none;
+	transition: border-color 0.15s;
+}
+
+.select:focus,
+.input:focus {
+	border-color: var(--primary);
+}
+
+.select option {
+	background: var(--card-bg, #1a1a2e);
+}
+
+.foilRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.foilToggle {
+	background: var(--surface, rgba(255, 255, 255, 0.06));
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	color: var(--text-muted);
+	font-size: 14px;
+	font-weight: 600;
+	padding: 8px 12px;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		color 0.15s,
+		border-color 0.15s;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.foilToggle:hover {
+	border-color: #a78bfa;
+	color: #a78bfa;
+}
+
+.foilToggleActive {
+	background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+	border-color: transparent;
+	color: #fff;
+}
+
+.tagsField {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	background: var(--surface, rgba(255, 255, 255, 0.06));
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	padding: 6px 10px;
+	min-height: 38px;
+	transition: border-color 0.15s;
+}
+
+.tagsField:focus-within {
+	border-color: var(--primary);
+}
+
+.tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: var(--primary, #7c3aed);
+	color: #fff;
+	border-radius: 4px;
+	padding: 3px 8px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.tagRemove {
+	background: none;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	padding: 0;
+	font-size: 14px;
+	line-height: 1;
+	opacity: 0.7;
+}
+
+.tagRemove:hover {
+	opacity: 1;
+}
+
+.tagInput {
+	background: none;
+	border: none;
+	outline: none;
+	color: var(--foreground);
+	font-size: 14px;
+	flex: 1;
+	min-width: 80px;
+}
+
+.divider {
+	border: none;
+	border-top: 1px solid var(--border);
+	margin: 0;
+}
+
+.details {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.detailRow {
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
+	font-size: 14px;
+}
+
+.detailLabel {
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+	min-width: 52px;
+	flex-shrink: 0;
+}
+
+.detailValue {
+	color: var(--foreground);
+}
+
+.oracleText {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 14px;
+	color: var(--foreground);
+	margin-top: 4px;
+}
+
+.oracleLine {
+	margin: 0;
+	line-height: 1.5;
+}
+
+.flavorText {
+	font-size: 13px;
+	color: var(--text-muted);
+	font-style: italic;
+	margin: 0;
+	line-height: 1.5;
+}
+
+.keywords {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.keyword {
+	font-size: 12px;
+	font-weight: 500;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	padding: 2px 6px;
+	color: var(--text-muted);
+}
+
+.actions {
+	display: flex;
+	gap: 10px;
+	padding-top: 4px;
+}
+
+.removeBtn {
+	background: none;
+	color: #ef4444;
+	border: 1px solid #ef4444;
+	border-radius: 8px;
+	padding: 9px 18px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+
+.removeBtn:hover {
+	background: #ef4444;
+	color: #fff;
+}
+
+@media (max-width: 640px) {
+	.layout {
+		flex-direction: column;
+		padding: 20px;
+	}
+
+	.imageCol {
+		width: 100%;
+		max-width: 200px;
+		align-self: center;
+	}
+
+	.form {
+		grid-template-columns: 1fr;
+	}
+
+	.fieldFull {
+		grid-column: 1;
+	}
+}

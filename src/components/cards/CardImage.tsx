@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { getScryfallCardImageUriBySize } from '@/lib/scryfall/scryfall-query';
+import { useLocalizedImage } from '@/hooks/useLocalizedImage';
 import styles from './CardImage.module.css';
 
 type CardImageCard = {
 	name: string;
+	set: string;
+	collector_number: string;
+	language?: string;
 	image_uris?: { small?: string; normal?: string; large?: string };
 	card_faces?: Array<{
 		name?: string;
@@ -38,12 +42,32 @@ export function CardImage({
 	const [currentFace, setCurrentFace] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const el = containerRef.current;
+		if (!el) return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) setIsVisible(true);
+			},
+			{ rootMargin: '200px' }
+		);
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, []);
+
+	const localized = useLocalizedImage(card, priority || isVisible);
+	const effectiveCard = localized ? { ...card, ...localized } : card;
 
 	const isDoubleFaced =
-		card.card_faces && card.card_faces.length > 1 && card.card_faces[0].image_uris;
+		effectiveCard.card_faces &&
+		effectiveCard.card_faces.length > 1 &&
+		effectiveCard.card_faces[0].image_uris;
 	const imageUri = isDoubleFaced
-		? (card.card_faces![currentFace].image_uris?.[size] ?? '')
-		: getScryfallCardImageUriBySize(card, size);
+		? (effectiveCard.card_faces![currentFace].image_uris?.[size] ?? '')
+		: getScryfallCardImageUriBySize(effectiveCard, size);
 
 	const { width, height } = sizeMap[size];
 
@@ -59,7 +83,7 @@ export function CardImage({
 		.join(' ');
 
 	return (
-		<div className={classNames} onClick={onClick}>
+		<div ref={containerRef} className={classNames} onClick={onClick}>
 			<div className={styles.imageWrapper}>
 				{!error && imageUri ? (
 					<Image

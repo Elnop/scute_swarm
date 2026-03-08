@@ -35,8 +35,14 @@ function migrateEntry(raw: unknown): CollectionEntry {
 		quantity: (flat.quantity as number) ?? 1,
 		dateAdded: (flat.dateAdded as string) ?? new Date().toISOString(),
 		isFoil: flat.isFoil as boolean | undefined,
+		foilType: flat.foilType as 'foil' | 'etched' | undefined,
 		condition: flat.condition as string | undefined,
+		language: flat.language as string | undefined,
 		tags: flat.tags as string[] | undefined,
+		purchasePrice: flat.purchasePrice as string | undefined,
+		tradelistCount: flat.tradelistCount as number | undefined,
+		alter: flat.alter as boolean | undefined,
+		proxy: flat.proxy as boolean | undefined,
 	};
 }
 
@@ -153,6 +159,15 @@ export function useCollection() {
 		[collection]
 	);
 
+	const updateEntry = useCallback((cardId: string, updates: Partial<CollectionEntry>) => {
+		const current = getSnapshot();
+		if (!current[cardId]) return;
+		saveCollection({
+			...current,
+			[cardId]: { ...current[cardId], ...updates },
+		});
+	}, []);
+
 	const clearCollection = useCallback(() => {
 		saveCollection({});
 	}, []);
@@ -189,6 +204,7 @@ export function useCollection() {
 		addCard,
 		removeCard,
 		decrementCard,
+		updateEntry,
 		getQuantity,
 		clearCollection,
 		importCards,

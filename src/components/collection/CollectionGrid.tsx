@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import type { Card } from '@/types/card';
 import { CardImage } from '@/components/cards/CardImage';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
@@ -12,6 +11,7 @@ const PAGE_SIZE = 48;
 export interface CollectionGridProps {
 	entries: Card[];
 	onDecrement: (cardId: string) => void;
+	onCardClick: (card: Card) => void;
 	isLoading?: boolean;
 	totalExpected?: number;
 }
@@ -19,10 +19,10 @@ export interface CollectionGridProps {
 export function CollectionGrid({
 	entries,
 	onDecrement,
+	onCardClick,
 	isLoading,
 	totalExpected,
 }: CollectionGridProps) {
-	const router = useRouter();
 	const [{ visibleCount, trackedLength }, setPagination] = useState({
 		visibleCount: PAGE_SIZE,
 		trackedLength: entries.length,
@@ -50,11 +50,7 @@ export function CollectionGrid({
 			{visibleEntries.map((entry) => (
 				<div key={entry.id} className={styles.item}>
 					<div className={styles.imageWrapper}>
-						<CardImage
-							card={entry}
-							size="normal"
-							onClick={() => router.push(`/card/${entry.id}`)}
-						/>
+						<CardImage card={entry} size="normal" onClick={() => onCardClick(entry)} />
 						{(entry.quantity ?? 0) > 1 && <span className={styles.badge}>x{entry.quantity}</span>}
 						<button
 							type="button"
