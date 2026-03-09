@@ -58,9 +58,7 @@ function CardCollectionModalInner({ card, onClose, onSave, onRemove, onChangePri
 	}
 
 	function handleRemove() {
-		if (confirm(`Remove "${card.name}" from your collection?`)) {
-			onRemove(card.id);
-		}
+		onRemove(card.id);
 	}
 
 	function handleTagKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -88,7 +86,13 @@ function CardCollectionModalInner({ card, onClose, onSave, onRemove, onChangePri
 
 	return (
 		<>
-			<div className={styles.overlay} onClick={onClose}>
+			<div
+				className={styles.overlay}
+				onClick={(e) => {
+					e.stopPropagation();
+					onClose();
+				}}
+			>
 				<div className={styles.modal} onClick={(e) => e.stopPropagation()}>
 					<button className={styles.closeIcon} onClick={onClose} aria-label="Close" type="button">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">

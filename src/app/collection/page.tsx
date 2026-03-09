@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useCollection } from '@/hooks/useCollection';
 import { useCollectionCards } from '@/hooks/useCollectionCards';
-import { useMoxfieldImport } from '@/hooks/useMoxfieldImport';
+import { useImportContext } from '@/contexts/ImportContext';
 import { useCollectionFilters, defaultCollectionFilters } from '@/hooks/useCollectionFilters';
 import type { CollectionFilters } from '@/hooks/useCollectionFilters';
 import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
 import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
 import { CollectionGrid } from '@/components/collection/CollectionGrid';
 import { CollectionFiltersAside } from '@/components/collection/CollectionFiltersAside';
-import { ImportSummaryModal } from '@/components/collection/ImportSummaryModal';
+import { ImportPreviewModal } from '@/components/collection/ImportPreviewModal';
 import { CardCollectionModal } from '@/components/collection/CardCollectionModal';
 import { Button } from '@/components/ui/Button';
 import { putCardsInCache } from '@/lib/card-cache';
@@ -49,13 +49,27 @@ export default function CollectionPage() {
 		removeCard,
 		updateEntry,
 		changePrint,
-		importCards,
 		clearCollection,
 	} = useCollection();
 	const { cards, isLoading: isHydrating, totalExpected } = useCollectionCards(entries);
-	const { status, result, importFile, reset } = useMoxfieldImport(importCards);
+	const {
+		status,
+		progress,
+		preview,
+		fetchedCards,
+		isLoadingPreview,
+		openModal,
+		selectFile,
+		submitText,
+		changeFormat,
+		confirm: confirmImport,
+		cancel,
+		reset,
+		updateRow,
+		removeRow,
+		formatRegistry,
+	} = useImportContext();
 	const { sets, isLoading: setsLoading } = useScryfallSets();
-	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 	const [pendingScryfallCard, setPendingScryfallCard] = useState<ScryfallCard | null>(null);
@@ -98,22 +112,12 @@ export default function CollectionPage() {
 		downloadCSV(serializeToMoxfieldCSV(cards), 'my-collection.csv');
 	}
 
-	function handleImportClick() {
-		fileInputRef.current?.click();
-	}
-
-	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-		const file = e.target.files?.[0];
-		if (!file) return;
-		void importFile(file);
-		e.target.value = '';
-	}
-
 	if (!isLoaded) {
 		return <div className={styles.page} />;
 	}
 
-	const isBusy = status === 'parsing' || status === 'fetching' || status === 'merging';
+	const isImporting = status === 'fetching' || status === 'merging';
+	const isBusy = status === 'previewing' || isImporting;
 
 	return (
 		<div className={styles.page}>
@@ -153,24 +157,25 @@ export default function CollectionPage() {
 									</Button>
 								</>
 							)}
-							<Button variant="primary" onClick={handleImportClick} disabled={isBusy}>
-								{isBusy ? 'Importing…' : 'Import CSV'}
+							<Button variant="primary" onClick={openModal} disabled={isBusy}>
+								{isBusy ? 'Importing…' : 'Import'}
 							</Button>
 						</div>
 					</div>
 
-					<input
-						ref={fileInputRef}
-						type="file"
-						accept=".csv"
-						className={styles.fileInput}
-						onChange={handleFileChange}
-					/>
-
-					{entries.length === 0 ? (
+					{isImporting ? (
+						<div className={styles.importingOverlay}>
+							<div className={styles.spinner} />
+							<p className={styles.importingText}>
+								{status === 'fetching'
+									? `Récupération des cartes…${progress.total > 0 ? ` (${progress.current}/${progress.total})` : ''}`
+									: 'Ajout à la collection…'}
+							</p>
+						</div>
+					) : entries.length === 0 ? (
 						<div className={styles.emptyState}>
 							<h2>Your collection is empty</h2>
-							<p>Search for cards or import a Moxfield CSV to get started.</p>
+							<p>Search for cards or import a collection file to get started.</p>
 							<Link href="/search">
 								<Button variant="primary">Search for cards</Button>
 							</Link>
@@ -187,7 +192,25 @@ export default function CollectionPage() {
 				</main>
 			</div>
 
-			<ImportSummaryModal status={status} result={result} onClose={reset} />
+			<ImportPreviewModal
+				isOpen={status === 'selecting' || status === 'previewing'}
+				preview={preview}
+				formatRegistry={formatRegistry}
+				fetchedCards={fetchedCards}
+				isLoadingPreview={isLoadingPreview}
+				sets={sets}
+				setsLoading={setsLoading}
+				onFileSelect={selectFile}
+				onTextSubmit={submitText}
+				onChangeFormat={changeFormat}
+				onConfirm={async () => {
+					await confirmImport();
+					reset();
+				}}
+				onCancel={cancel}
+				onUpdateRow={updateRow}
+				onRemoveRow={removeRow}
+			/>
 			<CardCollectionModal
 				card={selectedCard}
 				onClose={() => {

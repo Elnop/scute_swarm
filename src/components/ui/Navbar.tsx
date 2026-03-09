@@ -3,13 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCollection } from '@/hooks/useCollection';
+import { useImportContext } from '@/contexts/ImportContext';
 import styles from './Navbar.module.css';
 
 export function Navbar() {
 	const pathname = usePathname();
 	const { entries } = useCollection();
+	const { status } = useImportContext();
 
 	const totalCollectionCards = entries.reduce((sum, e) => sum + e.quantity, 0);
+	const isImporting = status === 'fetching' || status === 'merging';
 
 	return (
 		<header className={styles.navbar}>
@@ -28,6 +31,7 @@ export function Navbar() {
 					className={`${styles.navLink} ${pathname === '/collection' ? styles.navLinkActive : ''}`}
 				>
 					Collection
+					{isImporting && <span className={styles.spinner} />}
 					{totalCollectionCards > 0 && <span className={styles.badge}>{totalCollectionCards}</span>}
 				</Link>
 			</nav>

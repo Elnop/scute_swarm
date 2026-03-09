@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import type { Card } from '@/types/card';
-import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
+import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import type {
 	ScryfallSortOrder,
 	ScryfallSortDir,
 } from '@/lib/scryfall/hooks/useScryfallCardSearch';
 
 export interface CollectionFilters {
+	name: string;
 	colors: ScryfallColor[];
 	colorMatch: 'exact' | 'include' | 'atMost';
 	type: string;
@@ -19,6 +19,7 @@ export interface CollectionFilters {
 }
 
 export const defaultCollectionFilters: CollectionFilters = {
+	name: '',
 	colors: [],
 	colorMatch: 'include',
 	type: '',
@@ -81,7 +82,7 @@ function matchColors(
 	}
 }
 
-function getSortValue(card: Card, order: ScryfallSortOrder): string | number {
+function getSortValue(card: ScryfallCard, order: ScryfallSortOrder): string | number {
 	switch (order) {
 		case 'name':
 			return card.name.toLowerCase();
@@ -125,11 +126,16 @@ function getSortValue(card: Card, order: ScryfallSortOrder): string | number {
 	}
 }
 
-export function useCollectionFilters(cards: Card[], filters: CollectionFilters): Card[] {
+export function useCollectionFilters<T extends ScryfallCard>(
+	cards: T[],
+	filters: CollectionFilters
+): T[] {
 	return useMemo(() => {
 		const cmcTest = parseCmc(filters.cmc);
 
 		let filtered = cards.filter((card) => {
+			if (filters.name && !card.name.toLowerCase().includes(filters.name.toLowerCase()))
+				return false;
 			if (!matchColors(card.colors, filters.colors, filters.colorMatch)) return false;
 			if (filters.type && !card.type_line.toLowerCase().includes(filters.type.toLowerCase()))
 				return false;

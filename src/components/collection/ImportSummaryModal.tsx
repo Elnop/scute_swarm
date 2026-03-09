@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { ImportResult } from '@/lib/moxfield/types';
-import type { ImportStatus } from '@/hooks/useMoxfieldImport';
+import type { ImportResult } from '@/lib/import/types';
+import type { ImportStatus } from '@/hooks/useImport';
 import styles from './ImportSummaryModal.module.css';
 
 interface Props {

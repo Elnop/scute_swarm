@@ -1,0 +1,472 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.modal {
+	background: var(--card-bg, #1a1a2e);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 32px;
+	max-width: 520px;
+	width: 90%;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.modalWide {
+	max-width: 720px;
+}
+
+.title {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--foreground);
+	margin: 0;
+}
+
+/* Tabs */
+
+.tabs {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid var(--border);
+}
+
+.tab {
+	flex: 1;
+	padding: 8px 16px;
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	color: var(--text-muted);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	transition:
+		color 0.15s,
+		border-color 0.15s;
+}
+
+.tab:hover {
+	color: var(--foreground);
+}
+
+.tabActive {
+	color: var(--primary);
+	border-bottom-color: var(--primary);
+}
+
+/* Textarea */
+
+.textarea {
+	width: 100%;
+	min-height: 160px;
+	padding: 12px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--foreground);
+	font-family: monospace;
+	font-size: 13px;
+	line-height: 1.5;
+	resize: vertical;
+}
+
+.textarea::placeholder {
+	color: var(--text-muted);
+	opacity: 0.5;
+}
+
+.textarea:focus {
+	outline: none;
+	border-color: var(--primary);
+}
+
+/* Step 1: File selection */
+
+.dropZone {
+	border: 2px dashed var(--border);
+	border-radius: 12px;
+	padding: 40px 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	cursor: pointer;
+	transition:
+		border-color 0.15s,
+		background 0.15s;
+}
+
+.dropZone:hover,
+.dropZoneDragging {
+	border-color: var(--primary);
+	background: rgba(255, 255, 255, 0.03);
+}
+
+.dropText {
+	font-size: 14px;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.dropHint {
+	font-size: 12px;
+	color: var(--text-muted);
+	opacity: 0.6;
+}
+
+.hiddenInput {
+	display: none;
+}
+
+/* Step 2: Preview */
+
+.fileInfo {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	background: rgba(255, 255, 255, 0.04);
+	border-radius: 8px;
+}
+
+.fileName {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--foreground);
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.fileSize {
+	font-size: 12px;
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.formatRow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.formatLabel {
+	font-size: 13px;
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.formatSelect {
+	flex: 1;
+	padding: 6px 10px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--card-bg, #1a1a2e);
+	color: var(--foreground);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.previewStats {
+	display: flex;
+	gap: 24px;
+	font-size: 14px;
+}
+
+.previewStat {
+	color: var(--foreground);
+}
+
+.previewStatValue {
+	font-weight: 700;
+	color: var(--primary);
+}
+
+.previewStatWarn {
+	font-weight: 700;
+	color: #f59e0b;
+}
+
+.errors {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.errorToggle {
+	background: none;
+	border: none;
+	padding: 0;
+	font-size: 13px;
+	color: #f59e0b;
+	cursor: pointer;
+	text-align: left;
+}
+
+.errorToggle:hover {
+	text-decoration: underline;
+}
+
+.errorList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-height: 160px;
+	overflow-y: auto;
+}
+
+.errorList li {
+	font-size: 12px;
+	color: var(--text-muted);
+	padding: 4px 8px;
+	background: rgba(255, 255, 255, 0.04);
+	border-radius: 4px;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+}
+
+/* Search + filter row */
+
+.searchRow {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.searchRow > *:first-child {
+	flex: 1;
+}
+
+.filterButton {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 14px;
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	color: var(--text-muted);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	white-space: nowrap;
+	transition:
+		background 0.15s,
+		color 0.15s,
+		border-color 0.15s;
+}
+
+.filterButton:hover {
+	background: rgba(255, 255, 255, 0.1);
+	color: var(--foreground);
+	border-color: var(--primary);
+}
+
+.filterBadge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	font-size: 11px;
+	font-weight: 700;
+	color: #fff;
+	background: var(--primary);
+	border-radius: 9px;
+}
+
+.resultCount {
+	font-size: 12px;
+	color: var(--text-muted);
+}
+
+/* View toggle */
+
+.viewToggle {
+	display: flex;
+	gap: 0;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	overflow: hidden;
+	align-self: flex-start;
+}
+
+.toggleBtn {
+	padding: 6px 16px;
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+
+.toggleBtn:hover {
+	color: var(--foreground);
+}
+
+.toggleBtnActive {
+	background: var(--primary);
+	color: #fff;
+}
+
+/* Preview table */
+
+.tableContainer {
+	max-height: 300px;
+	overflow-y: auto;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+}
+
+.previewTable {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.previewTable th {
+	position: sticky;
+	top: 0;
+	background: var(--card-bg, #1a1a2e);
+	padding: 8px 12px;
+	text-align: left;
+	font-weight: 600;
+	color: var(--text-muted);
+	font-size: 12px;
+	border-bottom: 1px solid var(--border);
+}
+
+.previewTable td {
+	padding: 6px 12px;
+	color: var(--foreground);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.previewTable tr:nth-child(even) td {
+	background: rgba(255, 255, 255, 0.02);
+}
+
+/* Preview grid — mirrors CollectionGrid layout */
+
+.gridContainer {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.previewGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 16px;
+	width: 100%;
+}
+
+.gridItem {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.gridImageWrapper {
+	position: relative;
+}
+
+.gridBadge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 700;
+	color: white;
+	background: var(--primary);
+	border-radius: 14px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1;
+}
+
+.gridCardName {
+	font-size: 13px;
+	color: var(--foreground);
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Clickable rows & items */
+
+.clickableRow {
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.clickableRow:hover td {
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.gridItemClickable {
+	cursor: pointer;
+	border-radius: 8px;
+	transition: transform 0.15s;
+}
+
+.gridItemClickable:hover {
+	transform: scale(1.03);
+}
+
+/* Skeleton loading */
+
+.skeletonImage {
+	width: 100%;
+	aspect-ratio: 63 / 88;
+	border-radius: 8px;
+	background: var(--border);
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonName {
+	height: 13px;
+	width: 70%;
+	margin: 0 auto;
+	border-radius: 4px;
+	background: var(--border);
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
