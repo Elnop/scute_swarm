@@ -100,7 +100,8 @@ export default function CollectionPage() {
 		(filters.order !== 'name' || filters.dir !== 'auto' ? 1 : 0) +
 		filters.rarities.length +
 		(filters.oracleText ? 1 : 0) +
-		(filters.cmc ? 1 : 0);
+		(filters.cmc ? 1 : 0) +
+		(filters.name ? 1 : 0);
 
 	function handleClearCollection() {
 		if (confirm('Effacer toute la collection ? Cette action est irréversible.')) {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { ScryfallColor, ScryfallSet } from '@/lib/scryfall/types/scryfall';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
+import { SearchBar } from '@/components/search/SearchBar';
 import { ColorFilter } from '@/components/search/ColorFilter';
 import { RarityFilter } from '@/components/search/RarityFilter';
 import { TypeFilter } from '@/components/search/TypeFilter';
@@ -80,6 +81,12 @@ export function CollectionFiltersAside({
 						✕
 					</button>
 				</div>
+
+				<SearchBar
+					value={filters.name}
+					onChange={(v) => patch('name', v)}
+					placeholder="Rechercher par nom..."
+				/>
 
 				<ColorFilter
 					selected={filters.colors}
