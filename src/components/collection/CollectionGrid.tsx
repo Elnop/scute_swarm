@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Card } from '@/types/card';
+import type { Card } from '@/types/cards';
 import { CardImage } from '@/components/cards/CardImage';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import styles from './CollectionGrid.module.css';

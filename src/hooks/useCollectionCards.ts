@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getCardCollection } from '@/lib/scryfall/endpoints/cards';
 import { getCardsFromCache, putCardsInCache } from '@/lib/card-cache';
-import type { CollectionStack, Card } from '@/types/card';
+import type { CollectionStack, Card } from '@/types/cards';
 
 const BATCH_SIZE = 75;
 

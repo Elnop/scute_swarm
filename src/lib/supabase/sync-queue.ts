@@ -1,4 +1,4 @@
-import type { StackMeta } from '@/types/card';
+import type { StackMeta } from '@/types/cards';
 
 const QUEUE_KEY = 'mtg-snap-sync-queue';
 

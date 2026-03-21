@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useMemo } from 'react';
 import type { ImportFormatId, ImportFormatDescriptor, ParsedImportRow } from '@/lib/import/types';
 import type { ImportPreview } from '@/lib/import/hooks/useImport';
 import type { ScryfallCard, ScryfallSet } from '@/lib/scryfall/types/scryfall';
-import type { Card, StackMeta } from '@/types/card';
+import type { Card, StackMeta } from '@/types/cards';
 import { useCollectionFilters, defaultCollectionFilters } from '@/hooks/useCollectionFilters';
 import type { CollectionFilters } from '@/hooks/useCollectionFilters';
 import { SearchBar } from '@/components/search/SearchBar';

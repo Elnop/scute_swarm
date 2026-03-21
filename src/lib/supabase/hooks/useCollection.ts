@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import type { CollectionStack, StackMeta } from '@/types/card';
+import type { CollectionStack, StackMeta } from '@/types/cards';
 import { fetchCollection } from '@/lib/supabase/collection';
 import { enqueue, clearQueue } from '@/lib/supabase/sync-queue';
 

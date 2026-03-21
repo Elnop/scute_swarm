@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { putCardsInCache } from '@/lib/card-cache';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { SCRYFALL_CODE_TO_LANGUAGE } from '@/lib/mtg/languages';
-import type { Card, StackMeta, CollectionStats } from '@/types/card';
+import type { Card, StackMeta, CollectionStats } from '@/types/cards';
 import styles from './page.module.css';
 
 function computeStats(cards: Card[]): CollectionStats {

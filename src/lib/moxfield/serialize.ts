@@ -1,4 +1,4 @@
-import type { Card } from '@/types/card';
+import type { Card } from '@/types/cards';
 import { MOXFIELD_CSV_HEADERS } from './types';
 
 function quoteField(value: string): string {

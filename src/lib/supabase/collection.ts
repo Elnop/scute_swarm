@@ -1,4 +1,4 @@
-import type { CollectionStack, StackMeta } from '@/types/card';
+import type { CollectionStack, StackMeta } from '@/types/cards';
 import { createClient } from './client';
 
 const CONDITION_MAP: Record<string, string> = {

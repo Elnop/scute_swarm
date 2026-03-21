@@ -2,7 +2,7 @@ import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 
 // Per-copy metadata — fields persisted per row in the DB
 export interface StackMeta {
-	dateAdded: string; // ISO timestamp
+	dateAdded: string;
 	isFoil?: boolean;
 	foilType?: 'foil' | 'etched';
 	condition?: string;

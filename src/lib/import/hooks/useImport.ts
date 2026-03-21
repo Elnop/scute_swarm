@@ -11,7 +11,7 @@ import type {
 	ImportResult,
 } from '@/lib/import/types';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import type { StackMeta } from '@/types/card';
+import type { StackMeta } from '@/types/cards';
 
 export type ImportStatus =
 	| 'idle'

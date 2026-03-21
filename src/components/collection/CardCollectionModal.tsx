@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Card, StackMeta } from '@/types/card';
+import type { Card, StackMeta } from '@/types/cards';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { CardImage } from '@/components/cards/CardImage';
 import { MTG_LANGUAGES } from '@/lib/mtg/languages';
