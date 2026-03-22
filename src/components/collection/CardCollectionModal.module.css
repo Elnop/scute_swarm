@@ -54,29 +54,6 @@
 	border-radius: 8px;
 }
 
-.changePrintBtn {
-	display: block;
-	width: 100%;
-	margin-top: 10px;
-	background: var(--surface, rgba(255, 255, 255, 0.06));
-	border: 1px solid var(--border);
-	border-radius: 8px;
-	color: var(--foreground);
-	font-size: 13px;
-	font-weight: 600;
-	padding: 8px 12px;
-	cursor: pointer;
-	transition:
-		background 0.15s,
-		border-color 0.15s;
-	text-align: center;
-}
-
-.changePrintBtn:hover {
-	background: var(--surface-hover, rgba(255, 255, 255, 0.1));
-	border-color: var(--primary, #7c3aed);
-}
-
 .infoCol {
 	flex: 1;
 	display: flex;
@@ -401,29 +378,157 @@
 	color: var(--text-muted);
 }
 
-.actions {
-	display: flex;
-	gap: 10px;
-	padding-top: 4px;
+.removeAllBtn {
+	align-self: flex-start;
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	font-size: 12px;
+	font-weight: 500;
+	padding: 2px 0;
+	cursor: pointer;
+	transition: color 0.15s;
 }
 
-.removeBtn {
-	background: none;
+.removeAllBtn:hover {
 	color: #ef4444;
-	border: 1px solid #ef4444;
-	border-radius: 8px;
-	padding: 9px 18px;
-	font-size: 14px;
+}
+
+.copiesSection {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.copiesHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.copiesTitle {
+	font-size: 12px;
 	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+}
+
+.addCopyBtn {
+	background: var(--surface, rgba(255, 255, 255, 0.06));
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	color: var(--foreground);
+	font-size: 16px;
+	font-weight: 600;
+	width: 26px;
+	height: 26px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	cursor: pointer;
+	transition: background 0.15s;
+	flex-shrink: 0;
+}
+
+.addCopyBtn:hover {
+	background: var(--surface-hover, rgba(255, 255, 255, 0.12));
+}
+
+.copiesList {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.copyRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 7px 10px;
+	border-radius: 6px;
+	border: 1px solid var(--border);
+	background: var(--surface);
+	cursor: pointer;
+	transition: border-color 0.15s;
+}
+
+.copyRow:hover {
+	border-color: var(--primary);
+}
+
+.copyRowActive {
+	border-color: var(--primary);
+	background: rgba(124, 58, 237, 0.1);
+}
+
+.copyInfo {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex: 1;
+	min-width: 0;
+	flex-wrap: wrap;
+}
+
+.copyBadge {
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--text-muted);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	padding: 1px 5px;
+}
+
+.copyBadgeFoil {
+	font-size: 12px;
+	color: #a78bfa;
+}
+
+.copyActions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+.copyEditBtn {
+	background: none;
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	color: var(--text-muted);
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+	padding: 2px 7px;
 	transition:
-		background 0.15s,
+		border-color 0.15s,
 		color 0.15s;
 }
 
-.removeBtn:hover {
-	background: #ef4444;
-	color: #fff;
+.copyEditBtn:hover {
+	border-color: var(--primary);
+	color: var(--foreground);
+}
+
+.copyRemoveBtn {
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	cursor: pointer;
+	font-size: 16px;
+	padding: 0 4px;
+	transition: color 0.15s;
+	flex-shrink: 0;
+}
+
+.copyRemoveBtn:hover {
+	color: #ef4444;
 }
 
 @media (max-width: 640px) {

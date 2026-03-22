@@ -523,6 +523,7 @@ export function ImportPreviewModal({
 				onClose={() => setSelectedCardId(null)}
 				onSave={handleEditSave}
 				onRemove={handleEditRemove}
+				onRemoveEntry={() => {}}
 			/>
 		</div>
 	);

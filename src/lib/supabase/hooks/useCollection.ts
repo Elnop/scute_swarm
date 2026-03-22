@@ -335,6 +335,21 @@ export function useCollection(
 		[userId, triggerSync]
 	);
 
+	const removeEntry = useCallback(
+		(rowId: string) => {
+			const current = getSnapshot();
+			if (!current[rowId]) return;
+			const next = { ...current };
+			delete next[rowId];
+			saveCollection(next);
+			if (userId) {
+				enqueue({ type: 'delete', payload: { userId, rowId } });
+				triggerSync();
+			}
+		},
+		[userId, triggerSync]
+	);
+
 	const clearCollection = useCallback(() => {
 		const current = getSnapshot();
 		saveCollection({});
@@ -384,6 +399,7 @@ export function useCollection(
 		isLoaded,
 		addCard,
 		removeCard,
+		removeEntry,
 		decrementCard,
 		updateEntry,
 		changePrint,

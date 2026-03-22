@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { getCardCollection } from '@/lib/scryfall/endpoints/cards';
 import { getCardsFromCache, putCardsInCache } from '@/lib/card-cache';
 import type { Card, CardStack } from '@/types/cards';
 import type { CardEntry } from '@/types/cards';
+import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 
 const BATCH_SIZE = 75;
 
@@ -23,15 +24,28 @@ function groupByName(cards: Card[]): CardStack[] {
 	return Array.from(map.entries()).map(([name, cards]) => ({ name, cards }));
 }
 
+function buildCards(entries: StoredCopy[], scryfallMap: Map<string, ScryfallCard>): Card[] {
+	const result: Card[] = [];
+	for (const copy of entries) {
+		const scryfallCard = scryfallMap.get(copy.scryfallId);
+		if (scryfallCard) {
+			result.push({ ...scryfallCard, entry: copy.entry });
+		}
+	}
+	return result;
+}
+
 export function useCollectionCards(entries: StoredCopy[]): {
 	stacks: CardStack[];
 	isLoading: boolean;
 	totalExpected: number;
 } {
-	const [cards, setCards] = useState<Card[]>([]);
+	// scryfallMap is the source of truth for hydrated Scryfall data
+	const scryfallMapRef = useRef<Map<string, ScryfallCard>>(new Map());
+	const [scryfallMap, setScryfallMap] = useState<Map<string, ScryfallCard>>(new Map());
 	const [isLoading, setIsLoading] = useState(false);
 
-	// Stable key representing the current set of scryfallIds — only re-fetch on actual changes
+	// Only re-fetch when the set of unique scryfallIds changes
 	const idsKey = useMemo(
 		() => [...new Set(entries.map((e) => e.scryfallId))].sort().join(','),
 		[entries]
@@ -39,7 +53,8 @@ export function useCollectionCards(entries: StoredCopy[]): {
 
 	useEffect(() => {
 		if (entries.length === 0) {
-			setCards([]);
+			scryfallMapRef.current = new Map();
+			setScryfallMap(new Map());
 			setIsLoading(false);
 			return;
 		}
@@ -48,43 +63,30 @@ export function useCollectionCards(entries: StoredCopy[]): {
 		setIsLoading(true);
 
 		async function hydrate() {
-			// Unique scryfallIds to fetch
 			const uniqueIds = [...new Set(entries.map((e) => e.scryfallId))];
 
-			// Phase 1: read from IndexedDB cache (~20-50ms)
+			// Phase 1: read from IndexedDB cache
 			const cachedMap = await getCardsFromCache(uniqueIds);
 			if (cancelledRef.current) return;
 
 			const missIds = uniqueIds.filter((id) => !cachedMap.has(id));
 
-			// Build Card[] from cache hits — one Card per physical copy
-			function buildCards(
-				scryfallMap: Map<string, import('@/lib/scryfall/types/scryfall').ScryfallCard>
-			): Card[] {
-				const result: Card[] = [];
-				for (const copy of entries) {
-					const scryfallCard = scryfallMap.get(copy.scryfallId);
-					if (scryfallCard) {
-						result.push({ ...scryfallCard, entry: copy.entry });
-					}
-				}
-				return result;
-			}
+			// Merge cache hits into the running map and publish
+			const merged = new Map([...scryfallMapRef.current, ...cachedMap]);
 
-			const cachedCards = buildCards(cachedMap);
-
-			// If everything is cached, we're done
 			if (missIds.length === 0) {
 				if (!cancelledRef.current) {
-					setCards(cachedCards);
+					scryfallMapRef.current = merged;
+					setScryfallMap(merged);
 					setIsLoading(false);
 				}
 				return;
 			}
 
-			// Show cached cards immediately while fetching the rest
-			if (cachedCards.length > 0 && !cancelledRef.current) {
-				setCards(cachedCards);
+			// Publish cache hits immediately so the UI can show them while we fetch
+			if (cachedMap.size > 0 && !cancelledRef.current) {
+				scryfallMapRef.current = merged;
+				setScryfallMap(merged);
 			}
 
 			// Phase 2: fetch only the cache misses from the network
@@ -97,7 +99,7 @@ export function useCollectionCards(entries: StoredCopy[]): {
 			const settled = await Promise.allSettled(chunks.map((chunk) => getCardCollection(chunk)));
 			if (cancelledRef.current) return;
 
-			const fetchedScryfallCards: import('@/lib/scryfall/types/scryfall').ScryfallCard[] = [];
+			const fetchedScryfallCards: ScryfallCard[] = [];
 			for (const result of settled) {
 				if (result.status === 'rejected') {
 					console.error('[useCollectionCards] batch failed:', result.reason);
@@ -111,11 +113,11 @@ export function useCollectionCards(entries: StoredCopy[]): {
 			void putCardsInCache(fetchedScryfallCards);
 
 			const fetchedMap = new Map(fetchedScryfallCards.map((c) => [c.id, c]));
-			const allMap = new Map([...cachedMap, ...fetchedMap]);
-			const mergedCards = buildCards(allMap);
+			const allMap = new Map([...merged, ...fetchedMap]);
 
 			if (!cancelledRef.current) {
-				setCards(mergedCards);
+				scryfallMapRef.current = allMap;
+				setScryfallMap(allMap);
 				setIsLoading(false);
 			}
 		}
@@ -132,6 +134,9 @@ export function useCollectionCards(entries: StoredCopy[]): {
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [idsKey]);
+
+	// Re-derive cards whenever entries OR the scryfallMap changes
+	const cards = useMemo(() => buildCards(entries, scryfallMap), [entries, scryfallMap]);
 
 	const stacks = useMemo(() => groupByName(cards), [cards]);
 

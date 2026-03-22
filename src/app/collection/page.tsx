@@ -49,6 +49,7 @@ export default function CollectionPage() {
 		addCard,
 		decrementCard,
 		removeCard,
+		removeEntry,
 		updateEntry,
 		changePrint,
 		clearCollection,
@@ -152,6 +153,8 @@ export default function CollectionPage() {
 			decrementCard(resolvedStack.cards[0].id);
 		}
 	}, [resolvedStack, decrementCard]);
+
+	const handleRemoveEntry = useCallback((rowId: string) => removeEntry(rowId), [removeEntry]);
 
 	const handleChangePrint = useCallback(
 		(oldScryfallId: string, newCard: ScryfallCard) => {
@@ -291,6 +294,7 @@ export default function CollectionPage() {
 				onClose={handleCloseModal}
 				onSave={handleSaveModal}
 				onRemove={handleRemoveModal}
+				onRemoveEntry={handleRemoveEntry}
 				onIncrement={handleIncrementModal}
 				onDecrement={handleDecrementModal}
 				onChangePrint={handleChangePrint}
