@@ -172,7 +172,7 @@ export default function CollectionPage() {
 				}
 			}
 			// Update selected stack to new card name
-			setSelectedStack({ name: newCard.name, cards: [] });
+			setSelectedStack({ oracleId: newCard.oracle_id, name: newCard.name, cards: [] });
 		},
 		[changePrint, updateEntry, resolvedStack]
 	);

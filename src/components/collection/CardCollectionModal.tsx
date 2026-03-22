@@ -325,7 +325,7 @@ export function CardCollectionModal({
 	if (!stack || stack.cards.length === 0) return null;
 	return (
 		<CardCollectionModalInner
-			key={stack.name}
+			key={stack.oracleId}
 			stack={stack}
 			onClose={onClose}
 			onSave={onSave}

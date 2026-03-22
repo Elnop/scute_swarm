@@ -21,9 +21,10 @@ export interface CardEntry {
 // One copy in the collection = Scryfall print data + per-copy metadata
 export type Card = ScryfallCard & { entry: CardEntry };
 
-// All copies of a card with the same name (potentially different editions)
+// All copies of a card with the same oracle_id (potentially different editions)
 export interface CardStack {
-	name: string; // grouping key = card.name
+	oracleId: string; // stable grouping key
+	name: string; // display name (from first card in stack)
 	cards: Card[]; // copies — may be different editions
 }
 

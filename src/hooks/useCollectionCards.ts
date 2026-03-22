@@ -11,17 +11,22 @@ const BATCH_SIZE = 75;
 
 type StoredCopy = { scryfallId: string; entry: CardEntry };
 
-function groupByName(cards: Card[]): CardStack[] {
+function groupByOracleId(cards: Card[]): CardStack[] {
 	const map = new Map<string, Card[]>();
 	for (const card of cards) {
-		const existing = map.get(card.name);
+		const key = card.oracle_id;
+		const existing = map.get(key);
 		if (existing) {
 			existing.push(card);
 		} else {
-			map.set(card.name, [card]);
+			map.set(key, [card]);
 		}
 	}
-	return Array.from(map.entries()).map(([name, cards]) => ({ name, cards }));
+	return Array.from(map.entries()).map(([oracleId, cards]) => ({
+		oracleId,
+		name: cards[0].name,
+		cards,
+	}));
 }
 
 function buildCards(entries: StoredCopy[], scryfallMap: Map<string, ScryfallCard>): Card[] {
@@ -138,7 +143,7 @@ export function useCollectionCards(entries: StoredCopy[]): {
 	// Re-derive cards whenever entries OR the scryfallMap changes
 	const cards = useMemo(() => buildCards(entries, scryfallMap), [entries, scryfallMap]);
 
-	const stacks = useMemo(() => groupByName(cards), [cards]);
+	const stacks = useMemo(() => groupByOracleId(cards), [cards]);
 
 	return { stacks, isLoading, totalExpected: entries.length };
 }

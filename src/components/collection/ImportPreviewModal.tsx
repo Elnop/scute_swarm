@@ -178,7 +178,11 @@ export function ImportPreviewModal({
 	})();
 
 	const selectedImportStack: CardStack | null = selectedImportCard
-		? { name: selectedImportCard.name, cards: [selectedImportCard] }
+		? {
+				oracleId: selectedImportCard.oracle_id,
+				name: selectedImportCard.name,
+				cards: [selectedImportCard],
+			}
 		: null;
 
 	function handleEditSave(rowId: string, updates: Partial<CardEntry>) {

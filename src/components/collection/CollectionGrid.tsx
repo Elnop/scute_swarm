@@ -53,7 +53,7 @@ export function CollectionGrid({
 					if (!representative) return null;
 					const count = stack.cards.length;
 					return (
-						<div key={stack.name} className={styles.item}>
+						<div key={stack.oracleId} className={styles.item}>
 							<div className={styles.imageWrapper}>
 								<CardImage
 									card={representative}
