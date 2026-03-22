@@ -26,6 +26,7 @@ interface Props {
 	onSave: (rowId: string, updates: Partial<CardEntry>) => void;
 	onRemove: (scryfallId: string) => void;
 	onRemoveEntry: (rowId: string) => void;
+	onDuplicate?: (scryfallId: string, entry: CardEntry) => void;
 	onChangePrint?: (oldScryfallId: string, newCard: ScryfallCard) => void;
 	onIncrement?: () => void;
 	onDecrement?: () => void;
@@ -37,6 +38,7 @@ interface InnerProps {
 	onSave: (rowId: string, updates: Partial<CardEntry>) => void;
 	onRemove: (scryfallId: string) => void;
 	onRemoveEntry: (rowId: string) => void;
+	onDuplicate?: (scryfallId: string, entry: CardEntry) => void;
 	onChangePrint?: (oldScryfallId: string, newCard: ScryfallCard) => void;
 	onIncrement?: () => void;
 	onDecrement?: () => void;
@@ -48,6 +50,7 @@ function CardCollectionModalInner({
 	onSave,
 	onRemove,
 	onRemoveEntry,
+	onDuplicate,
 	onChangePrint,
 	onIncrement,
 }: InnerProps) {
@@ -135,77 +138,6 @@ function CardCollectionModalInner({
 								)}
 							</div>
 
-							{/* Copies list */}
-							<div className={styles.copiesSection}>
-								<div className={styles.copiesHeader}>
-									<span className={styles.copiesTitle}>Copies ({count})</span>
-									<button
-										type="button"
-										onClick={() => onIncrement?.()}
-										className={styles.addCopyBtn}
-										aria-label="Add copy"
-									>
-										+
-									</button>
-								</div>
-								<ul className={styles.copiesList}>
-									{stack.cards.map((card) => {
-										const isActive = card.entry.rowId === selectedRowId;
-										return (
-											<li
-												key={card.entry.rowId}
-												className={`${styles.copyRow} ${isActive ? styles.copyRowActive : ''}`}
-												onClick={() => setSelectedRowId(card.entry.rowId)}
-											>
-												<span className={styles.copyInfo}>
-													<span className={styles.copyBadge}>
-														{card.set.toUpperCase()} #{card.collector_number}
-													</span>
-													{card.entry.condition && (
-														<span className={styles.copyBadge}>{card.entry.condition}</span>
-													)}
-													{card.entry.isFoil && <span className={styles.copyBadgeFoil}>✦</span>}
-													{card.entry.language && card.entry.language !== 'English' && (
-														<span className={styles.copyBadge}>{card.entry.language}</span>
-													)}
-												</span>
-												<span className={styles.copyActions}>
-													<button
-														type="button"
-														className={styles.copyEditBtn}
-														onClick={(e) => {
-															e.stopPropagation();
-															setEditingRowId(card.entry.rowId);
-														}}
-														aria-label="Edit this copy"
-													>
-														Edit
-													</button>
-													<button
-														type="button"
-														className={styles.copyRemoveBtn}
-														onClick={(e) => {
-															e.stopPropagation();
-															handleRemoveCopy(card);
-														}}
-														aria-label="Remove this copy"
-													>
-														×
-													</button>
-												</span>
-											</li>
-										);
-									})}
-								</ul>
-								<button
-									type="button"
-									className={styles.removeAllBtn}
-									onClick={() => setConfirmRemoveAll(true)}
-								>
-									Remove all
-								</button>
-							</div>
-
 							<hr className={styles.divider} />
 
 							<div className={styles.details}>
@@ -268,6 +200,89 @@ function CardCollectionModalInner({
 									</span>
 								</div>
 							</div>
+
+							{/* Copies list */}
+							<div className={styles.copiesSection}>
+								<div className={styles.copiesHeader}>
+									<span className={styles.copiesTitle}>Copies ({count})</span>
+									<button
+										type="button"
+										onClick={() => onIncrement?.()}
+										className={styles.addCopyBtn}
+										aria-label="Add copy"
+									>
+										+
+									</button>
+								</div>
+								<ul className={styles.copiesList}>
+									{stack.cards.map((card) => {
+										const isActive = card.entry.rowId === selectedRowId;
+										return (
+											<li
+												key={card.entry.rowId}
+												className={`${styles.copyRow} ${isActive ? styles.copyRowActive : ''}`}
+												onClick={() => setSelectedRowId(card.entry.rowId)}
+											>
+												<span className={styles.copyInfo}>
+													<span className={styles.copyBadge}>
+														{card.set.toUpperCase()} #{card.collector_number}
+													</span>
+													{card.entry.condition && (
+														<span className={styles.copyBadge}>{card.entry.condition}</span>
+													)}
+													{card.entry.isFoil && <span className={styles.copyBadgeFoil}>✦</span>}
+													{card.entry.language && card.entry.language !== 'English' && (
+														<span className={styles.copyBadge}>{card.entry.language}</span>
+													)}
+												</span>
+												<span className={styles.copyActions}>
+													<button
+														type="button"
+														className={styles.copyEditBtn}
+														onClick={(e) => {
+															e.stopPropagation();
+															setEditingRowId(card.entry.rowId);
+														}}
+														aria-label="Edit this copy"
+													>
+														Edit
+													</button>
+													<button
+														type="button"
+														className={styles.copyEditBtn}
+														onClick={(e) => {
+															e.stopPropagation();
+															onDuplicate?.(card.id, card.entry);
+														}}
+														aria-label="Duplicate this copy"
+														title="Duplicate"
+													>
+														⧉
+													</button>
+													<button
+														type="button"
+														className={styles.copyRemoveBtn}
+														onClick={(e) => {
+															e.stopPropagation();
+															handleRemoveCopy(card);
+														}}
+														aria-label="Remove this copy"
+													>
+														×
+													</button>
+												</span>
+											</li>
+										);
+									})}
+								</ul>
+								<button
+									type="button"
+									className={styles.removeAllBtn}
+									onClick={() => setConfirmRemoveAll(true)}
+								>
+									Remove all
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -318,6 +333,7 @@ export function CardCollectionModal({
 	onSave,
 	onRemove,
 	onRemoveEntry,
+	onDuplicate,
 	onChangePrint,
 	onIncrement,
 	onDecrement,
@@ -331,6 +347,7 @@ export function CardCollectionModal({
 			onSave={onSave}
 			onRemove={onRemove}
 			onRemoveEntry={onRemoveEntry}
+			onDuplicate={onDuplicate}
 			onChangePrint={onChangePrint}
 			onIncrement={onIncrement}
 			onDecrement={onDecrement}

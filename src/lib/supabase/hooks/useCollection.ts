@@ -234,14 +234,37 @@ export function useCollection(
 			const newRowId = crypto.randomUUID();
 			const entry = newEntry(newRowId);
 			const next: CollectionData = {
-				...current,
 				[newRowId]: { scryfallId: card.id, entry },
+				...current,
 			};
 			saveCollection(next);
 			if (userId) {
 				enqueue({
 					type: 'insert',
 					payload: { userId, rowId: newRowId, scryfallId: card.id, entry },
+				});
+				triggerSync();
+			}
+		},
+		[userId, triggerSync]
+	);
+
+	const duplicateEntry = useCallback(
+		(scryfallId: string, sourceEntry: CardEntry) => {
+			const current = getSnapshot();
+			const newRowId = crypto.randomUUID();
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { rowId: _rowId, dateAdded: _dateAdded, ...meta } = sourceEntry;
+			const entry = newEntry(newRowId, meta);
+			const next: CollectionData = {
+				[newRowId]: { scryfallId, entry },
+				...current,
+			};
+			saveCollection(next);
+			if (userId) {
+				enqueue({
+					type: 'insert',
+					payload: { userId, rowId: newRowId, scryfallId, entry },
 				});
 				triggerSync();
 			}
@@ -398,6 +421,7 @@ export function useCollection(
 		entries,
 		isLoaded,
 		addCard,
+		duplicateEntry,
 		removeCard,
 		removeEntry,
 		decrementCard,

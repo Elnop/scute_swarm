@@ -15,12 +15,13 @@ interface LocalizedImageResult {
 const notFound = new Set<string>();
 
 export function useLocalizedImage(
-	card: { set: string; collector_number: string; language?: string },
+	card: { set: string; collector_number: string; language?: string; entry?: { language?: string } },
 	enabled: boolean
 ): LocalizedImageResult | null {
 	const [result, setResult] = useState<LocalizedImageResult | null>(null);
 
-	const lang = card.language ? LANGUAGE_TO_SCRYFALL_CODE[card.language as MtgLanguage] : undefined;
+	const language = card.entry?.language ?? card.language;
+	const lang = language ? LANGUAGE_TO_SCRYFALL_CODE[language as MtgLanguage] : undefined;
 	const cacheKey = `${card.set}/${card.collector_number}/${lang}`;
 	const needsFetch = enabled && !!lang && lang !== 'en' && !notFound.has(cacheKey);
 

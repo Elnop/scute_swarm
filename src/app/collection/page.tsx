@@ -47,6 +47,7 @@ export default function CollectionPage() {
 		entries,
 		isLoaded,
 		addCard,
+		duplicateEntry,
 		decrementCard,
 		removeCard,
 		removeEntry,
@@ -153,6 +154,11 @@ export default function CollectionPage() {
 			decrementCard(resolvedStack.cards[0].id);
 		}
 	}, [resolvedStack, decrementCard]);
+
+	const handleDuplicateEntry = useCallback(
+		(scryfallId: string, entry: CardEntry) => duplicateEntry(scryfallId, entry),
+		[duplicateEntry]
+	);
 
 	const handleRemoveEntry = useCallback((rowId: string) => removeEntry(rowId), [removeEntry]);
 
@@ -295,6 +301,7 @@ export default function CollectionPage() {
 				onSave={handleSaveModal}
 				onRemove={handleRemoveModal}
 				onRemoveEntry={handleRemoveEntry}
+				onDuplicate={handleDuplicateEntry}
 				onIncrement={handleIncrementModal}
 				onDecrement={handleDecrementModal}
 				onChangePrint={handleChangePrint}
