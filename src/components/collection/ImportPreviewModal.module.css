@@ -384,7 +384,7 @@
 	background: rgba(255, 255, 255, 0.02);
 }
 
-/* Preview grid — mirrors CollectionGrid layout */
+/* Preview grid */
 
 .gridContainer {
 	max-height: 400px;

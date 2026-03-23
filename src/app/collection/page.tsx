@@ -1,13 +1,37 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import type { CardStack } from '@/types/cards';
 import { useCollectionPageState } from './useCollectionPageState';
-import { CollectionGrid } from '@/components/collection/CollectionGrid';
 import { CollectionFiltersAside } from '@/components/collection/CollectionFiltersAside';
 import { ImportPreviewModal } from '@/components/collection/ImportPreviewModal';
 import { CardCollectionModal } from '@/components/collection/CardCollectionModal';
+import { CardList, cardListOverlayStyles } from '@/components/ui/CardList';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
+
+const PAGE_SIZE = 48;
+
+function useStackPagination(stacks: CardStack[]) {
+	const [{ visibleCount, trackedLength }, setPagination] = useState({
+		visibleCount: PAGE_SIZE,
+		trackedLength: stacks.length,
+	});
+
+	const effectiveVisibleCount = stacks.length !== trackedLength ? PAGE_SIZE : visibleCount;
+	const hasMore = effectiveVisibleCount < stacks.length;
+
+	const loadMore = () =>
+		setPagination((prev) => ({
+			trackedLength: stacks.length,
+			visibleCount: prev.visibleCount + PAGE_SIZE,
+		}));
+
+	const visibleStacks = stacks.slice(0, effectiveVisibleCount);
+
+	return { visibleStacks, hasMore, loadMore };
+}
 
 export default function CollectionPage() {
 	const {
@@ -38,6 +62,29 @@ export default function CollectionPage() {
 		handleExport,
 		handleConfirmImport,
 	} = useCollectionPageState();
+
+	const { visibleStacks, hasMore, loadMore } = useStackPagination(filteredStacks);
+
+	const skeletonCount = isHydrating ? Math.max(0, (totalExpected ?? 0) - filteredStacks.length) : 0;
+
+	// Extract representative card from each visible stack
+	const representativeCards = useMemo(
+		() =>
+			visibleStacks
+				.map((stack) => stack.cards[0])
+				.filter((c): c is NonNullable<typeof c> => c !== undefined),
+		[visibleStacks]
+	);
+
+	// Map card id → stack for click handler and overlay
+	const stackByCardId = useMemo(() => {
+		const map = new Map<string, CardStack>();
+		for (const stack of visibleStacks) {
+			const rep = stack.cards[0];
+			if (rep) map.set(rep.id, stack);
+		}
+		return map;
+	}, [visibleStacks]);
 
 	if (!isLoaded) {
 		return <div className={styles.page} />;
@@ -123,12 +170,87 @@ export default function CollectionPage() {
 							</Link>
 						</div>
 					) : (
-						<CollectionGrid
-							stacks={filteredStacks}
-							onDecrement={decrementCard}
-							onStackClick={handleCardClick}
+						<CardList
+							cards={representativeCards}
 							isLoading={isHydrating}
-							totalExpected={totalExpected}
+							skeletonCount={skeletonCount || undefined}
+							hasMore={hasMore}
+							onLoadMore={loadMore}
+							onCardClick={(card) => {
+								const stack = stackByCardId.get(card.id);
+								if (stack) handleCardClick(stack);
+							}}
+							renderOverlay={(card) => {
+								const stack = stackByCardId.get(card.id);
+								const count = stack?.cards.length ?? 1;
+								return (
+									<>
+										{count > 1 && <span className={styles.cardBadge}>x{count}</span>}
+										<button
+											type="button"
+											className={`${styles.cardRemoveButton} ${cardListOverlayStyles.removeButton}`}
+											onClick={(e) => {
+												e.stopPropagation();
+												decrementCard(card.id);
+											}}
+											aria-label={`Remove one ${card.name}`}
+										>
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 14 14"
+												fill="none"
+												aria-hidden="true"
+											>
+												<path
+													d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M6 6.5v3M8 6.5v3M3 4l.5 7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1L11 4"
+													stroke="currentColor"
+													strokeWidth="1.2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												/>
+											</svg>
+										</button>
+									</>
+								);
+							}}
+							tableColumns={[
+								{
+									key: 'qty',
+									label: 'Qté',
+									render: (card) => stackByCardId.get(card.id)?.cards.length ?? 1,
+								},
+								{ key: 'name', label: 'Nom' },
+								{
+									key: 'set',
+									label: 'Set',
+									render: (card) => ('set' in card ? (card.set as string).toUpperCase() : '—'),
+								},
+								{
+									key: 'collector_number',
+									label: 'Collector #',
+									render: (card) =>
+										'collector_number' in card ? (card.collector_number as string) : '—',
+								},
+								{
+									key: 'condition',
+									label: 'Condition',
+									render: (card) => ('entry' in card ? (card.entry.condition ?? '—') : '—'),
+								},
+								{
+									key: 'foil',
+									label: 'Foil',
+									render: (card) => ('entry' in card ? (card.entry.foilType ?? '—') : '—'),
+								},
+								{
+									key: 'prices',
+									label: 'Prix USD',
+									render: (card) =>
+										'prices' in card && card.prices && 'usd' in card.prices
+											? (card.prices.usd ?? '—')
+											: '—',
+								},
+							]}
 						/>
 					)}
 				</main>

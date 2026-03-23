@@ -10,16 +10,14 @@ import type { CollectionFilters } from '@/hooks/useCollectionFilters';
 import { SearchBar } from '@/components/search/SearchBar';
 import { FilterModal } from '@/components/search/FilterModal';
 import { CardCollectionModal } from '@/components/collection/CardCollectionModal';
-import { CardImage } from '@/components/cards/CardImage';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { CardList } from '@/components/ui/CardList';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import styles from './ImportPreviewModal.module.css';
 
 type InputMode = 'file' | 'text';
-type ViewMode = 'table' | 'grid';
 
-const PAGE_SIZE = 48;
+const PAGE_SIZE = 48; // used for skeleton count calculation
 
 interface Props {
 	isOpen: boolean;
@@ -66,7 +64,6 @@ export function ImportPreviewModal({
 	const [errorsExpanded, setErrorsExpanded] = useState(false);
 	const [inputMode, setInputMode] = useState<InputMode>('file');
 	const [pastedText, setPastedText] = useState('');
-	const [viewMode, setViewMode] = useState<ViewMode>('table');
 	const [forcedFormat, setForcedFormat] = useState<ImportFormatId | 'auto'>('auto');
 	const [filters, setFilters] = useState<CollectionFilters>(defaultCollectionFilters);
 	const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -95,14 +92,6 @@ export function ImportPreviewModal({
 		filters.rarities.length +
 		(filters.oracleText ? 1 : 0) +
 		(filters.cmc ? 1 : 0);
-	// Mirror CollectionGrid pattern: track length to auto-reset pagination
-	const [{ gridVisibleCount, trackedLength }, setGridPagination] = useState({
-		gridVisibleCount: PAGE_SIZE,
-		trackedLength: filteredCards.length,
-	});
-	const effectiveVisibleCount =
-		filteredCards.length !== trackedLength ? PAGE_SIZE : gridVisibleCount;
-
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -133,19 +122,6 @@ export function ImportPreviewModal({
 		},
 		[onFileSelect, forcedFormat]
 	);
-
-	// Paginated grid — hooks must be called before any early return
-	const hasMoreCards = effectiveVisibleCount < filteredCards.length;
-
-	const { sentinelRef } = useInfiniteScroll({
-		onLoadMore: () =>
-			setGridPagination((prev) => ({
-				trackedLength: filteredCards.length,
-				gridVisibleCount: prev.gridVisibleCount + PAGE_SIZE,
-			})),
-		hasMore: hasMoreCards,
-		isLoading: false,
-	});
 
 	// --- Card → row mapping (rows are already deduplicated by mergeRows) ---
 	const rowMap = useMemo(() => {
@@ -232,9 +208,7 @@ export function ImportPreviewModal({
 			).size
 		: 0;
 
-	const visibleCards = filteredCards.slice(0, effectiveVisibleCount);
-
-	// Filter parsed rows for table view (client-side name filter)
+	// Filter parsed rows for table fallback (before Scryfall fetch completes)
 	const filteredRows = preview
 		? filters.name
 			? preview.parsed.rows.filter((row) =>
@@ -415,24 +389,8 @@ export function ImportPreviewModal({
 						</span>
 					)}
 
-					{/* View toggle */}
-					<div className={styles.viewToggle}>
-						<button
-							className={`${styles.toggleBtn} ${viewMode === 'table' ? styles.toggleBtnActive : ''}`}
-							onClick={() => setViewMode('table')}
-						>
-							Tableau
-						</button>
-						<button
-							className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.toggleBtnActive : ''}`}
-							onClick={() => setViewMode('grid')}
-						>
-							Grille
-						</button>
-					</div>
-
-					{/* Table view */}
-					{viewMode === 'table' && (
+					{/* Table fallback: show parsed rows before Scryfall fetch */}
+					{filteredCards.length === 0 && filteredRows.length > 0 && (
 						<div className={styles.tableContainer}>
 							<table className={styles.previewTable}>
 								<thead>
@@ -444,69 +402,56 @@ export function ImportPreviewModal({
 									</tr>
 								</thead>
 								<tbody>
-									{filteredCards.length > 0
-										? filteredCards.map((card) => (
-												<tr
-													key={card.id}
-													className={styles.clickableRow}
-													onClick={() => setSelectedCardId(card.id)}
-												>
-													<td>{rowMap.get(card.id)?.quantity ?? 1}</td>
-													<td>{card.name}</td>
-													<td>{card.set.toUpperCase()}</td>
-													<td>{card.collector_number}</td>
-												</tr>
-											))
-										: filteredRows.map((row, i) => (
-												<tr key={i}>
-													<td>{row.quantity}</td>
-													<td>{row.name}</td>
-													<td>{row.set?.toUpperCase() || '—'}</td>
-													<td>{row.collectorNumber || '—'}</td>
-												</tr>
-											))}
+									{filteredRows.map((row, i) => (
+										<tr key={i}>
+											<td>{row.quantity}</td>
+											<td>{row.name}</td>
+											<td>{row.set?.toUpperCase() || '—'}</td>
+											<td>{row.collectorNumber || '—'}</td>
+										</tr>
+									))}
 								</tbody>
 							</table>
 						</div>
 					)}
 
-					{/* Grid view */}
-					{viewMode === 'grid' && (
+					{/* CardList: grid or table once Scryfall cards are available */}
+					{(filteredCards.length > 0 || isLoadingPreview) && (
 						<div className={styles.gridContainer}>
-							<div className={styles.previewGrid}>
-								{visibleCards.map((card) => {
+							<CardList
+								cards={filteredCards}
+								isLoading={isLoadingPreview && filteredCards.length === 0}
+								skeletonCount={
+									fetchedCards.length === 0
+										? 6
+										: Math.min(PAGE_SIZE, Math.max(0, uniqueIdentifierCount - fetchedCards.length))
+								}
+								cardsPerLine={4}
+								onCardClick={(card) => setSelectedCardId(card.id)}
+								renderOverlay={(card) => {
 									const qty = rowMap.get(card.id)?.quantity ?? 1;
-									return (
-										<div
-											key={card.id}
-											className={`${styles.gridItem} ${styles.gridItemClickable}`}
-											onClick={() => setSelectedCardId(card.id)}
-										>
-											<div className={styles.gridImageWrapper}>
-												<CardImage card={card} size="normal" />
-												{qty > 1 && <span className={styles.gridBadge}>x{qty}</span>}
-											</div>
-											<p className={styles.gridCardName}>{card.name}</p>
-										</div>
-									);
-								})}
-								{isLoadingPreview &&
-									Array.from({
-										length:
-											fetchedCards.length === 0
-												? 6
-												: Math.min(
-														PAGE_SIZE,
-														Math.max(0, uniqueIdentifierCount - fetchedCards.length)
-													),
-									}).map((_, i) => (
-										<div key={`sk-${i}`} className={styles.gridItem}>
-											<div className={styles.skeletonImage} />
-											<div className={styles.skeletonName} />
-										</div>
-									))}
-							</div>
-							<div ref={sentinelRef} />
+									return qty > 1 ? <span className={styles.gridBadge}>x{qty}</span> : null;
+								}}
+								tableColumns={[
+									{
+										key: 'qty',
+										label: 'Qté',
+										render: (card) => rowMap.get(card.id)?.quantity ?? 1,
+									},
+									{ key: 'name', label: 'Nom' },
+									{
+										key: 'set',
+										label: 'Set',
+										render: (card) => ('set' in card ? (card.set as string).toUpperCase() : '—'),
+									},
+									{
+										key: 'collector_number',
+										label: 'Collector #',
+										render: (card) =>
+											'collector_number' in card ? (card.collector_number as string) : '—',
+									},
+								]}
+							/>
 						</div>
 					)}
 

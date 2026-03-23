@@ -4,11 +4,10 @@ import { useState, useCallback, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { useScryfallCardSearch } from '@/lib/scryfall/hooks/useScryfallCardSearch';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
 import { SearchBar } from '@/components/search/SearchBar';
 import { FilterModal } from '@/components/search/FilterModal';
-import { CardGrid } from '@/components/cards/CardGrid';
+import { CardList } from '@/components/ui/CardList';
 import { Spinner } from '@/components/ui/Spinner';
 import { useCollectionContext } from '@/lib/supabase/contexts/CollectionContext';
 import { useSearchFiltersFromUrl } from './useSearchFiltersFromUrl';
@@ -68,12 +67,6 @@ function SearchPageContent() {
 			order,
 			dir,
 		});
-
-	const { sentinelRef } = useInfiniteScroll({
-		onLoadMore: loadMore,
-		hasMore,
-		isLoading: isLoading || isLoadingMore,
-	});
 
 	const handleCardClick = useCallback(
 		(card: ScryfallCard) => router.push(`/card/${card.id}`),
@@ -149,20 +142,32 @@ function SearchPageContent() {
 					</div>
 				)}
 
-				{isLoading && (
-					<div className={styles.loading}>
-						<Spinner size="lg" />
-					</div>
-				)}
-
-				{!isLoading && cards.length > 0 && (
-					<>
-						<CardGrid cards={cards} onCardClick={handleCardClick} />
-						<div ref={sentinelRef} className={styles.sentinel}>
-							{isLoadingMore && <Spinner size="md" />}
-						</div>
-					</>
-				)}
+				<CardList
+					cards={cards}
+					isLoading={isLoading}
+					isLoadingMore={isLoadingMore}
+					hasMore={hasMore}
+					onLoadMore={loadMore}
+					onCardClick={handleCardClick}
+					tableColumns={[
+						{ key: 'name', label: 'Nom' },
+						{
+							key: 'set',
+							label: 'Set',
+							render: (card) => ('set' in card ? (card.set as string).toUpperCase() : '—'),
+						},
+						{ key: 'type_line', label: 'Type' },
+						{ key: 'cmc', label: 'CMC' },
+						{
+							key: 'prices',
+							label: 'Prix USD',
+							render: (card) =>
+								'prices' in card && card.prices && 'usd' in card.prices
+									? (card.prices.usd ?? '—')
+									: '—',
+						},
+					]}
+				/>
 
 				{!isLoading && hasFilters && cards.length === 0 && !error && (
 					<div className={styles.noResults}>

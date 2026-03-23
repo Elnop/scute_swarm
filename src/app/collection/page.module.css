@@ -99,6 +99,51 @@
 	color: var(--text-muted);
 }
 
+/* Card overlay elements used in renderOverlay */
+
+.cardBadge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 700;
+	color: white;
+	background: var(--primary);
+	border-radius: 14px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1;
+	pointer-events: none;
+}
+
+.cardRemoveButton {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: none;
+	border-radius: 6px;
+	background: rgba(239, 68, 68, 0.9);
+	color: white;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.15s;
+	z-index: 1;
+}
+
+.cardRemoveButton:hover {
+	background: rgba(220, 38, 38, 1);
+}
+
 @media (max-width: 768px) {
 	.layout {
 		padding-left: 0;
