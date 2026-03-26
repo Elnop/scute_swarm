@@ -1,21 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getAllSymbols } from '@/lib/scryfall/endpoints/symbols';
+import { useEffect } from 'react';
+import { useScryfallStore } from '@/lib/scryfall/store/scryfall-store';
 import type { ScryfallCardSymbol } from '@/lib/scryfall/types/scryfall';
 
 export function useScryfallSymbols(): Record<string, ScryfallCardSymbol> {
-	const [symbolMap, setSymbolMap] = useState<Record<string, ScryfallCardSymbol>>({});
+	const symbols = useScryfallStore((s) => s.symbols);
+	const fetchSymbols = useScryfallStore((s) => s.fetchSymbols);
 
 	useEffect(() => {
-		getAllSymbols().then((list) => {
-			const map: Record<string, ScryfallCardSymbol> = {};
-			for (const symbol of list.data) {
-				map[symbol.symbol] = symbol;
-			}
-			setSymbolMap(map);
-		});
-	}, []);
+		fetchSymbols();
+	}, [fetchSymbols]);
 
-	return symbolMap;
+	return symbols;
 }
