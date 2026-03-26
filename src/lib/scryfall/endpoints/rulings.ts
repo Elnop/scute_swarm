@@ -1,6 +1,6 @@
 // Scryfall rulings and clarifications functions
 
-import { scryfallGet } from '../fetcher';
+import { scryfallGet } from '../utils/fetcher';
 import type { ScryfallRuling, ScryfallList, ScryfallUUID } from '../types/scryfall';
 
 export async function getRulingsByCardId(id: ScryfallUUID): Promise<ScryfallList<ScryfallRuling>> {

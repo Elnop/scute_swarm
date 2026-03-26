@@ -1,6 +1,6 @@
 // Scryfall set management functions
 
-import { scryfallGet } from '../fetcher';
+import { scryfallGet } from '../utils/fetcher';
 import type {
 	ScryfallSet,
 	ScryfallList,

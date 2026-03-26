@@ -3,7 +3,7 @@
 import { enforceRateLimit } from './rate-limiter';
 import { getCached, setCached } from './cache';
 import { ScryfallApiError, isScryfallError } from './errors';
-import type { ScryfallError } from './types/scryfall';
+import type { ScryfallError } from '../types/scryfall';
 
 const BASE_URL = 'https://api.scryfall.com';
 const MAX_RETRIES = 3;

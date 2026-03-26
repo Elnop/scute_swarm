@@ -1,6 +1,6 @@
 // In-memory cache with TTL for Scryfall API responses
 
-import type { ScryfallCacheEntry } from './types/api';
+import type { ScryfallCacheEntry } from '../types/api';
 
 const CACHE_MAX_AGE = 300_000; // 5 minutes
 const CACHE_MAX_SIZE = 1000;

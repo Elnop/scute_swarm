@@ -1,6 +1,6 @@
 // Scryfall catalog access functions
 
-import { scryfallGet } from '../fetcher';
+import { scryfallGet } from '../utils/fetcher';
 import type { ScryfallCatalog } from '../types/scryfall';
 import type { ScryfallCatalogType } from '../types/api';
 

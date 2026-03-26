@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import { searchCards } from '@/lib/scryfall/endpoints/cards';
-import { buildScryfallQuery } from '@/lib/scryfall/scryfall-query';
+import { buildScryfallQuery } from '@/lib/scryfall/utils/scryfall-query';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export type ScryfallSortOrder =

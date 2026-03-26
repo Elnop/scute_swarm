@@ -1,6 +1,6 @@
 // Scryfall API error class
 
-import type { ScryfallError } from './types/scryfall';
+import type { ScryfallError } from '../types/scryfall';
 
 export class ScryfallApiError extends Error {
 	public readonly error: ScryfallError;

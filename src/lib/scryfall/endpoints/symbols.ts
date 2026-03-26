@@ -1,6 +1,6 @@
 // Scryfall mana symbol parsing functions
 
-import { scryfallGet } from '../fetcher';
+import { scryfallGet } from '../utils/fetcher';
 import type {
 	ScryfallCardSymbol,
 	ScryfallList,

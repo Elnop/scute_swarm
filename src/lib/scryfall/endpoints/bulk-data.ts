@@ -1,6 +1,6 @@
 // Scryfall bulk data metadata functions
 
-import { scryfallGet } from '../fetcher';
+import { scryfallGet } from '../utils/fetcher';
 import type { ScryfallBulkData, ScryfallList, ScryfallUUID } from '../types/scryfall';
 
 export async function getAllBulkData(): Promise<ScryfallList<ScryfallBulkData>> {

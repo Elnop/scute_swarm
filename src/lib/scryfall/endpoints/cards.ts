@@ -1,6 +1,6 @@
 // Scryfall card search and retrieval functions
 
-import { scryfallGet, scryfallPost } from '../fetcher';
+import { scryfallGet, scryfallPost } from '../utils/fetcher';
 import type {
 	ScryfallCard,
 	ScryfallCardSearchResult,
