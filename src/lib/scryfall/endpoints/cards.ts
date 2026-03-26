@@ -139,6 +139,7 @@ export async function getCardPrints(
 	let nextUrl: string | null = firstUrl.toString();
 
 	while (nextUrl) {
+		if (signal?.aborted) break;
 		const path: string = nextUrl.startsWith(base) ? nextUrl.slice(base.length) : nextUrl;
 		const result = await scryfallGet<ScryfallCardSearchResult>(path, undefined, signal);
 		allCards.push(...result.data);

@@ -105,7 +105,7 @@ const query = buildScryfallQuery({
 	set: 'lea',
 	rarities: ['uncommon', 'rare'],
 });
-// → 'bolt color:R type:instant set:lea (rarity:uncommon OR rarity:rare)'
+// → 'bolt c:R t:instant s:lea (r:uncommon OR r:rare)'
 ```
 
 ## Available Endpoints (`src/lib/scryfall/endpoints/`)
@@ -113,8 +113,8 @@ const query = buildScryfallQuery({
 | File           | Functions                                                          |
 | -------------- | ------------------------------------------------------------------ |
 | `cards.ts`     | `searchCards`, `getCardById`, `getCardByName`, `getCardCollection` |
-| `sets.ts`      | `getSets`, `getSetByCode`                                          |
-| `symbols.ts`   | `getSymbology`                                                     |
+| `sets.ts`      | `getAllSets`, `getSetByCode`                                       |
+| `symbols.ts`   | `getAllSymbols`, `parseMana`                                       |
 | `bulk-data.ts` | `getBulkDataList`, `getBulkDataFile`                               |
 
 ## Image URIs

@@ -86,13 +86,16 @@ async function scryfallGetInner<T>(url: string, externalSignal?: AbortSignal): P
 	for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+		const combinedSignal = externalSignal
+			? AbortSignal.any([externalSignal, controller.signal])
+			: controller.signal;
 
 		try {
 			const response = await fetch(url, {
 				headers: {
 					Accept: 'application/json;q=0.9,*/*;q=0.8',
 				},
-				signal: externalSignal || controller.signal,
+				signal: combinedSignal,
 			});
 
 			if (!response.ok) {
