@@ -2,10 +2,12 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { detectFormat } from '@/lib/import/detect';
-import { getParser, FORMAT_REGISTRY } from '@/lib/import/formats';
+import { parseMoxfield, moxfieldDescriptor } from '@/lib/import/formats/moxfield';
+import { parseMTGA, mtgaDescriptor } from '@/lib/import/formats/mtga';
 import { getCardCollection } from '@/lib/scryfall/endpoints/cards';
 import type {
 	ImportFormatId,
+	FormatParser,
 	ParsedImportRow,
 	ParsedImportResult,
 	ImportResult,
@@ -13,6 +15,17 @@ import type {
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import type { CardEntry } from '@/types/cards';
 import { deduplicateIdentifiers } from '@/lib/import/identifier-dedup';
+
+const FORMAT_REGISTRY = [moxfieldDescriptor, mtgaDescriptor];
+
+const PARSERS: Record<ImportFormatId, FormatParser> = {
+	moxfield: parseMoxfield,
+	mtga: parseMTGA,
+};
+
+function getParser(formatId: ImportFormatId): FormatParser {
+	return PARSERS[formatId];
+}
 
 export type ImportStatus =
 	| 'idle'
