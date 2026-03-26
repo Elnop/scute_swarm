@@ -12,8 +12,8 @@ import { useCardCollectionModal } from '@/lib/collection/CardCollectionModal/hoo
 import { CollectionFiltersAside } from '@/lib/collection/components/CollectionFiltersAside/CollectionFiltersAside';
 import { ImportPreviewModal } from '@/lib/collection/components/ImportPreviewModal/ImportPreviewModal';
 import { CardCollectionModal } from '@/lib/collection/CardCollectionModal/CardCollectionModal';
-import { CardList, cardListOverlayStyles } from '@/components/ui/CardList';
-import { Button } from '@/components/ui/Button';
+import { CardList, cardListOverlayStyles } from '@/components/ui/CardList/CardList';
+import { Button } from '@/components/ui/Button/Button';
 import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
 import styles from './page.module.css';
 

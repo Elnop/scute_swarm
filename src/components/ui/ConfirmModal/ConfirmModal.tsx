@@ -1,6 +1,6 @@
 'use client';
 
-import { Modal } from './Modal';
+import { Modal } from '../Modal/Modal';
 import styles from './ConfirmModal.module.css';
 
 interface Props {

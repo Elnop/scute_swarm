@@ -7,8 +7,8 @@ import { useScryfallCardSearch } from '@/lib/scryfall/hooks/useScryfallCardSearc
 import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
 import { SearchBar } from '@/lib/search/components/SearchBar/SearchBar';
 import { FilterModal } from '@/lib/search/components/FilterModal/FilterModal';
-import { CardList } from '@/components/ui/CardList';
-import { Spinner } from '@/components/ui/Spinner';
+import { CardList } from '@/components/ui/CardList/CardList';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
 import { useSearchFiltersFromUrl } from '@/lib/search/hooks/useSearchFiltersFromUrl';
 import styles from './page.module.css';

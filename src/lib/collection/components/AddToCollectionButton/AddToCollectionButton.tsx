@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button/Button';
 import styles from './AddToCollectionButton.module.css';
 
 export interface AddToCollectionButtonProps {

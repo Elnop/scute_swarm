@@ -15,9 +15,9 @@ import type { ScryfallSortOrder } from '@/lib/scryfall/hooks/useScryfallCardSear
 import { SearchBar } from '@/lib/search/components/SearchBar/SearchBar';
 import { FilterModal } from '@/lib/search/components/FilterModal/FilterModal';
 import { CardCollectionModal } from '../../CardCollectionModal/CardCollectionModal';
-import { CardList } from '@/components/ui/CardList';
-import { Button } from '@/components/ui/Button';
-import { Modal } from '@/components/ui/Modal';
+import { CardList } from '@/components/ui/CardList/CardList';
+import { Button } from '@/components/ui/Button/Button';
+import { Modal } from '@/components/ui/Modal/Modal';
 import styles from './ImportPreviewModal.module.css';
 
 type InputMode = 'file' | 'text';

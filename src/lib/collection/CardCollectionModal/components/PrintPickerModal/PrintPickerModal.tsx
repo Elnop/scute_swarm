@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { useCardPrints } from '@/lib/scryfall/hooks/useCardPrints';
 import { CardImage } from '@/components/cards/CardImage';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@/components/ui/Modal/Modal';
 import styles from './PrintPickerModal.module.css';
 import lightboxStyles from '../../../styles/lightbox.module.css';
 

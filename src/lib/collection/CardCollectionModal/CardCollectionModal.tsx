@@ -5,10 +5,10 @@ import type { Card, CardStack, CardEntry } from '@/types/cards';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { CardImage } from '@/components/cards/CardImage';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
-import { SymbolText } from '@/components/ui/SymbolText';
+import { SymbolText } from '@/components/ui/SymbolText/SymbolText';
 import { CopyEditModal } from './components/CopyEditModal/CopyEditModal';
-import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { Modal } from '@/components/ui/Modal';
+import { ConfirmModal } from '@/components/ui/ConfirmModal/ConfirmModal';
+import { Modal } from '@/components/ui/Modal/Modal';
 import styles from './CardCollectionModal.module.css';
 import lightboxStyles from '../styles/lightbox.module.css';
 
