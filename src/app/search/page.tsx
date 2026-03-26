@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { useScryfallCardSearch } from '@/lib/scryfall/hooks/useScryfallCardSearch';
 import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
-import { SearchBar } from '@/components/search/SearchBar';
-import { FilterModal } from '@/components/search/FilterModal';
+import { SearchBar } from '@/lib/search/components/SearchBar/SearchBar';
+import { FilterModal } from '@/lib/search/components/FilterModal/FilterModal';
 import { CardList } from '@/components/ui/CardList';
 import { Spinner } from '@/components/ui/Spinner';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
-import { useSearchFiltersFromUrl } from './useSearchFiltersFromUrl';
+import { useSearchFiltersFromUrl } from '@/lib/search/hooks/useSearchFiltersFromUrl';
 import styles from './page.module.css';
 
 export default function SearchPage() {

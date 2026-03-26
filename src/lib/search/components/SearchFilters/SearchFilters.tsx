@@ -1,10 +1,14 @@
 'use client';
 
 import type { ScryfallColor, ScryfallSet } from '@/lib/scryfall/types/scryfall';
-import { ColorFilter } from './ColorFilter';
-import { TypeFilter } from './TypeFilter';
-import { SetFilter } from './SetFilter';
-import { SortFilter, type ScryfallSortOrder, type ScryfallSortDir } from './SortFilter';
+import { ColorFilter } from '@/components/ui/filters/ColorFilter/ColorFilter';
+import { TypeFilter } from '@/components/ui/filters/TypeFilter/TypeFilter';
+import { SetFilter } from '@/components/ui/filters/SetFilter/SetFilter';
+import {
+	SortFilter,
+	type ScryfallSortOrder,
+	type ScryfallSortDir,
+} from '@/components/ui/filters/SortFilter/SortFilter';
 import styles from './SearchFilters.module.css';
 
 export interface SearchFiltersProps {

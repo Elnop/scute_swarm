@@ -7,13 +7,13 @@ import type {
 	ScryfallSortDir,
 } from '@/lib/scryfall/hooks/useScryfallCardSearch';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
-import { ColorFilter } from './ColorFilter';
-import { RarityFilter } from './RarityFilter';
-import { TypeFilter } from './TypeFilter';
-import { OracleTextFilter } from './OracleTextFilter';
-import { CmcFilter } from './CmcFilter';
-import { SetFilter } from './SetFilter';
-import { SortFilter } from './SortFilter';
+import { ColorFilter } from '@/components/ui/filters/ColorFilter/ColorFilter';
+import { RarityFilter } from '@/components/ui/filters/RarityFilter/RarityFilter';
+import { TypeFilter } from '@/components/ui/filters/TypeFilter/TypeFilter';
+import { OracleTextFilter } from '@/components/ui/filters/OracleTextFilter/OracleTextFilter';
+import { CmcFilter } from '@/components/ui/filters/CmcFilter/CmcFilter';
+import { SetFilter } from '@/components/ui/filters/SetFilter/SetFilter';
+import { SortFilter } from '@/components/ui/filters/SortFilter/SortFilter';
 import styles from './FilterModal.module.css';
 
 interface FilterModalProps {

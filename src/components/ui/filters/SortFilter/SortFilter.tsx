@@ -1,7 +1,7 @@
 'use client';
 
 import { type ChangeEvent } from 'react';
-import styles from './SearchFilters.module.css';
+import styles from './SortFilter.module.css';
 
 export type ScryfallSortOrder =
 	| 'name'

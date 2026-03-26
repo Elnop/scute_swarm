@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import type { Card } from '@/types/cards';
-import type { ScryfallSortDir } from '@/components/search/SortFilter';
+import type { ScryfallSortDir } from '@/components/ui/filters/SortFilter/SortFilter';
 import { CardImage } from '@/components/cards/CardImage';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import styles from './CardList.module.css';

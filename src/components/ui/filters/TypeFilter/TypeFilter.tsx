@@ -1,7 +1,7 @@
 'use client';
 
 import { type ChangeEvent } from 'react';
-import styles from './SearchFilters.module.css';
+import styles from './TypeFilter.module.css';
 
 export interface TypeFilterProps {
 	value: string;
