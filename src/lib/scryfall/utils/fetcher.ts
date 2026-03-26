@@ -50,7 +50,11 @@ async function parseErrorResponse(response: Response): Promise<ScryfallError> {
 	}
 }
 
-export function scryfallGet<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+export function scryfallGet<T>(
+	endpoint: string,
+	params?: Record<string, string>,
+	signal?: AbortSignal
+): Promise<T> {
 	const url = buildUrl(endpoint, params);
 
 	// Check cache
@@ -63,7 +67,7 @@ export function scryfallGet<T>(endpoint: string, params?: Record<string, string>
 	const existing = inFlight.get(url);
 	if (existing) return existing as Promise<T>;
 
-	const promise = scryfallGetInner<T>(url);
+	const promise = scryfallGetInner<T>(url, signal);
 	inFlight.set(url, promise);
 	promise
 		.finally(() => inFlight.delete(url))
@@ -74,7 +78,7 @@ export function scryfallGet<T>(endpoint: string, params?: Record<string, string>
 	return promise;
 }
 
-async function scryfallGetInner<T>(url: string): Promise<T> {
+async function scryfallGetInner<T>(url: string, externalSignal?: AbortSignal): Promise<T> {
 	await enforceRateLimit();
 
 	let lastError: Error | null = null;
@@ -88,7 +92,7 @@ async function scryfallGetInner<T>(url: string): Promise<T> {
 				headers: {
 					Accept: 'application/json;q=0.9,*/*;q=0.8',
 				},
-				signal: controller.signal,
+				signal: externalSignal || controller.signal,
 			});
 
 			if (!response.ok) {
