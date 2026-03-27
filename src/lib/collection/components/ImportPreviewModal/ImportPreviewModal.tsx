@@ -7,20 +7,18 @@ import type {
 } from '@/lib/import/utils/types';
 import type { ImportPreview } from '@/lib/import/hooks/useImport';
 import type { ScryfallCard, ScryfallSet } from '@/lib/scryfall/types/scryfall';
-import type { ScryfallSortOrder } from '@/lib/scryfall/hooks/useScryfallCardSearch';
-import type { CollectionFilters } from '../../utils/filterCollectionCards';
 import { PAGE_SIZE } from '@/lib/collection/constants';
 import { useImportPreviewState } from './useImportPreviewState';
 import { ImportFileInput } from './ImportFileInput';
 import { ImportPreviewStats } from './ImportPreviewStats';
 import { ImportPreviewFilters } from './ImportPreviewFilters';
 import { ImportFallbackTable } from './ImportFallbackTable';
-import { FilterModal } from '@/lib/search/components/FilterModal/FilterModal';
-import { CardCollectionModal } from '../../CardCollectionModal/CardCollectionModal';
-import { CardList } from '@/components/ui/CardList/CardList';
+import { ImportSupportModals } from './ImportSupportModals';
+import { CardList, type CardListColumn } from '@/components/ui/CardList/CardList';
 import { Button } from '@/components/ui/Button/Button';
 import { Modal } from '@/components/ui/Modal/Modal';
 import styles from './ImportPreviewModal.module.css';
+import { STATIC_IMPORT_COLUMNS } from './tableColumns';
 
 interface Props {
 	isOpen: boolean;
@@ -68,10 +66,22 @@ export function ImportPreviewModal({
 
 	if (!isOpen) return null;
 
+	const skeletonCount =
+		fetchedCards.length === 0
+			? 6
+			: Math.min(PAGE_SIZE, Math.max(0, state.uniqueIdentifierCount - fetchedCards.length));
+	const tableColumns: CardListColumn[] = [
+		{ key: 'qty', label: 'Qté', render: (card) => state.rowMap.get(card.id)?.quantity ?? 1 },
+		...STATIC_IMPORT_COLUMNS,
+	];
+	const renderOverlay = (card: { id: string }) => {
+		const qty = state.rowMap.get(card.id)?.quantity ?? 1;
+		return qty > 1 ? <span className={styles.gridBadge}>x{qty}</span> : null;
+	};
+
 	return (
 		<Modal className={`${styles.modal} ${preview ? styles.modalWide : ''}`}>
 			<h2 className={styles.title}>Importer un fichier</h2>
-
 			{!preview ? (
 				<ImportFileInput
 					formatRegistry={formatRegistry}
@@ -99,7 +109,6 @@ export function ImportPreviewModal({
 						onChangeFile={onChangeFile}
 						onChangeFormat={onChangeFormat}
 					/>
-
 					<ImportPreviewFilters
 						nameFilter={state.filters.name}
 						onNameFilterChange={(value) => state.setFilters((prev) => ({ ...prev, name: value }))}
@@ -109,53 +118,22 @@ export function ImportPreviewModal({
 						filteredCount={state.filteredCount}
 						totalCardCount={state.totalCardCount}
 					/>
-
 					{state.filteredCards.length === 0 &&
 						state.filteredRows.length > 0 &&
 						!isLoadingPreview && <ImportFallbackTable rows={state.filteredRows} />}
-
 					{(state.filteredCards.length > 0 || isLoadingPreview) && (
 						<div className={styles.gridContainer}>
 							<CardList
 								cards={state.filteredCards}
 								isLoading={isLoadingPreview && state.filteredCards.length === 0}
-								skeletonCount={
-									fetchedCards.length === 0
-										? 6
-										: Math.min(
-												PAGE_SIZE,
-												Math.max(0, state.uniqueIdentifierCount - fetchedCards.length)
-											)
-								}
+								skeletonCount={skeletonCount}
 								cardsPerLine={4}
 								onCardClick={(card) => state.setSelectedCardId(card.id)}
-								renderOverlay={(card) => {
-									const qty = state.rowMap.get(card.id)?.quantity ?? 1;
-									return qty > 1 ? <span className={styles.gridBadge}>x{qty}</span> : null;
-								}}
-								tableColumns={[
-									{
-										key: 'qty',
-										label: 'Qté',
-										render: (card) => state.rowMap.get(card.id)?.quantity ?? 1,
-									},
-									{ key: 'name', label: 'Nom' },
-									{
-										key: 'set',
-										label: 'Set',
-										render: (card) => ('set' in card ? (card.set as string).toUpperCase() : '—'),
-									},
-									{
-										key: 'collector_number',
-										label: 'Collector #',
-										render: (card) =>
-											'collector_number' in card ? (card.collector_number as string) : '—',
-									},
-								]}
+								renderOverlay={renderOverlay}
+								tableColumns={tableColumns}
 							/>
 						</div>
 					)}
-
 					<div className={styles.actions}>
 						<Button variant="ghost" onClick={onCancel}>
 							Annuler
@@ -170,32 +148,7 @@ export function ImportPreviewModal({
 					</div>
 				</>
 			)}
-
-			<FilterModal
-				isOpen={state.isFilterModalOpen}
-				colors={state.filters.colors}
-				colorMatch={state.filters.colorMatch}
-				type={state.filters.type}
-				set={state.filters.set}
-				rarities={state.filters.rarities}
-				oracleText={state.filters.oracleText}
-				cmc={state.filters.cmc}
-				sets={sets}
-				setsLoading={setsLoading}
-				order={state.filters.order as ScryfallSortOrder}
-				dir={state.filters.dir}
-				onApply={(applied) =>
-					state.setFilters((prev) => ({ ...prev, ...applied }) as CollectionFilters)
-				}
-				onClose={() => state.setIsFilterModalOpen(false)}
-			/>
-			<CardCollectionModal
-				stack={state.selectedImportStack}
-				onClose={() => state.setSelectedCardId(null)}
-				onSave={state.handleEditSave}
-				onRemove={state.handleEditRemove}
-				onRemoveEntry={() => {}}
-			/>
+			<ImportSupportModals state={state} sets={sets} setsLoading={setsLoading} />
 		</Modal>
 	);
 }

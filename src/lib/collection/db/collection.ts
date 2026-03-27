@@ -52,7 +52,7 @@ function rowToEntry(row: DbRow): CardEntry {
 	};
 }
 
-const PAGE_SIZE = 1000;
+const DB_FETCH_PAGE_SIZE = 1000;
 
 export async function fetchCollectionPage(
 	userId: string,
@@ -63,7 +63,7 @@ export async function fetchCollectionPage(
 		.from('cards')
 		.select('*')
 		.eq('owner_id', userId)
-		.range(from, from + PAGE_SIZE - 1);
+		.range(from, from + DB_FETCH_PAGE_SIZE - 1);
 
 	if (error) {
 		console.error('[collection] fetchCollectionPage error:', error);
@@ -74,7 +74,7 @@ export async function fetchCollectionPage(
 		scryfallId: row.scryfall_id,
 		entry: rowToEntry(row),
 	}));
-	return { rows, hasMore: data.length === PAGE_SIZE };
+	return { rows, hasMore: data.length === DB_FETCH_PAGE_SIZE };
 }
 
 export async function insertEntry(
