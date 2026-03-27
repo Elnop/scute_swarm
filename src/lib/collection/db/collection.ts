@@ -142,12 +142,17 @@ export async function deleteEntryById(userId: string, rowId: string): Promise<vo
 	}
 }
 
+const DELETE_BATCH_SIZE = 50;
+
 export async function deleteEntries(userId: string, rowIds: string[]): Promise<void> {
 	if (rowIds.length === 0) return;
 	const supabase = createClient();
-	const { error } = await supabase.from('cards').delete().eq('owner_id', userId).in('id', rowIds);
-	if (error) {
-		throw new Error(`[collection] deleteEntries error: ${error.message}`);
+	for (let i = 0; i < rowIds.length; i += DELETE_BATCH_SIZE) {
+		const batch = rowIds.slice(i, i + DELETE_BATCH_SIZE);
+		const { error } = await supabase.from('cards').delete().eq('owner_id', userId).in('id', batch);
+		if (error) {
+			throw new Error(`[collection] deleteEntries error: ${error.message}`);
+		}
 	}
 }
 
