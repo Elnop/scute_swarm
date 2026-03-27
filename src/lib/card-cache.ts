@@ -1,7 +1,9 @@
-// Persistent IndexedDB cache for ScryfallCard data.
+// Persistent IndexedDB cache for ScryfallCard data and collection entries.
 // Silently falls back to no-op if IndexedDB is unavailable (private mode, etc.).
 
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
+import type { CardEntry } from '@/types/cards';
+import type { CollectionData } from '@/lib/collection/db/collection-migrations';
 
 interface CachedCard {
 	id: string; // ScryfallUUID — keyPath of the object store
@@ -9,8 +11,15 @@ interface CachedCard {
 	cachedAt: number; // Date.now()
 }
 
+interface CachedCollectionEntry {
+	rowId: string; // keyPath
+	scryfallId: string;
+	entry: CardEntry;
+}
+
 const DB_NAME = 'mtg-snap-cache';
 const STORE_NAME = 'scryfall-cards';
+const COLLECTION_STORE = 'collection-entries';
 const TTL_MS = 86_400_000; // 24 hours
 
 // Lazily opened DB promise — only one IDBDatabase instance across the module lifetime
@@ -26,6 +35,9 @@ function openDB(): Promise<IDBDatabase> {
 			const db = request.result;
 			if (!db.objectStoreNames.contains(STORE_NAME)) {
 				db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+			}
+			if (!db.objectStoreNames.contains(COLLECTION_STORE)) {
+				db.createObjectStore(COLLECTION_STORE, { keyPath: 'rowId' });
 			}
 		};
 
@@ -135,6 +147,101 @@ export async function putCardsInCache(cards: ScryfallCard[]): Promise<void> {
 
 				tx.oncomplete = () => resolve();
 				tx.onerror = () => resolve(); // non-critical
+			} catch {
+				resolve();
+			}
+		});
+	} catch {
+		// IndexedDB unavailable — silently skip
+	}
+}
+
+/** Read all collection entries from IndexedDB cache. */
+export async function getCollectionFromCache(): Promise<CollectionData> {
+	const result: CollectionData = {};
+	try {
+		const db = await openDB();
+		return new Promise<CollectionData>((resolve) => {
+			try {
+				const tx = db.transaction(COLLECTION_STORE, 'readonly');
+				const store = tx.objectStore(COLLECTION_STORE);
+				const request = store.openCursor();
+				request.onsuccess = () => {
+					const cursor = request.result;
+					if (!cursor) {
+						resolve(result);
+						return;
+					}
+					const row = cursor.value as CachedCollectionEntry;
+					result[row.rowId] = { scryfallId: row.scryfallId, entry: row.entry };
+					cursor.continue();
+				};
+				request.onerror = () => resolve(result);
+			} catch {
+				resolve(result);
+			}
+		});
+	} catch {
+		return result;
+	}
+}
+
+/** Upsert a batch of collection entries into IndexedDB cache. */
+export async function putCollectionEntriesInCache(
+	entries: Array<{ rowId: string; scryfallId: string; entry: CardEntry }>
+): Promise<void> {
+	if (entries.length === 0) return;
+	try {
+		const db = await openDB();
+		return new Promise<void>((resolve) => {
+			try {
+				const tx = db.transaction(COLLECTION_STORE, 'readwrite');
+				const store = tx.objectStore(COLLECTION_STORE);
+				for (const e of entries) {
+					store.put({ rowId: e.rowId, scryfallId: e.scryfallId, entry: e.entry });
+				}
+				tx.oncomplete = () => resolve();
+				tx.onerror = () => resolve();
+			} catch {
+				resolve();
+			}
+		});
+	} catch {
+		// IndexedDB unavailable — silently skip
+	}
+}
+
+/** Delete a batch of collection entries from IndexedDB cache. */
+export async function deleteCollectionEntriesFromCache(rowIds: string[]): Promise<void> {
+	if (rowIds.length === 0) return;
+	try {
+		const db = await openDB();
+		return new Promise<void>((resolve) => {
+			try {
+				const tx = db.transaction(COLLECTION_STORE, 'readwrite');
+				const store = tx.objectStore(COLLECTION_STORE);
+				for (const rowId of rowIds) store.delete(rowId);
+				tx.oncomplete = () => resolve();
+				tx.onerror = () => resolve();
+			} catch {
+				resolve();
+			}
+		});
+	} catch {
+		// IndexedDB unavailable — silently skip
+	}
+}
+
+/** Clear all collection entries from IndexedDB cache (logout / clear collection). */
+export async function clearCollectionCache(): Promise<void> {
+	try {
+		const db = await openDB();
+		return new Promise<void>((resolve) => {
+			try {
+				const tx = db.transaction(COLLECTION_STORE, 'readwrite');
+				tx.objectStore(COLLECTION_STORE).clear();
+				tx.oncomplete = () => resolve();
+				tx.onerror = () => resolve();
 			} catch {
 				resolve();
 			}

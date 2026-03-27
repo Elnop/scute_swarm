@@ -5,6 +5,7 @@ import {
 	insertEntry,
 	insertEntries,
 	deleteEntryById,
+	deleteEntries,
 	updateEntry,
 } from '@/lib/collection/db/collection';
 import { createClient } from '@/lib/supabase/client';
@@ -86,6 +87,8 @@ export function useSyncQueue(userId: string | null | undefined) {
 					await deleteEntryById(op.payload.userId, op.payload.rowId);
 				} else if (op.type === 'bulk-insert') {
 					await insertEntries(op.payload.userId, op.payload.rows);
+				} else if (op.type === 'bulk-delete') {
+					await deleteEntries(op.payload.userId, op.payload.rowIds);
 				} else {
 					await updateEntry(op.payload.userId, op.payload.rowId, op.payload.entry);
 				}

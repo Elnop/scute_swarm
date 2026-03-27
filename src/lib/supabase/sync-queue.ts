@@ -33,6 +33,13 @@ export type SyncOp =
 			};
 			retries: number;
 			createdAt: string;
+	  }
+	| {
+			id: string;
+			type: 'bulk-delete';
+			payload: { userId: string; rowIds: string[] };
+			retries: number;
+			createdAt: string;
 	  };
 
 function loadQueue(): SyncOp[] {

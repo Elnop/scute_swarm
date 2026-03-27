@@ -54,32 +54,27 @@ function rowToEntry(row: DbRow): CardEntry {
 
 const PAGE_SIZE = 1000;
 
-// Returns one { scryfallId, entry } per physical copy — Scryfall data is fetched separately
-export async function fetchCollection(
-	userId: string
-): Promise<Array<{ scryfallId: string; entry: CardEntry }>> {
+export async function fetchCollectionPage(
+	userId: string,
+	from: number
+): Promise<{ rows: Array<{ scryfallId: string; entry: CardEntry }>; hasMore: boolean }> {
 	const supabase = createClient();
-	const allRows: DbRow[] = [];
-	let from = 0;
+	const { data, error } = await supabase
+		.from('cards')
+		.select('*')
+		.eq('owner_id', userId)
+		.range(from, from + PAGE_SIZE - 1);
 
-	while (true) {
-		const { data, error } = await supabase
-			.from('cards')
-			.select('*')
-			.eq('owner_id', userId)
-			.range(from, from + PAGE_SIZE - 1);
-
-		if (error) {
-			console.error('[collection] fetchCollection error:', error);
-			return [];
-		}
-
-		allRows.push(...(data as DbRow[]));
-		if (data.length < PAGE_SIZE) break;
-		from += PAGE_SIZE;
+	if (error) {
+		console.error('[collection] fetchCollectionPage error:', error);
+		return { rows: [], hasMore: false };
 	}
 
-	return allRows.map((row) => ({ scryfallId: row.scryfall_id, entry: rowToEntry(row) }));
+	const rows = (data as DbRow[]).map((row) => ({
+		scryfallId: row.scryfall_id,
+		entry: rowToEntry(row),
+	}));
+	return { rows, hasMore: data.length === PAGE_SIZE };
 }
 
 export async function insertEntry(
@@ -144,6 +139,15 @@ export async function deleteEntryById(userId: string, rowId: string): Promise<vo
 
 	if (error) {
 		throw new Error(`[collection] deleteEntryById error: ${error.message}`);
+	}
+}
+
+export async function deleteEntries(userId: string, rowIds: string[]): Promise<void> {
+	if (rowIds.length === 0) return;
+	const supabase = createClient();
+	const { error } = await supabase.from('cards').delete().eq('owner_id', userId).in('id', rowIds);
+	if (error) {
+		throw new Error(`[collection] deleteEntries error: ${error.message}`);
 	}
 }
 
