@@ -205,14 +205,7 @@ export function CardList({
 	}
 
 	if (!isLoading && cards.length === 0) {
-		return (
-			<>
-				{toggle}
-				<div className={styles.empty}>
-					<p>Aucune carte</p>
-				</div>
-			</>
-		);
+		return null;
 	}
 
 	return (
