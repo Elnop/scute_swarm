@@ -187,7 +187,7 @@ export function CardList({
 
 	const showInitialSkeletons = isLoading && cards.length === 0;
 
-	function renderGrid(cardItems: AnyCard[]) {
+	function renderGrid(cardItems: AnyCard[], withLoadMoreSkeletons = false) {
 		return (
 			<div className={gridClass} style={gridStyle}>
 				{cardItems.map((c) => (
@@ -205,6 +205,14 @@ export function CardList({
 						<p className={styles.cardName}>{c.name}</p>
 					</div>
 				))}
+				{withLoadMoreSkeletons &&
+					isLoadingMore &&
+					Array.from({ length: skeletonCount }).map((_, i) => (
+						<div key={`skmore-${i}`} className={styles.item}>
+							<div className={styles.skeletonImage} />
+							<div className={styles.skeletonName} />
+						</div>
+					))}
 			</div>
 		);
 	}
@@ -263,6 +271,9 @@ export function CardList({
 				{toggle}
 				{cardsOrSections.map((section) => {
 					const collapsed = collapsedSections.has(section.label);
+					const labelMatch = section.label.match(/^(.+?)\s*(\(\d+\))$/);
+					const labelName = labelMatch?.[1] ?? section.label;
+					const labelCount = labelMatch?.[2] ?? '';
 					return (
 						<div key={section.label}>
 							<button
@@ -270,7 +281,10 @@ export function CardList({
 								className={styles.sectionHeader}
 								onClick={() => toggleSection(section.label)}
 							>
-								<span>{section.label}</span>
+								<span>
+									{labelName}
+									{labelCount && <span className={styles.sectionCount}> {labelCount}</span>}
+								</span>
 								<span
 									className={[styles.chevron, collapsed ? styles.chevronCollapsed : '']
 										.filter(Boolean)
@@ -324,14 +338,7 @@ export function CardList({
 	return (
 		<>
 			{toggle}
-			{renderGrid(visibleCards)}
-			{isLoadingMore &&
-				Array.from({ length: skeletonCount }).map((_, i) => (
-					<div key={`skmore-${i}`} className={styles.item}>
-						<div className={styles.skeletonImage} />
-						<div className={styles.skeletonName} />
-					</div>
-				))}
+			{renderGrid(visibleCards, true)}
 			{resolvedHasMore && resolvedLoadMore && <div ref={sentinelRef} />}
 		</>
 	);
