@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getCardById } from '@/lib/scryfall/endpoints/cards';
-import { CardDetail } from '@/components/cards/CardDetail';
+import { CardPageHeader } from '@/components/cards/CardPageHeader/CardPageHeader';
+import { CardTabs } from '@/components/cards/CardTabs/CardTabs';
 import styles from './page.module.css';
 
 interface CardPageProps {
@@ -55,7 +57,10 @@ export default async function CardPage({ params }: CardPageProps) {
 					Back to Search
 				</Link>
 			</nav>
-			<CardDetail card={card} />
+			<CardPageHeader card={card} />
+			<Suspense>
+				<CardTabs card={card} />
+			</Suspense>
 		</div>
 	);
 }
