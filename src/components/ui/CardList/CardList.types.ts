@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import type { Card } from '@/types/cards';
 import type { ScryfallSortDir } from '@/components/ui/filters/SortFilter/SortFilter';
+import type { CardListColumn } from '@/components/ui/CardListTable/CardListTable.types';
 
 export type AnyCard = ScryfallCard | Card;
 
@@ -28,8 +29,7 @@ export interface CardListProps {
 	onCardClick?: (card: AnyCard) => void;
 	renderOverlay?: (card: AnyCard) => ReactNode;
 	// Table
-	// TODO: replace with CardListColumn[] once CardListTable.types.ts is created (Task 2)
-	tableColumns?: unknown[];
+	tableColumns?: CardListColumn[];
 	sortOrder?: string;
 	sortDir?: ScryfallSortDir;
 	onSortChange?: (order: string, dir: ScryfallSortDir) => void;
