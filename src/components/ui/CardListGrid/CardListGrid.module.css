@@ -1,0 +1,189 @@
+/* Grid view */
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 24px;
+	width: 100%;
+}
+
+.item {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.itemClickable {
+	cursor: pointer;
+	border-radius: 8px;
+	transition: transform 0.15s;
+}
+
+.itemClickable:hover {
+	transform: scale(1.03);
+}
+
+.imageWrapper {
+	position: relative;
+	width: 100%;
+}
+
+/* Force CardImage container (first child) to fill the grid cell */
+.imageWrapper > :first-child {
+	width: 100%;
+}
+
+.cardName {
+	font-size: 14px;
+	color: var(--foreground);
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Skeleton loading */
+
+.skeletonImage {
+	width: 100%;
+	aspect-ratio: 63 / 88;
+	border-radius: 8px;
+	background: var(--border);
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonName {
+	height: 14px;
+	width: 70%;
+	margin: 0 auto;
+	border-radius: 4px;
+	background: var(--border);
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
+
+/* Empty state */
+
+.empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 64px 24px;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+/* Overlay remove button — used via renderOverlay */
+
+.cardRemoveBtn {
+	opacity: 0;
+	transition: opacity 0.15s;
+}
+
+.imageWrapper:hover .cardRemoveBtn {
+	opacity: 1;
+}
+
+@media (max-width: 768px) {
+	.cardRemoveBtn {
+		opacity: 1;
+	}
+}
+
+/* Grid fixe (cardsPerLine) */
+
+.gridFixed {
+	display: grid;
+	grid-template-columns: repeat(var(--cards-per-line), 1fr);
+	gap: 16px;
+	width: 100%;
+	min-width: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+	.grid {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: 16px;
+	}
+
+	.gridFixed {
+		grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+		gap: 12px;
+	}
+}
+
+@media (max-width: 480px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+
+	.gridFixed {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 8px;
+	}
+
+	.cardName {
+		font-size: 12px;
+	}
+}
+
+/* Sections */
+
+.sectionWrapper {
+	margin-top: 24px;
+}
+
+.sectionWrapperFirst {
+	margin-top: 0;
+}
+
+.sectionHeader {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 10px 0 6px;
+	background: none;
+	border: none;
+	border-bottom: 1px solid var(--border);
+	cursor: pointer;
+	color: var(--foreground);
+	font-size: 14px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.sectionCount {
+	font-size: 12px;
+	color: var(--text-muted);
+	font-weight: 400;
+}
+
+.chevron {
+	margin-left: auto;
+	font-size: 12px;
+	color: var(--text-muted);
+	transition: transform 0.2s;
+	display: inline-block;
+}
+
+.chevronCollapsed {
+	transform: rotate(-90deg);
+}
+
+.sectionBody {
+	margin-top: 12px;
+}
