@@ -35,6 +35,7 @@ function isAuthError(err: unknown): boolean {
 export function useSyncQueue(userId: string | null | undefined) {
 	const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
 	const [failedCount, setFailedCount] = useState(0);
+	const [lastError, setLastError] = useState<string | null>(null);
 	const isRunning = useRef(false);
 
 	const refreshStatus = useCallback(() => {
@@ -106,6 +107,7 @@ export function useSyncQueue(userId: string | null | undefined) {
 				}
 				const delay = BACKOFF_BASE_MS * Math.pow(2, op.retries);
 				incrementRetry(op.id);
+				setLastError(err instanceof Error ? err.message : String(err));
 				refreshStatus();
 				await new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -141,14 +143,21 @@ export function useSyncQueue(userId: string | null | undefined) {
 
 	const retry = useCallback(() => {
 		clearFailed(MAX_RETRIES);
+		setLastError(null);
 		refreshStatus();
 		void runQueue();
 	}, [runQueue, refreshStatus]);
+
+	const dismiss = useCallback(() => {
+		clearFailed(MAX_RETRIES);
+		setLastError(null);
+		refreshStatus();
+	}, [refreshStatus]);
 
 	// Expose a trigger so external code can kick processing
 	const triggerSync = useCallback(() => {
 		if (navigator.onLine) void runQueue();
 	}, [runQueue]);
 
-	return { syncStatus, failedCount, retry, triggerSync };
+	return { syncStatus, failedCount, lastError, retry, dismiss, triggerSync };
 }

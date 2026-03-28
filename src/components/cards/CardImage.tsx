@@ -101,7 +101,7 @@ export function CardImage({
 						<span className={styles.placeholderText}>{card.name}</span>
 					</div>
 				)}
-				{isLoading && !error && <div className={styles.skeleton} style={{ width, height }} />}
+				{isLoading && !error && <div className={styles.skeleton} />}
 			</div>
 			{isDoubleFaced && (
 				<button

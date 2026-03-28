@@ -50,8 +50,8 @@ export function CardListGrid({
 					isLoadingMore &&
 					Array.from({ length: skeletonCount }).map((_, i) => (
 						<div key={`skmore-${i}`} className={styles.item}>
-							<div className={styles.skeletonImage} />
 							<div className={styles.skeletonName} />
+							<div className={styles.skeletonImage} />
 						</div>
 					))}
 			</div>
@@ -103,8 +103,8 @@ export function CardListGrid({
 			<div className={gridClass} style={gridStyle}>
 				{Array.from({ length: skeletonCount }).map((_, i) => (
 					<div key={`sk-${i}`} className={styles.item}>
-						<div className={styles.skeletonImage} />
 						<div className={styles.skeletonName} />
+						<div className={styles.skeletonImage} />
 					</div>
 				))}
 			</div>

@@ -36,3 +36,87 @@
 .errorBadge:hover {
 	background: #dc2626;
 }
+
+.popoverWrapper {
+	position: relative;
+	display: inline-flex;
+}
+
+.popover {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	min-width: 260px;
+	max-width: min(360px, calc(100vw - 32px));
+	padding: 12px;
+	background: var(--background);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+	z-index: 200;
+}
+
+.popoverTitle {
+	margin: 0 0 8px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #ef4444;
+}
+
+.popoverMessage {
+	margin: 0 0 6px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: var(--foreground);
+}
+
+.popoverRaw {
+	margin: 0 0 10px;
+	font-size: 11px;
+	line-height: 1.3;
+	color: var(--text-muted);
+	font-family: monospace;
+	word-break: break-all;
+}
+
+.popoverActions {
+	display: flex;
+	gap: 8px;
+}
+
+.popoverBtn {
+	flex: 1;
+	padding: 6px 10px;
+	font-size: 12px;
+	font-weight: 600;
+	color: white;
+	background: #ef4444;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.popoverBtn:hover {
+	background: #dc2626;
+}
+
+.popoverBtnGhost {
+	flex: 1;
+	padding: 6px 10px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text-muted);
+	background: transparent;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+
+.popoverBtnGhost:hover {
+	color: var(--foreground);
+	background: var(--surface);
+}

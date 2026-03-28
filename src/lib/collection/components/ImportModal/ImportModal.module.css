@@ -462,7 +462,7 @@
 .skeletonImage {
 	width: 100%;
 	aspect-ratio: 63 / 88;
-	border-radius: 8px;
+	border-radius: 4.75% / 3.4%;
 	background: var(--border);
 	animation: pulse 1.5s ease-in-out infinite;
 }
