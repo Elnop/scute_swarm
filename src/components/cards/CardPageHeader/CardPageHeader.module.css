@@ -9,6 +9,7 @@
 
 .imageSection {
 	flex-shrink: 0;
+	cursor: zoom-in;
 }
 
 .infoSection {
