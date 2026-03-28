@@ -2,15 +2,60 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import type { ReactNode } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import type { CardEntry } from '@/types/cards';
+import type { Card, CardEntry } from '@/types/cards';
 import { useCardPrints } from '@/lib/scryfall/hooks/useCardPrints';
+import { CardList } from '@/components/ui/CardList/CardList';
 import { CopyEditModal } from '@/lib/collection/CardCollectionModal/components/CopyEditModal/CopyEditModal';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
 import styles from './PrintsTab.module.css';
 
+type AnyCard = ScryfallCard | Card;
+
 interface Props {
 	card: ScryfallCard;
+}
+
+function MiniThumb({ card }: { card: ScryfallCard }): ReactNode {
+	const src = card.image_uris?.small ?? card.card_faces?.[0]?.image_uris?.small;
+	if (!src) return null;
+	return <Image src={src} alt={card.name} width={40} height={56} className={styles.thumb} />;
+}
+
+function SetInfo({ card }: { card: ScryfallCard }): ReactNode {
+	return (
+		<>
+			<div className={styles.printName}>{card.set_name}</div>
+			<div className={styles.printMeta}>#{card.collector_number}</div>
+		</>
+	);
+}
+
+function PrintAction({
+	print,
+	currentId,
+	onAdd,
+}: {
+	print: ScryfallCard;
+	currentId: string;
+	onAdd: (print: ScryfallCard) => void;
+}): ReactNode {
+	if (print.id === currentId) {
+		return <span className={styles.currentBadge}>Affiché</span>;
+	}
+	return (
+		<button
+			type="button"
+			className={styles.addBtn}
+			onClick={(e) => {
+				e.stopPropagation();
+				onAdd(print);
+			}}
+		>
+			Ajouter
+		</button>
+	);
 }
 
 export function PrintsTab({ card }: Props) {
@@ -23,79 +68,48 @@ export function PrintsTab({ card }: Props) {
 		setAddingCard(null);
 	}
 
-	if (loading) {
-		return <div className={styles.loading}>Chargement des éditions…</div>;
-	}
-
-	if (prints.length === 0) {
-		return <div className={styles.empty}>Aucune édition trouvée.</div>;
-	}
-
 	return (
 		<>
-			<div className={styles.container}>
-				{prints.map((print) => {
-					const isCurrent = print.id === card.id;
-					const imageUri = print.image_uris?.small ?? print.card_faces?.[0]?.image_uris?.small;
-
-					return (
-						<div key={print.id} className={styles.printRow} data-current={isCurrent}>
-							{imageUri && (
-								<Image
-									src={imageUri}
-									alt={print.name}
-									width={40}
-									height={56}
-									className={styles.thumb}
-								/>
-							)}
-							<div className={styles.printInfo}>
-								<div className={styles.printName}>{print.set_name}</div>
-								<div className={styles.printMeta}>
-									#{print.collector_number} · {print.rarity}
-								</div>
-							</div>
-							<div className={styles.prices}>
-								{print.prices?.usd && (
-									<div className={styles.priceItem}>
-										<span className={styles.priceLabel}>USD</span>
-										<span className={styles.priceValue}>${print.prices.usd}</span>
-									</div>
-								)}
-								{print.prices?.usd_foil && (
-									<div className={styles.priceItem}>
-										<span className={styles.priceLabel}>Foil</span>
-										<span className={styles.priceValue}>${print.prices.usd_foil}</span>
-									</div>
-								)}
-								{print.prices?.eur && (
-									<div className={styles.priceItem}>
-										<span className={styles.priceLabel}>EUR</span>
-										<span className={styles.priceValue}>{print.prices.eur}€</span>
-									</div>
-								)}
-							</div>
-							{isCurrent ? (
-								<span className={styles.currentBadge}>Affiché</span>
-							) : (
-								<button
-									type="button"
-									className={styles.addBtn}
-									onClick={() => setAddingCard(print)}
-								>
-									Ajouter
-								</button>
-							)}
-						</div>
-					);
-				})}
-			</div>
+			<CardList
+				cards={prints}
+				isLoading={loading}
+				pageSize={false}
+				renderOverlay={(p: AnyCard) => (
+					<PrintAction print={p as ScryfallCard} currentId={card.id} onAdd={setAddingCard} />
+				)}
+				tableColumns={[
+					{
+						key: 'image',
+						label: '',
+						render: (p: AnyCard) => <MiniThumb card={p as ScryfallCard} />,
+					},
+					{
+						key: 'set',
+						label: 'Édition',
+						render: (p: AnyCard) => <SetInfo card={p as ScryfallCard} />,
+					},
+					{
+						key: 'rarity',
+						label: 'Rareté',
+						render: (p: AnyCard) =>
+							((p as ScryfallCard).rarity ?? '').charAt(0).toUpperCase() +
+							((p as ScryfallCard).rarity ?? '').slice(1),
+					},
+					{
+						key: 'action',
+						label: '',
+						render: (p: AnyCard) => (
+							<PrintAction print={p as ScryfallCard} currentId={card.id} onAdd={setAddingCard} />
+						),
+					},
+				]}
+			/>
 
 			{addingCard && (
 				<CopyEditModal
 					mode="add"
 					scryfallCard={addingCard}
-					onAdd={(selectedPrint, entry) => handleAdd(selectedPrint, entry)}
+					onAdd={handleAdd}
 					onClose={() => setAddingCard(null)}
 				/>
 			)}
