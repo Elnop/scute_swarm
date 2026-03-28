@@ -12,6 +12,17 @@ import styles from './CardList.module.css';
 
 type AnyCard = ScryfallCard | Card;
 
+export interface CardListSection {
+	label: string;
+	cards: AnyCard[];
+}
+
+type CardListCards = AnyCard[] | CardListSection[];
+
+function isSections(cards: CardListCards): cards is CardListSection[] {
+	return cards.length > 0 && 'label' in (cards[0] as object);
+}
+
 export interface CardListColumn {
 	key: string;
 	label: string;
@@ -20,7 +31,7 @@ export interface CardListColumn {
 }
 
 export interface CardListProps {
-	cards: AnyCard[];
+	cards: CardListCards;
 	// Pagination intégrée
 	isLoading?: boolean;
 	isLoadingMore?: boolean;
@@ -76,7 +87,7 @@ export const cardListOverlayStyles = {
 };
 
 export function CardList({
-	cards,
+	cards: cardsOrSections,
 	isLoading = false,
 	isLoadingMore = false,
 	hasMore = false,
@@ -92,6 +103,9 @@ export function CardList({
 	className,
 	pageSize = PAGE_SIZE,
 }: CardListProps) {
+	// For now, only flat arrays are supported. Task 2 will add section rendering.
+	const cards = isSections(cardsOrSections) ? [] : cardsOrSections;
+
 	function handleHeaderClick(key: string) {
 		if (!onSortChange) return;
 		if (sortOrder === key) {
