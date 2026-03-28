@@ -24,9 +24,8 @@ export function AddToCollectionButton({ card }: AddToCollectionButtonProps) {
 		return () => clearTimeout(timer);
 	}, [showFeedback]);
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function handleAdd(_entry: Partial<CardEntry>) {
-		addCard(card);
+	function handleAdd(entry: Partial<CardEntry>) {
+		addCard(card, entry);
 		setShowFeedback(true);
 	}
 

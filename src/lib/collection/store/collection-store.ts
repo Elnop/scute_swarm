@@ -29,7 +29,12 @@ type CollectionActions = {
 	handleLogout: (userId: string | null) => void;
 
 	// Mutations — all take triggerSync so the sync queue can be triggered
-	addCard: (card: ScryfallCard, userId: string | null, triggerSync: () => void) => void;
+	addCard: (
+		card: ScryfallCard,
+		userId: string | null,
+		triggerSync: () => void,
+		entryPatch?: Partial<CardEntry>
+	) => void;
 	duplicateEntry: (
 		scryfallId: string,
 		sourceEntry: CardEntry,
@@ -110,9 +115,9 @@ export const useCollectionStore = create<CollectionState & CollectionActions>()(
 		}
 	},
 
-	addCard: (card, userId, triggerSync) => {
+	addCard: (card, userId, triggerSync, entryPatch) => {
 		const newRowId = crypto.randomUUID();
-		const entry = newEntry(newRowId);
+		const entry = newEntry(newRowId, entryPatch);
 		set((state) => ({
 			entries: { [newRowId]: { scryfallId: card.id, entry }, ...state.entries },
 		}));

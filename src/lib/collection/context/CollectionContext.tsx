@@ -13,7 +13,7 @@ type CollectionContextValue = {
 	collection: CollectionData;
 	entries: Array<{ scryfallId: string; entry: CardEntry }>;
 	isLoaded: boolean;
-	addCard: (card: ScryfallCard) => void;
+	addCard: (card: ScryfallCard, entryPatch?: Partial<CardEntry>) => void;
 	duplicateEntry: (scryfallId: string, sourceEntry: CardEntry) => void;
 	removeCard: (scryfallId: string) => void;
 	decrementCard: (scryfallId: string) => void;
@@ -62,7 +62,8 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
 
 	// Bind mutations to current userId + triggerSync
 	const addCard = useCallback(
-		(card: ScryfallCard) => store.addCard(card, userId, triggerSync),
+		(card: ScryfallCard, entryPatch?: Partial<CardEntry>) =>
+			store.addCard(card, userId, triggerSync, entryPatch),
 		[store, userId, triggerSync]
 	);
 	const duplicateEntry = useCallback(
