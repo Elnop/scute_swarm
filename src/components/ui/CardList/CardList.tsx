@@ -103,7 +103,19 @@ export function CardList({
 	className,
 	pageSize = PAGE_SIZE,
 }: CardListProps) {
-	// For now, only flat arrays are supported. Task 2 will add section rendering.
+	const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+
+	const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+
+	function toggleSection(label: string) {
+		setCollapsedSections((prev) => {
+			const next = new Set(prev);
+			if (next.has(label)) next.delete(label);
+			else next.add(label);
+			return next;
+		});
+	}
+
 	const cards = isSections(cardsOrSections) ? [] : cardsOrSections;
 
 	function handleHeaderClick(key: string) {
@@ -114,7 +126,6 @@ export function CardList({
 			onSortChange(key, 'asc');
 		}
 	}
-	const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
 
 	const localPageSize = typeof pageSize === 'number' ? pageSize : null;
 
@@ -166,60 +177,6 @@ export function CardList({
 		</div>
 	);
 
-	if (viewMode === 'table') {
-		const columns = tableColumns ?? [];
-		return (
-			<>
-				{toggle}
-				<div className={styles.tableContainer}>
-					<table className={styles.table}>
-						<thead>
-							<tr>
-								{columns.map((col) => (
-									<th
-										key={col.key}
-										onClick={col.sortKey ? () => handleHeaderClick(col.sortKey!) : undefined}
-										className={col.sortKey ? styles.thSortable : undefined}
-										aria-sort={
-											col.sortKey && sortOrder === col.sortKey
-												? sortDir === 'desc'
-													? 'descending'
-													: 'ascending'
-												: undefined
-										}
-									>
-										{col.label}
-										{col.sortKey && sortOrder === col.sortKey && (
-											<SortIcon dir={sortDir ?? 'asc'} />
-										)}
-									</th>
-								))}
-							</tr>
-						</thead>
-						<tbody>
-							{visibleCards.map((card) => (
-								<tr
-									key={card.id}
-									className={onCardClick ? styles.clickableRow : undefined}
-									onClick={onCardClick ? () => onCardClick(card) : undefined}
-								>
-									{columns.map((col) => (
-										<td key={col.key}>
-											{col.render
-												? col.render(card)
-												: String((card as unknown as Record<string, unknown>)[col.key] ?? '')}
-										</td>
-									))}
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-				{resolvedHasMore && resolvedLoadMore && <div ref={sentinelRef} />}
-			</>
-		);
-	}
-
 	// Grid view
 	const gridClass = [cardsPerLine ? styles.gridFixed : styles.grid, className]
 		.filter(Boolean)
@@ -229,6 +186,120 @@ export function CardList({
 		: undefined;
 
 	const showInitialSkeletons = isLoading && cards.length === 0;
+
+	function renderGrid(cardItems: AnyCard[]) {
+		return (
+			<div className={gridClass} style={gridStyle}>
+				{cardItems.map((c) => (
+					<div
+						key={c.id}
+						className={[styles.item, onCardClick ? styles.itemClickable : undefined]
+							.filter(Boolean)
+							.join(' ')}
+						onClick={onCardClick ? () => onCardClick(c) : undefined}
+					>
+						<div className={styles.imageWrapper}>
+							<CardImage card={c} size="normal" />
+							{renderOverlay?.(c)}
+						</div>
+						<p className={styles.cardName}>{c.name}</p>
+					</div>
+				))}
+			</div>
+		);
+	}
+
+	function renderTable(cardItems: AnyCard[]) {
+		const columns = tableColumns ?? [];
+		return (
+			<div className={styles.tableContainer}>
+				<table className={styles.table}>
+					<thead>
+						<tr>
+							{columns.map((col) => (
+								<th
+									key={col.key}
+									onClick={col.sortKey ? () => handleHeaderClick(col.sortKey!) : undefined}
+									className={col.sortKey ? styles.thSortable : undefined}
+									aria-sort={
+										col.sortKey && sortOrder === col.sortKey
+											? sortDir === 'desc'
+												? 'descending'
+												: 'ascending'
+											: undefined
+									}
+								>
+									{col.label}
+									{col.sortKey && sortOrder === col.sortKey && <SortIcon dir={sortDir ?? 'asc'} />}
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{cardItems.map((c) => (
+							<tr
+								key={c.id}
+								className={onCardClick ? styles.clickableRow : undefined}
+								onClick={onCardClick ? () => onCardClick(c) : undefined}
+							>
+								{columns.map((col) => (
+									<td key={col.key}>
+										{col.render
+											? col.render(c)
+											: String((c as unknown as Record<string, unknown>)[col.key] ?? '')}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		);
+	}
+
+	if (isSections(cardsOrSections)) {
+		return (
+			<>
+				{toggle}
+				{cardsOrSections.map((section) => {
+					const collapsed = collapsedSections.has(section.label);
+					return (
+						<div key={section.label}>
+							<button
+								type="button"
+								className={styles.sectionHeader}
+								onClick={() => toggleSection(section.label)}
+							>
+								<span>{section.label}</span>
+								<span
+									className={[styles.chevron, collapsed ? styles.chevronCollapsed : '']
+										.filter(Boolean)
+										.join(' ')}
+								>
+									▾
+								</span>
+							</button>
+							{!collapsed && (
+								<div className={styles.sectionBody}>
+									{viewMode === 'table' ? renderTable(section.cards) : renderGrid(section.cards)}
+								</div>
+							)}
+						</div>
+					);
+				})}
+			</>
+		);
+	}
+
+	if (viewMode === 'table') {
+		return (
+			<>
+				{toggle}
+				{renderTable(visibleCards)}
+				{resolvedHasMore && resolvedLoadMore && <div ref={sentinelRef} />}
+			</>
+		);
+	}
 
 	if (showInitialSkeletons) {
 		return (
@@ -253,30 +324,14 @@ export function CardList({
 	return (
 		<>
 			{toggle}
-			<div className={gridClass} style={gridStyle}>
-				{visibleCards.map((card) => (
-					<div
-						key={card.id}
-						className={[styles.item, onCardClick ? styles.itemClickable : undefined]
-							.filter(Boolean)
-							.join(' ')}
-						onClick={onCardClick ? () => onCardClick(card) : undefined}
-					>
-						<div className={styles.imageWrapper}>
-							<CardImage card={card} size="normal" />
-							{renderOverlay?.(card)}
-						</div>
-						<p className={styles.cardName}>{card.name}</p>
+			{renderGrid(visibleCards)}
+			{isLoadingMore &&
+				Array.from({ length: skeletonCount }).map((_, i) => (
+					<div key={`skmore-${i}`} className={styles.item}>
+						<div className={styles.skeletonImage} />
+						<div className={styles.skeletonName} />
 					</div>
 				))}
-				{isLoadingMore &&
-					Array.from({ length: skeletonCount }).map((_, i) => (
-						<div key={`skmore-${i}`} className={styles.item}>
-							<div className={styles.skeletonImage} />
-							<div className={styles.skeletonName} />
-						</div>
-					))}
-			</div>
 			{resolvedHasMore && resolvedLoadMore && <div ref={sentinelRef} />}
 		</>
 	);
