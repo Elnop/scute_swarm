@@ -12,7 +12,7 @@ export function Hero() {
 
 			<div className={styles.content}>
 				<h1 className={styles.title}>
-					<span className={styles.titleMain}>MTG Snap</span>
+					<span className={styles.titleMain}>Wizcard</span>
 					<span className={styles.titleSub}>Magic Card Search</span>
 				</h1>
 

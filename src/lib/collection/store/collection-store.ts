@@ -75,7 +75,7 @@ export const useCollectionStore = create<CollectionState & CollectionActions>()(
 	hydrateFromSupabase: async (userId, triggerSync) => {
 		// Purge ancien cache localStorage (migration one-time)
 		if (typeof window !== 'undefined') {
-			localStorage.removeItem('mtg-snap-collection');
+			localStorage.removeItem('wizcard-collection');
 		}
 
 		// Phase 1 : afficher le cache IndexedDB immédiatement
@@ -104,9 +104,9 @@ export const useCollectionStore = create<CollectionState & CollectionActions>()(
 
 	handleLogout: (userId) => {
 		if (typeof window === 'undefined') return;
-		const signedIn = localStorage.getItem('mtg-snap-signed-in') === 'true';
+		const signedIn = localStorage.getItem('wizcard-signed-in') === 'true';
 		if (userId === null && signedIn) {
-			localStorage.removeItem('mtg-snap-signed-in');
+			localStorage.removeItem('wizcard-signed-in');
 			clearQueue();
 			void clearCollectionCache();
 			set({ entries: {}, isLoaded: true });

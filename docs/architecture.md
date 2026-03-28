@@ -1,6 +1,6 @@
 # Architecture
 
-MTG Snap is a Next.js 16 App Router application for managing a Magic: The Gathering card collection. It uses Scryfall as the card data source, Supabase for auth and persistent storage, and localStorage for offline-first operation.
+Wizcard is a Next.js 16 App Router application for managing a Magic: The Gathering card collection. It uses Scryfall as the card data source, Supabase for auth and persistent storage, and localStorage for offline-first operation.
 
 ## Directory Map
 
@@ -104,7 +104,7 @@ Feature modules follow the **feature > sub-feature > resource** pattern — see 
 ```
 /collection page
     → useCollectionContext() → collection-store.ts (Zustand)
-        ├── localStorage (mtg-snap-collection) — source of truth
+        ├── localStorage (wizcard-collection) — source of truth
         └── Supabase public.cards — remote persistence via sync queue
     → useCollectionCards (hook)
         ├── IndexedDB card cache (24h) — first

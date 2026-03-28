@@ -1,6 +1,6 @@
 # AGENTS.md — scute_swarm
 
-MTG collection manager — Next.js 16 + Supabase + Scryfall API.
+Wizcard — MTG collection manager — Next.js 16 + Supabase + Scryfall API.
 
 ## Common Pitfalls
 
@@ -109,9 +109,9 @@ AuthProvider
 
 ### localStorage Keys
 
-- `mtg-snap-collection` — `Record<rowId, { scryfallId: string, entry: CardEntry }>`
-- `mtg-snap-sync-queue` — `SyncOp[]`
-- `mtg-snap-signed-in` — presence flag; cleared on logout to wipe local collection
+- `wizcard-collection` — `Record<rowId, { scryfallId: string, entry: CardEntry }>`
+- `wizcard-sync-queue` — `SyncOp[]`
+- `wizcard-signed-in` — presence flag; cleared on logout to wipe local collection
 
 ### Supabase Table: `public.cards`
 

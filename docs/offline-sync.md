@@ -1,6 +1,6 @@
 # Offline Sync
 
-MTG Snap uses an **offline-first** model: all collection mutations are written to localStorage immediately, then synced to Supabase asynchronously.
+Wizcard uses an **offline-first** model: all collection mutations are written to localStorage immediately, then synced to Supabase asynchronously.
 
 ## Architecture
 
@@ -61,7 +61,7 @@ This ensures that:
 
 ## Logout Behavior
 
-On logout, the `mtg-snap-signed-in` flag is cleared from localStorage. On the next page load, `useCollection.ts` detects the absence of this flag and wipes the local collection, preventing stale data from showing for the next user (or the same user after re-login).
+On logout, the `wizcard-signed-in` flag is cleared from localStorage. On the next page load, `useCollection.ts` detects the absence of this flag and wipes the local collection, preventing stale data from showing for the next user (or the same user after re-login).
 
 ## Key Functions (`src/lib/supabase/sync-queue.ts`)
 

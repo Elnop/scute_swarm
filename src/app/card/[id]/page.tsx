@@ -16,12 +16,12 @@ export async function generateMetadata({ params }: CardPageProps) {
 	try {
 		const card = await getCardById(id);
 		return {
-			title: `${card.name} | MTG Snap`,
+			title: `${card.name} | Wizcard`,
 			description: `${card.type_line} - ${card.oracle_text?.slice(0, 150) ?? card.name}`,
 		};
 	} catch {
 		return {
-			title: 'Card Not Found | MTG Snap',
+			title: 'Card Not Found | Wizcard',
 		};
 	}
 }

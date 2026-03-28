@@ -54,7 +54,7 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		if (typeof window !== 'undefined') {
-			localStorage.setItem('mtg-snap-signed-in', 'true');
+			localStorage.setItem('wizcard-signed-in', 'true');
 		}
 
 		void store.hydrateFromSupabase(userId, triggerSync);

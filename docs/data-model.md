@@ -116,7 +116,7 @@ The mapping between DB columns and TypeScript fields is handled in `src/lib/supa
 
 ## localStorage Format
 
-**Key:** `mtg-snap-collection`
+**Key:** `wizcard-collection`
 
 **Current canonical format:**
 
@@ -128,5 +128,5 @@ A legacy migration path exists in `useCollection.ts` for older formats. All new 
 
 **Other localStorage keys:**
 
-- `mtg-snap-sync-queue` — `SyncOp[]` — pending Supabase sync operations
-- `mtg-snap-signed-in` — presence flag; cleared on logout to wipe local collection state
+- `wizcard-sync-queue` — `SyncOp[]` — pending Supabase sync operations
+- `wizcard-signed-in` — presence flag; cleared on logout to wipe local collection state

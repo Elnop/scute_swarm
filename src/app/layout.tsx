@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'MTG Snap - Magic: The Gathering Card Search',
+	title: 'Wizcard - Magic: The Gathering Card Search',
 	description:
 		'Search through every Magic: The Gathering card ever printed. Filter by color, type, set, and more.',
 	keywords: ['magic the gathering', 'mtg', 'card search', 'scryfall', 'trading cards'],

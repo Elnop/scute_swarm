@@ -1,6 +1,6 @@
 import type { CardEntry } from '@/types/cards';
 
-const QUEUE_KEY = 'mtg-snap-sync-queue';
+const QUEUE_KEY = 'wizcard-sync-queue';
 
 export type SyncOp =
 	| {

@@ -17,7 +17,7 @@ interface CachedCollectionEntry {
 	entry: CardEntry;
 }
 
-const DB_NAME = 'mtg-snap-cache';
+const DB_NAME = 'wizcard-cache';
 const STORE_NAME = 'scryfall-cards';
 const COLLECTION_STORE = 'collection-entries';
 const TTL_MS = 86_400_000; // 24 hours

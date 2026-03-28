@@ -1,4 +1,4 @@
-# MTG Snap
+# Wizcard
 
 A Magic: The Gathering card collection manager. Search every printed card via the Scryfall API, track your physical copies with per-copy metadata (condition, foil type, language, tags, price), and sync your collection across devices with Supabase.
 

@@ -32,7 +32,7 @@ export function Navbar() {
 	return (
 		<header className={styles.navbar}>
 			<Link href="/" className={styles.logo}>
-				MTG Snap
+				Wizcard
 			</Link>
 			<nav className={styles.nav}>
 				<Link
