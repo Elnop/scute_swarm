@@ -6,12 +6,43 @@ import type { ReactNode } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import type { Card, CardEntry } from '@/types/cards';
 import { useCardPrints } from '@/lib/scryfall/hooks/useCardPrints';
-import { CardList } from '@/components/ui/CardList/CardList';
+import { CardList, type CardListSection } from '@/components/ui/CardList/CardList';
 import { CopyEditModal } from '@/lib/collection/CardCollectionModal/components/CopyEditModal/CopyEditModal';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
 import styles from './PrintsTab.module.css';
 
 type AnyCard = ScryfallCard | Card;
+
+const LANG_DISPLAY = new Intl.DisplayNames('fr', { type: 'language' });
+
+function getLangLabel(lang: string, count: number): string {
+	const name = LANG_DISPLAY.of(lang) ?? lang.toUpperCase();
+	return `${name.charAt(0).toUpperCase() + name.slice(1)} (${count})`;
+}
+
+function groupPrintsByLang(
+	prints: ScryfallCard[],
+	currentLang: string
+): { label: string; cards: ScryfallCard[] }[] {
+	const map = new Map<string, ScryfallCard[]>();
+	for (const print of prints) {
+		const group = map.get(print.lang) ?? [];
+		group.push(print);
+		map.set(print.lang, group);
+	}
+
+	const entries = [...map.entries()];
+	entries.sort(([a], [b]) => {
+		if (a === currentLang) return -1;
+		if (b === currentLang) return 1;
+		return getLangLabel(a, 0).localeCompare(getLangLabel(b, 0), 'fr');
+	});
+
+	return entries.map(([lang, cards]) => ({
+		label: getLangLabel(lang, cards.length),
+		cards,
+	}));
+}
 
 interface Props {
 	card: ScryfallCard;
@@ -68,10 +99,12 @@ export function PrintsTab({ card }: Props) {
 		setAddingCard(null);
 	}
 
+	const sections: CardListSection[] = groupPrintsByLang(prints, card.lang);
+
 	return (
 		<>
 			<CardList
-				cards={prints}
+				cards={sections}
 				isLoading={loading}
 				pageSize={false}
 				renderOverlay={(p: AnyCard) => (
