@@ -1,7 +1,7 @@
 // Persistent IndexedDB cache for ScryfallCard data and collection entries.
 // Silently falls back to no-op if IndexedDB is unavailable (private mode, etc.).
 
-import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
+import type { ScryfallCard, ScryfallImageUris } from '@/lib/scryfall/types/scryfall';
 import type { CardEntry } from '@/types/cards';
 import type { CollectionData } from '@/lib/collection/db/collection-migrations';
 
@@ -17,9 +17,18 @@ interface CachedCollectionEntry {
 	entry: CardEntry;
 }
 
+/** Cached localized image URIs, keyed by "set/collector_number/lang". */
+export interface CachedLocalizedImage {
+	key: string; // keyPath — "set/collector_number/lang"
+	image_uris?: ScryfallImageUris;
+	face_image_uris?: (ScryfallImageUris | undefined)[];
+	cachedAt: number;
+}
+
 const DB_NAME = 'wizcard-cache';
 const STORE_NAME = 'scryfall-cards';
 const COLLECTION_STORE = 'collection-entries';
+const LOCALIZED_IMAGE_STORE = 'localized-images';
 const TTL_MS = 86_400_000; // 24 hours
 
 // Lazily opened DB promise — only one IDBDatabase instance across the module lifetime
@@ -29,7 +38,7 @@ function openDB(): Promise<IDBDatabase> {
 	if (dbPromise) return dbPromise;
 
 	dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
-		const request = indexedDB.open(DB_NAME, 1);
+		const request = indexedDB.open(DB_NAME, 2);
 
 		request.onupgradeneeded = () => {
 			const db = request.result;
@@ -38,6 +47,9 @@ function openDB(): Promise<IDBDatabase> {
 			}
 			if (!db.objectStoreNames.contains(COLLECTION_STORE)) {
 				db.createObjectStore(COLLECTION_STORE, { keyPath: 'rowId' });
+			}
+			if (!db.objectStoreNames.contains(LOCALIZED_IMAGE_STORE)) {
+				db.createObjectStore(LOCALIZED_IMAGE_STORE, { keyPath: 'key' });
 			}
 		};
 
@@ -221,6 +233,53 @@ export async function deleteCollectionEntriesFromCache(rowIds: string[]): Promis
 				const tx = db.transaction(COLLECTION_STORE, 'readwrite');
 				const store = tx.objectStore(COLLECTION_STORE);
 				for (const rowId of rowIds) store.delete(rowId);
+				tx.oncomplete = () => resolve();
+				tx.onerror = () => resolve();
+			} catch {
+				resolve();
+			}
+		});
+	} catch {
+		// IndexedDB unavailable — silently skip
+	}
+}
+
+/** Read a localized image entry from the cache. Returns null on miss or expiry. */
+export async function getLocalizedImageFromCache(
+	key: string
+): Promise<CachedLocalizedImage | null> {
+	try {
+		const db = await openDB();
+		return new Promise<CachedLocalizedImage | null>((resolve) => {
+			try {
+				const tx = db.transaction(LOCALIZED_IMAGE_STORE, 'readonly');
+				const req = tx.objectStore(LOCALIZED_IMAGE_STORE).get(key);
+				req.onsuccess = () => {
+					const entry = req.result as CachedLocalizedImage | undefined;
+					if (entry && entry.cachedAt >= Date.now() - TTL_MS) {
+						resolve(entry);
+					} else {
+						resolve(null);
+					}
+				};
+				req.onerror = () => resolve(null);
+			} catch {
+				resolve(null);
+			}
+		});
+	} catch {
+		return null;
+	}
+}
+
+/** Write a localized image entry to the cache. */
+export async function putLocalizedImageInCache(entry: CachedLocalizedImage): Promise<void> {
+	try {
+		const db = await openDB();
+		return new Promise<void>((resolve) => {
+			try {
+				const tx = db.transaction(LOCALIZED_IMAGE_STORE, 'readwrite');
+				tx.objectStore(LOCALIZED_IMAGE_STORE).put(entry);
 				tx.oncomplete = () => resolve();
 				tx.onerror = () => resolve();
 			} catch {

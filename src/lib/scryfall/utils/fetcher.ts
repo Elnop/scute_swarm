@@ -127,6 +127,13 @@ async function scryfallGetInner<T>(url: string, externalSignal?: AbortSignal): P
 				}
 			}
 
+			// Network errors (TypeError: Failed to fetch) are typically CORS-blocked
+			// 429 responses — the browser strips the body when CORS headers are absent.
+			// Retrying would only worsen rate limiting; fail fast instead.
+			if (error instanceof TypeError) {
+				throw error;
+			}
+
 			if (attempt < MAX_RETRIES) {
 				await delay(Math.pow(2, attempt) * 1000);
 			}
