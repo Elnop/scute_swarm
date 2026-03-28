@@ -9,9 +9,6 @@ import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { PAGE_SIZE } from '@/lib/collection/constants';
 import styles from './CardList.module.css';
 
-export type { CardListSection } from './CardList.types';
-export type { CardListColumn } from '@/components/ui/CardListTable/CardListTable.types';
-
 // cardListOverlayStyles stays exported from here for backwards compat with consumers
 // The actual CSS class lives in CardListGrid.module.css
 export const cardListOverlayStyles = {
