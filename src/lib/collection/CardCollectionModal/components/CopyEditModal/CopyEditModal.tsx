@@ -21,7 +21,7 @@ interface EditProps {
 interface AddProps {
 	mode: 'add';
 	scryfallCard: ScryfallCard;
-	onAdd: (entry: Partial<CardEntry>) => void;
+	onAdd: (card: ScryfallCard, entry: Partial<CardEntry>) => void;
 	onClose: () => void;
 }
 
@@ -37,6 +37,9 @@ export function CopyEditModal(props: Props) {
 	const addMode = isAddMode(props);
 
 	const [draftEntry, setDraftEntry] = useState<Partial<CardEntry>>(DEFAULT_ENTRY);
+	const [selectedPrint, setSelectedPrint] = useState<ScryfallCard>(
+		addMode ? props.scryfallCard : props.card
+	);
 
 	const entry: Partial<CardEntry> = addMode ? draftEntry : props.card.entry;
 	const [showPrintPicker, setShowPrintPicker] = useState(false);
@@ -74,22 +77,20 @@ export function CopyEditModal(props: Props) {
 
 	function handleConfirmAdd() {
 		if (addMode) {
-			props.onAdd(draftEntry);
+			props.onAdd(selectedPrint, draftEntry);
 			props.onClose();
 		}
 	}
 
-	const cardForPrint: Card | null = addMode ? null : props.card;
+	const cardForPrint: ScryfallCard = addMode ? selectedPrint : props.card;
 
 	const entryLangCode =
-		!addMode && props.card.lang
-			? entry.language && LANGUAGE_TO_SCRYFALL_CODE[entry.language]
-				? LANGUAGE_TO_SCRYFALL_CODE[entry.language]
-				: props.card.lang
-			: 'en';
+		entry.language && LANGUAGE_TO_SCRYFALL_CODE[entry.language]
+			? LANGUAGE_TO_SCRYFALL_CODE[entry.language]
+			: (cardForPrint.lang ?? 'en');
 
 	const title = addMode
-		? `Ajouter — ${props.scryfallCard.name}`
+		? `Ajouter — ${selectedPrint.set_name} #${selectedPrint.collector_number}`
 		: `Edit copy — ${props.card.set.toUpperCase()} #${props.card.collector_number}`;
 
 	return (
@@ -219,16 +220,14 @@ export function CopyEditModal(props: Props) {
 						</div>
 					</div>
 
-					{/* Change print (edit mode only) */}
-					{!addMode && (
-						<button
-							type="button"
-							className={styles.changePrintBtn}
-							onClick={() => setShowPrintPicker(true)}
-						>
-							Change print
-						</button>
-					)}
+					{/* Change print (both modes) */}
+					<button
+						type="button"
+						className={styles.changePrintBtn}
+						onClick={() => setShowPrintPicker(true)}
+					>
+						Change print
+					</button>
 
 					{/* Confirm add (add mode only) */}
 					{addMode && (
@@ -247,7 +246,11 @@ export function CopyEditModal(props: Props) {
 					currentCollectorNumber={cardForPrint.collector_number}
 					currentLang={entryLangCode}
 					onSelect={(print) => {
-						if (!addMode) props.onChangePrint(print);
+						if (addMode) {
+							setSelectedPrint(print);
+						} else {
+							props.onChangePrint(print);
+						}
 						setShowPrintPicker(false);
 					}}
 					onClose={() => setShowPrintPicker(false)}

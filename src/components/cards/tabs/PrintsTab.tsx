@@ -95,7 +95,7 @@ export function PrintsTab({ card }: Props) {
 				<CopyEditModal
 					mode="add"
 					scryfallCard={addingCard}
-					onAdd={(entry) => handleAdd(addingCard, entry)}
+					onAdd={(selectedPrint, entry) => handleAdd(selectedPrint, entry)}
 					onClose={() => setAddingCard(null)}
 				/>
 			)}

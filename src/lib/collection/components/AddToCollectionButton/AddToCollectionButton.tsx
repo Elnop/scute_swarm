@@ -24,8 +24,8 @@ export function AddToCollectionButton({ card }: AddToCollectionButtonProps) {
 		return () => clearTimeout(timer);
 	}, [showFeedback]);
 
-	function handleAdd(entry: Partial<CardEntry>) {
-		addCard(card, entry);
+	function handleAdd(selectedCard: ScryfallCard, entry: Partial<CardEntry>) {
+		addCard(selectedCard, entry);
 		setShowFeedback(true);
 	}
 
