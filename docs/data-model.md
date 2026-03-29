@@ -114,19 +114,12 @@ The mapping between DB columns and TypeScript fields is handled in `src/lib/supa
 
 ---
 
-## localStorage Format
+## Local Storage
 
-**Key:** `wizcard-collection`
+Collection data is stored in **Supabase** (source of truth) with an **IndexedDB** cache for instant loads.
+The `wizcard-collection` localStorage key is no longer used; a one-time cleanup removes it on hydration.
 
-**Current canonical format:**
-
-```typescript
-Record<rowId, { scryfallId: string; entry: CardEntry }>;
-```
-
-A legacy migration path exists in `useCollection.ts` for older formats. All new writes must use the format above.
-
-**Other localStorage keys:**
+**Remaining localStorage keys:**
 
 - `wizcard-sync-queue` — `SyncOp[]` — pending Supabase sync operations
 - `wizcard-signed-in` — presence flag; cleared on logout to wipe local collection state

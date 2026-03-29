@@ -8,7 +8,7 @@ Wizcard — MTG collection manager — Next.js 16 + Supabase + Scryfall API.
 - **Don't call `fetch()` against Scryfall directly** — always go through `scryfallGet`/`scryfallPost` in `src/lib/scryfall/fetcher.ts` (rate limiting, caching, dedup).
 - **Always call `triggerSync()` after `enqueue()`** — the queue does not self-start.
 - **`npm run sb:reset` is destructive** — drops and recreates the local DB.
-- **Write the current localStorage format**: `{ scryfallId: string, entry: CardEntry }`. Legacy migration exists in `src/lib/collection/db/collection-migrations.ts` but new code must write the current format.
+- **Write the current collection format**: `{ scryfallId: string, entry: CardEntry }` (see `StoredCopy` type in `src/types/cards.ts`).
 - **Don't add a context provider between `SyncQueueRunner` and `CollectionProvider`** without auditing whether it needs either.
 
 ## Development Commands
@@ -56,14 +56,13 @@ AuthProvider
 
 ### Core Types
 
-- `src/types/cards.ts` — `CardEntry`, `Card`, `CardStack`, `CollectionStats`, `CardCondition`
+- `src/types/cards.ts` — `CardEntry`, `Card`, `CardStack`, `StoredCopy`, `CollectionData`, `CollectionStats`, `CardCondition`
 
 ### Collection State
 
 - `src/lib/collection/store/collection-store.ts` — Zustand store; localStorage-backed, Supabase hydration on login, all mutation methods (`addCard`, `duplicateEntry`, `removeEntry`, `updateEntry`, `changePrint`, `clearCollection`)
 - `src/lib/collection/context/CollectionContext.tsx` — wraps the store, exposes via `useCollectionContext()`
 - `src/lib/collection/db/collection.ts` — Supabase CRUD: `fetchCollection`, `insertEntry`, `insertEntries`, `deleteEntryById`, `updateEntry`
-- `src/lib/collection/db/collection-migrations.ts` — migrates legacy localStorage formats to current schema
 - `src/lib/supabase/sync-queue.ts` — localStorage-backed offline queue (`enqueue` / `peek` / `dequeue` / `incrementRetry` / `skipFailed` / `clearQueue`)
 - `src/lib/supabase/hooks/useSyncQueue.ts` — drives the sync loop; processes one op at a time
 
@@ -109,7 +108,6 @@ AuthProvider
 
 ### localStorage Keys
 
-- `wizcard-collection` — `Record<rowId, { scryfallId: string, entry: CardEntry }>`
 - `wizcard-sync-queue` — `SyncOp[]`
 - `wizcard-signed-in` — presence flag; cleared on logout to wipe local collection
 

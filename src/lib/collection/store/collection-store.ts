@@ -2,17 +2,14 @@
 
 import { create } from 'zustand';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import type { CardEntry } from '@/types/cards';
+import type { CardEntry, CollectionData, StoredCopy } from '@/types/cards';
 import { fetchCollectionPage } from '../db/collection';
 import { enqueue, clearQueue } from '@/lib/supabase/sync-queue';
-import type { CollectionData } from '../db/collection-migrations';
 import {
 	getCollectionFromCache,
 	putCollectionEntriesInCache,
 	clearCollectionCache,
 } from '@/lib/card-cache';
-
-type StoredCopy = { scryfallId: string; entry: CardEntry };
 
 function newEntry(rowId: string, overrides?: Partial<CardEntry>): CardEntry {
 	return { rowId, dateAdded: new Date().toISOString(), ...overrides };

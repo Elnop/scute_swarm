@@ -81,7 +81,6 @@ src/lib/collection/
     collection-store.ts           # Zustand store; localStorage + Supabase hydration
   db/
     collection.ts                 # Supabase CRUD: fetchCollection, insertEntry, deleteEntryById…
-    collection-migrations.ts      # Migrates legacy localStorage formats to current schema
   hooks/
     useCollectionCards.ts         # Entries → Card[] + CardStack[] (IndexedDB + Scryfall batches)
     useCollectionFiltering.ts     # Client-side filter + sort state over CardStack[]

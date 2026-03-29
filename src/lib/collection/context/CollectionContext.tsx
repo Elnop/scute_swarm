@@ -2,11 +2,10 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
-import type { CardEntry } from '@/types/cards';
+import type { CardEntry, CollectionData } from '@/types/cards';
 import { useAuth } from '@/lib/supabase/contexts/AuthContext';
 import { useSyncQueueContext } from '@/lib/supabase/contexts/SyncQueueContext';
 import { useCollectionStore } from '../store/collection-store';
-import type { CollectionData } from '../db/collection-migrations';
 
 // Bound collection API — userId and triggerSync are already captured
 type CollectionContextValue = {

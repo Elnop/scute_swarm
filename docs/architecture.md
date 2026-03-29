@@ -104,8 +104,8 @@ Feature modules follow the **feature > sub-feature > resource** pattern — see 
 ```
 /collection page
     → useCollectionContext() → collection-store.ts (Zustand)
-        ├── localStorage (wizcard-collection) — source of truth
-        └── Supabase public.cards — remote persistence via sync queue
+        ├── IndexedDB cache — instant display on load
+        └── Supabase public.cards — source of truth (paginated fetch)
     → useCollectionCards (hook)
         ├── IndexedDB card cache (24h) — first
         └── Scryfall /cards/collection in 75-card batches — fallback
@@ -118,7 +118,7 @@ Feature modules follow the **feature > sub-feature > resource** pattern — see 
 ```
 User action (add/edit/remove card)
     → useCollection mutation method
-    → localStorage update (immediate)
+    → Zustand state update (immediate) + IndexedDB cache write
     → enqueue(SyncOp) + triggerSync()
     → SyncQueueRunner processes queue
     → Supabase upsert/delete

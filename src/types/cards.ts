@@ -28,6 +28,12 @@ export interface CardStack {
 	cards: Card[]; // copies — may be different editions
 }
 
+// A single stored copy in the collection (Scryfall print ID + per-copy metadata)
+export type StoredCopy = { scryfallId: string; entry: CardEntry };
+
+// The full collection keyed by rowId
+export type CollectionData = Record<string, StoredCopy>;
+
 // Aggregated collection statistics
 export interface CollectionStats {
 	totalCards: number;

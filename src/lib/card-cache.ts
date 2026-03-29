@@ -2,8 +2,7 @@
 // Silently falls back to no-op if IndexedDB is unavailable (private mode, etc.).
 
 import type { ScryfallCard, ScryfallImageUris } from '@/lib/scryfall/types/scryfall';
-import type { CardEntry } from '@/types/cards';
-import type { CollectionData } from '@/lib/collection/db/collection-migrations';
+import type { CardEntry, CollectionData } from '@/types/cards';
 
 interface CachedCard {
 	id: string; // ScryfallUUID — keyPath of the object store
