@@ -31,8 +31,7 @@ src/
 │       ├── CardImage/, CardLightbox/
 │       ├── CardList/, CardListGrid/, CardListTable/
 │       ├── ConfirmModal/
-│       ├── SymbolText.tsx      # No CSS → flat file
-│       └── filters/            # ColorFilter, RarityFilter, TypeFilter, …
+│       └── SymbolText.tsx      # No CSS → flat file
 │
 ├── lib/
 │   ├── collection/             # Collection feature — shared code only
@@ -45,9 +44,9 @@ src/
 │   │   └── constants.ts
 │   │
 │   ├── scryfall/               # Scryfall API integration
-│   │   ├── endpoints/          # cards, sets, symbols + bulk-data, rulings, catalogs (future)
+│   │   ├── endpoints/          # cards, sets, symbols
 │   │   ├── hooks/              # useScryfallCardSearch, useSets, useSymbols, useCardPrints
-│   │   ├── types/              # ScryfallCard, ScryfallSet, API param types
+│   │   ├── types/              # ScryfallCard, ScryfallSet, ScryfallSortOrder, API param types
 │   │   ├── store/              # Zustand store (sets + symbols cache)
 │   │   ├── utils/              # fetcher, rate-limiter, cache, errors, scryfall-query
 │   │   └── constants.ts        # BATCH_SIZE and other Scryfall constants
@@ -69,6 +68,7 @@ src/
 │   │
 │   ├── search/                 # Card search — shared search components
 │   │   └── components/         # FilterModal, SearchBar (used by search + collection pages)
+│   │       └── filters/        # ColorFilter, RarityFilter, TypeFilter, SetFilter, CmcFilter, OracleTextFilter, SortFilter
 │   │
 │   ├── moxfield/               # Moxfield format (parse, serialize, import-adapter)
 │   ├── filters/                # Shared filter types

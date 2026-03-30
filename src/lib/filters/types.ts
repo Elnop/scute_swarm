@@ -1,8 +1,5 @@
 import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
-import type {
-	ScryfallSortOrder,
-	ScryfallSortDir,
-} from '@/lib/scryfall/hooks/useScryfallCardSearch';
+import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 
 export interface CardFilters {
 	name: string;

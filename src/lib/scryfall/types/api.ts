@@ -1,5 +1,7 @@
 // Scryfall API parameter types for each endpoint
 
+import type { ScryfallSortOrder, ScryfallSortDir } from './sort';
+
 export interface ScryfallCacheEntry<T> {
 	data: T;
 	timestamp: number;
@@ -8,23 +10,8 @@ export interface ScryfallCacheEntry<T> {
 export interface ScryfallSearchParams {
 	q: string;
 	unique?: 'cards' | 'art' | 'prints';
-	order?:
-		| 'name'
-		| 'set'
-		| 'released'
-		| 'rarity'
-		| 'color'
-		| 'usd'
-		| 'tix'
-		| 'eur'
-		| 'cmc'
-		| 'power'
-		| 'toughness'
-		| 'edhrec'
-		| 'penny'
-		| 'artist'
-		| 'review';
-	dir?: 'auto' | 'asc' | 'desc';
+	order?: ScryfallSortOrder;
+	dir?: ScryfallSortDir;
 	include_extras?: boolean;
 	include_multilingual?: boolean;
 	include_variations?: boolean;

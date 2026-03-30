@@ -75,7 +75,7 @@ AuthProvider
 - `src/lib/scryfall/utils/cache.ts` — in-memory TTL cache (5 min, 1000 entries max)
 - `src/lib/card-cache.ts` — IndexedDB persistent cache for `ScryfallCard` objects (24h TTL)
 - `src/lib/scryfall/utils/scryfall-query.ts` — `buildScryfallQuery()` + `getScryfallCardImageUriBySize()`
-- `src/lib/scryfall/endpoints/` — `cards.ts`, `sets.ts`, `symbols.ts` (active); `bulk-data.ts`, `rulings.ts`, `catalogs.ts` (reserved for future use)
+- `src/lib/scryfall/endpoints/` — `cards.ts`, `sets.ts`, `symbols.ts`
 
 ### Collection Display
 

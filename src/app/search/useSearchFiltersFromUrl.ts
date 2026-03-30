@@ -3,10 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
-import type {
-	ScryfallSortOrder,
-	ScryfallSortDir,
-} from '@/lib/scryfall/hooks/useScryfallCardSearch';
+import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import { useDebounce } from '@/hooks/useDebounce';
 import { countActiveFilters } from '@/lib/filters/types';
 

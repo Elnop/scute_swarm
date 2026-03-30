@@ -1,26 +1,8 @@
 'use client';
 
 import { type ChangeEvent } from 'react';
+import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import styles from './SortFilter.module.css';
-
-export type ScryfallSortOrder =
-	| 'name'
-	| 'set'
-	| 'released'
-	| 'rarity'
-	| 'color'
-	| 'usd'
-	| 'tix'
-	| 'eur'
-	| 'cmc'
-	| 'power'
-	| 'toughness'
-	| 'edhrec'
-	| 'penny'
-	| 'artist'
-	| 'review';
-
-export type ScryfallSortDir = 'auto' | 'asc' | 'desc';
 
 export interface SortFilterProps {
 	order: string;

@@ -2,18 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { ScryfallColor, ScryfallSet } from '@/lib/scryfall/types/scryfall';
-import type {
-	ScryfallSortOrder,
-	ScryfallSortDir,
-} from '@/lib/scryfall/hooks/useScryfallCardSearch';
+import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
-import { ColorFilter } from '@/components/ui/filters/ColorFilter/ColorFilter';
-import { RarityFilter } from '@/components/ui/filters/RarityFilter/RarityFilter';
-import { TypeFilter } from '@/components/ui/filters/TypeFilter/TypeFilter';
-import { OracleTextFilter } from '@/components/ui/filters/OracleTextFilter/OracleTextFilter';
-import { CmcFilter } from '@/components/ui/filters/CmcFilter/CmcFilter';
-import { SetFilter } from '@/components/ui/filters/SetFilter/SetFilter';
-import { SortFilter } from '@/components/ui/filters/SortFilter/SortFilter';
+import { ColorFilter } from '@/lib/search/components/filters/ColorFilter/ColorFilter';
+import { RarityFilter } from '@/lib/search/components/filters/RarityFilter/RarityFilter';
+import { TypeFilter } from '@/lib/search/components/filters/TypeFilter/TypeFilter';
+import { OracleTextFilter } from '@/lib/search/components/filters/OracleTextFilter/OracleTextFilter';
+import { CmcFilter } from '@/lib/search/components/filters/CmcFilter/CmcFilter';
+import { SetFilter } from '@/lib/search/components/filters/SetFilter/SetFilter';
+import { SortFilter } from '@/lib/search/components/filters/SortFilter/SortFilter';
 import styles from './FilterModal.module.css';
 
 interface FilterModalProps {

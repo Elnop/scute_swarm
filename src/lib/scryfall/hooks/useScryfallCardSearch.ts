@@ -2,28 +2,10 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
+import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import { searchCards } from '@/lib/scryfall/endpoints/cards';
 import { buildScryfallQuery } from '@/lib/scryfall/utils/scryfall-query';
 import { useDebounce } from '@/hooks/useDebounce';
-
-export type ScryfallSortOrder =
-	| 'name'
-	| 'set'
-	| 'released'
-	| 'rarity'
-	| 'color'
-	| 'usd'
-	| 'tix'
-	| 'eur'
-	| 'cmc'
-	| 'power'
-	| 'toughness'
-	| 'edhrec'
-	| 'penny'
-	| 'artist'
-	| 'review';
-
-export type ScryfallSortDir = 'auto' | 'asc' | 'desc';
 
 export interface SearchFilters {
 	name: string;

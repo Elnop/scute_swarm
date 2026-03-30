@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { AnyCard } from '@/components/ui/CardList/CardList.types';
-import type { ScryfallSortDir } from '@/components/ui/filters/SortFilter/SortFilter';
+import type { ScryfallSortDir } from '@/lib/scryfall/types/sort';
 
 export interface CardListColumn {
 	key: string;

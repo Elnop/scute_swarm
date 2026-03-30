@@ -1,4 +1,4 @@
-import type { ScryfallSortDir } from '@/components/ui/filters/SortFilter/SortFilter';
+import type { ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import type { CardListTableProps } from './CardListTable.types';
 import styles from './CardListTable.module.css';
 
