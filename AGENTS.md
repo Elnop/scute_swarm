@@ -83,6 +83,11 @@ AuthProvider
 - `src/app/collection/useCollectionFiltering.ts` — filter + sort state over `CardStack[]`
 - `src/lib/collection/utils/filterCollectionCards.ts` — pure filter function (no state)
 
+### Search
+
+- `src/lib/search/components/SearchBar/SearchBar.tsx` — reusable search input (used by search + collection pages)
+- `src/lib/search/components/FilterModal/FilterModal.tsx` — Scryfall filter panel (colors, rarity, type, set, CMC, sort); shared between search + collection/import
+
 ### Import System
 
 - `src/lib/import/utils/detect.ts` — format auto-detection by content scoring + file extension bonus

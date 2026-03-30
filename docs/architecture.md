@@ -49,7 +49,8 @@ src/
 │   │   ├── hooks/              # useScryfallCardSearch, useSets, useSymbols, useCardPrints
 │   │   ├── types/              # ScryfallCard, ScryfallSet, API param types
 │   │   ├── store/              # Zustand store (sets + symbols cache)
-│   │   └── utils/              # fetcher, rate-limiter, cache, errors, scryfall-query
+│   │   ├── utils/              # fetcher, rate-limiter, cache, errors, scryfall-query
+│   │   └── constants.ts        # BATCH_SIZE and other Scryfall constants
 │   │
 │   ├── supabase/               # Auth + sync infrastructure
 │   │   ├── contexts/           # AuthContext, SyncQueueContext
@@ -65,6 +66,9 @@ src/
 │   │   ├── contexts/           # ImportContext
 │   │   ├── hooks/              # useImport, useImportFileHandling, …
 │   │   └── utils/              # detect.ts, types.ts, identifier-dedup.ts
+│   │
+│   ├── search/                 # Card search — shared search components
+│   │   └── components/         # FilterModal, SearchBar (used by search + collection pages)
 │   │
 │   ├── moxfield/               # Moxfield format (parse, serialize, import-adapter)
 │   ├── filters/                # Shared filter types

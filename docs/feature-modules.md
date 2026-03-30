@@ -52,6 +52,12 @@ src/lib/<feature>/
 | Sync queue                         | any feature folder                  | `src/lib/supabase/sync-queue.ts`            |
 | Generic UI (Button, Modal, Navbar) | any feature folder                  | `src/components/ui/`                        |
 
+### Feature components vs. generic UI
+
+A component shared between ≥2 pages stays in `src/lib/<feature>/components/` when it is coupled to the feature's domain (imports feature-specific types, hooks, or logic). It goes in `src/components/ui/` only when it is purely presentational with zero domain dependency.
+
+**Example:** `FilterModal` imports Scryfall types (`ScryfallSortOrder`, `ScryfallColor`, `ScryfallSet`) and orchestrates Scryfall search filters → it belongs in `src/lib/search/components/`, not `src/components/ui/`. By contrast, `Button` and `Modal` have no domain coupling → `src/components/ui/`.
+
 ## Decision Guide
 
 When adding a new file, ask:
