@@ -9,7 +9,7 @@ import {
 import type { CollectionFilters } from '@/lib/collection/utils/filterCollectionCards';
 import { useScryfallSets } from '@/lib/scryfall/hooks/useScryfallSets';
 import { computeCollectionStats } from '@/lib/collection/utils/stats';
-import { countActiveFilters } from '@/lib/filters/types';
+import { countActiveFilters } from '@/lib/search/types';
 import type { CardStack } from '@/types/cards';
 
 export function useCollectionFiltering(stacks: CardStack[]) {

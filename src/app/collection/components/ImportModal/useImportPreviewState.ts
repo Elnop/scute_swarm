@@ -10,7 +10,7 @@ import {
 	defaultCollectionFilters,
 } from '@/lib/collection/utils/filterCollectionCards';
 import type { CollectionFilters } from '@/lib/collection/utils/filterCollectionCards';
-import { countActiveFilters } from '@/lib/filters/types';
+import { countActiveFilters } from '@/lib/search/types';
 import { buildIdentifierKey } from '@/lib/import/utils/identifier-dedup';
 import type { InputMode } from './types';
 

@@ -8,10 +8,10 @@ import { useCollectionContext } from '@/lib/collection/context/CollectionContext
 import { useCollectionCards } from './useCollectionCards';
 import { useImportContext } from '@/lib/import/contexts/ImportContext';
 import { useCollectionFiltering } from './useCollectionFiltering';
-import { useCardCollectionModal } from '@/lib/collection/hooks/useCardCollectionModal';
+import { useCardModal } from '@/lib/collection/hooks/useCardModal';
 import { CollectionFiltersAside } from './components/CollectionFiltersAside/CollectionFiltersAside';
 import { ImportModal } from './components/ImportModal/ImportModal';
-import { CardCollectionModal } from '@/lib/CardCollectionModal/CardCollectionModal';
+import { CardModal } from '@/lib/CardModal/CardModal';
 import { CardList } from '@/components/ui/CardList/CardList';
 import { Button } from '@/components/ui/Button/Button';
 import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
@@ -36,7 +36,7 @@ export default function CollectionPage() {
 		handleDuplicateEntry,
 		handleRemoveEntry,
 		handleChangePrint,
-	} = useCardCollectionModal(stacks);
+	} = useCardModal(stacks);
 
 	const handleExport = useCallback(() => {
 		downloadCSV(serializeToMoxfieldCSV(stacks.flatMap((s) => s.cards)), 'my-collection.csv');
@@ -244,7 +244,7 @@ export default function CollectionPage() {
 				onUpdateRow={updateRow}
 				onRemoveRow={removeRow}
 			/>
-			<CardCollectionModal
+			<CardModal
 				cards={resolvedStack?.cards ?? null}
 				onClose={handleCloseModal}
 				onSave={handleSaveModal}

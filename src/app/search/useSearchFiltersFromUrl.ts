@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import { useDebounce } from '@/hooks/useDebounce';
-import { countActiveFilters } from '@/lib/filters/types';
+import { countActiveFilters } from '@/lib/search/types';
 
 const VALID_COLORS = new Set(['W', 'U', 'B', 'R', 'G']);
 const VALID_ORDERS = new Set([

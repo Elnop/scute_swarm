@@ -6,7 +6,7 @@ import { useCardPrints } from '@/lib/scryfall/hooks/useCardPrints';
 import { CardImage } from '@/components/ui/CardImage/CardImage';
 import { CardLightbox } from '@/components/ui/CardLightbox/CardLightbox';
 import { Modal } from '@/components/ui/Modal/Modal';
-import styles from './PrintPickerModal.module.css';
+import styles from './CardPrintPickerModal.module.css';
 
 const LANG_NAMES: Record<string, string> = {
 	en: 'English',
@@ -42,7 +42,7 @@ interface Props {
 	onClose: () => void;
 }
 
-export function PrintPickerModal({
+export function CardPrintPickerModal({
 	prints_search_uri,
 	currentCardId,
 	currentSet,

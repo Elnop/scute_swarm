@@ -4,9 +4,9 @@ import { useState } from 'react';
 import type { Card, CardEntry } from '@/types/cards';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { MTG_LANGUAGES, LANGUAGE_TO_SCRYFALL_CODE } from '@/lib/mtg/languages';
-import { PrintPickerModal } from '@/lib/PrintPickerModal/PrintPickerModal';
+import { CardPrintPickerModal } from '@/lib/CardPrintPickerModal/CardPrintPickerModal';
 import { Modal } from '@/components/ui/Modal/Modal';
-import styles from './CopyEditModal.module.css';
+import styles from './EditCardModal.module.css';
 
 const CONDITIONS = ['NM', 'LP', 'MP', 'HP', 'DMG'];
 
@@ -33,7 +33,7 @@ function isAddMode(props: Props): props is AddProps {
 
 const DEFAULT_ENTRY: Partial<CardEntry> = {};
 
-export function CopyEditModal(props: Props) {
+export function EditCardModal(props: Props) {
 	const addMode = isAddMode(props);
 
 	const [draftEntry, setDraftEntry] = useState<Partial<CardEntry>>(DEFAULT_ENTRY);
@@ -239,7 +239,7 @@ export function CopyEditModal(props: Props) {
 			</Modal>
 
 			{showPrintPicker && cardForPrint && cardForPrint.prints_search_uri && (
-				<PrintPickerModal
+				<CardPrintPickerModal
 					prints_search_uri={cardForPrint.prints_search_uri}
 					currentCardId={cardForPrint.id}
 					currentSet={cardForPrint.set}

@@ -4,7 +4,7 @@ import type { ScryfallSortOrder } from '@/lib/scryfall/types/sort';
 import type { CollectionFilters } from '@/lib/collection/utils/filterCollectionCards';
 import type { ScryfallSet } from '@/lib/scryfall/types/scryfall';
 import { FilterModal } from '@/lib/search/components/FilterModal/FilterModal';
-import { CardCollectionModal } from '@/lib/CardCollectionModal/CardCollectionModal';
+import { CardModal } from '@/lib/CardModal/CardModal';
 import type { useImportPreviewState } from './useImportPreviewState';
 
 type ImportPreviewState = ReturnType<typeof useImportPreviewState>;
@@ -36,7 +36,7 @@ export function ImportSupportModals({ state, sets, setsLoading }: Props) {
 				}
 				onClose={() => state.setIsFilterModalOpen(false)}
 			/>
-			<CardCollectionModal
+			<CardModal
 				cards={state.selectedImportStack?.cards ?? null}
 				onClose={() => state.setSelectedCardId(null)}
 				onSave={state.handleEditSave}

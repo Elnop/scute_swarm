@@ -7,10 +7,10 @@ import { CardImage } from '@/components/ui/CardImage/CardImage';
 import { CardLightbox } from '@/components/ui/CardLightbox/CardLightbox';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
 import { SymbolText } from '@/components/ui/SymbolText';
-import { CopyEditModal } from '@/lib/CopyEditModal/CopyEditModal';
+import { EditCardModal } from '@/lib/EditCardModal/EditCardModal';
 import { ConfirmModal } from '@/components/ui/ConfirmModal/ConfirmModal';
 import { Modal } from '@/components/ui/Modal/Modal';
-import styles from './CardCollectionModal.module.css';
+import styles from './CardModal.module.css';
 
 const COLOR_MAP: Record<string, string> = {
 	W: '#f8e7b9',
@@ -45,7 +45,7 @@ interface InnerProps {
 	onDecrement?: () => void;
 }
 
-function CardCollectionModalInner({
+function CardModalInner({
 	cards,
 	onClose,
 	onSave,
@@ -299,7 +299,7 @@ function CardCollectionModalInner({
 			)}
 
 			{editingCard && (
-				<CopyEditModal
+				<EditCardModal
 					card={editingCard}
 					onSave={(patch) => onSave(editingCard.entry.rowId, patch)}
 					onChangePrint={(newCard) => {
@@ -312,7 +312,7 @@ function CardCollectionModalInner({
 	);
 }
 
-export function CardCollectionModal({
+export function CardModal({
 	cards,
 	onClose,
 	onSave,
@@ -326,7 +326,7 @@ export function CardCollectionModal({
 	const normalizedCards = cards === null ? null : Array.isArray(cards) ? cards : [cards];
 	if (!normalizedCards || normalizedCards.length === 0) return null;
 	return (
-		<CardCollectionModalInner
+		<CardModalInner
 			key={normalizedCards[0].oracle_id}
 			cards={normalizedCards}
 			onClose={onClose}

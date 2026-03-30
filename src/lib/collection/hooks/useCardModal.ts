@@ -2,12 +2,12 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
-import { putCardsInCache } from '@/lib/card-cache';
+import { putCardsInCache } from '@/lib/scryfall/card-cache';
 import { SCRYFALL_CODE_TO_LANGUAGE } from '@/lib/mtg/languages';
 import type { CardStack, CardEntry } from '@/types/cards';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 
-export function useCardCollectionModal(stacks: CardStack[]) {
+export function useCardModal(stacks: CardStack[]) {
 	const {
 		addCard,
 		duplicateEntry,

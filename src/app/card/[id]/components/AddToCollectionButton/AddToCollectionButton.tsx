@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import type { CardEntry } from '@/types/cards';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
-import { CopyEditModal } from '@/lib/CopyEditModal/CopyEditModal';
+import { EditCardModal } from '@/lib/EditCardModal/EditCardModal';
 import { Button } from '@/components/ui/Button/Button';
 import styles from './AddToCollectionButton.module.css';
 
@@ -38,7 +38,7 @@ export function AddToCollectionButton({ card }: AddToCollectionButtonProps) {
 					</Button>
 				</div>
 				{showModal && (
-					<CopyEditModal
+					<EditCardModal
 						mode="add"
 						scryfallCard={card}
 						onAdd={handleAdd}
@@ -76,7 +76,7 @@ export function AddToCollectionButton({ card }: AddToCollectionButtonProps) {
 				</div>
 			</div>
 			{showModal && (
-				<CopyEditModal
+				<EditCardModal
 					mode="add"
 					scryfallCard={card}
 					onAdd={handleAdd}

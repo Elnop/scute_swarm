@@ -1,7 +1,7 @@
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import type { ScryfallSortOrder } from '@/lib/scryfall/types/sort';
 import type { Card } from '@/types/cards';
-import { type CardFilters, DEFAULT_CARD_FILTERS } from '@/lib/filters/types';
+import { type CardFilters, DEFAULT_CARD_FILTERS } from '@/lib/search/types';
 
 export type CollectionSortOrder = ScryfallSortOrder | 'language';
 
