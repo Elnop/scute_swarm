@@ -12,13 +12,13 @@ import { useCardCollectionModal } from '@/lib/collection/CardCollectionModal/hoo
 import { CollectionFiltersAside } from './components/CollectionFiltersAside/CollectionFiltersAside';
 import { ImportModal } from './components/ImportModal/ImportModal';
 import { CardCollectionModal } from '@/lib/collection/CardCollectionModal/CardCollectionModal';
-import { CardList, cardListOverlayStyles } from '@/components/ui/CardList/CardList';
+import { CardList } from '@/components/ui/CardList/CardList';
 import { Button } from '@/components/ui/Button/Button';
 import { serializeToMoxfieldCSV, downloadCSV } from '@/lib/moxfield/serialize';
 import styles from './page.module.css';
 
 export default function CollectionPage() {
-	const { entries, isLoaded, decrementCard, clearCollection } = useCollectionContext();
+	const { entries, isLoaded, clearCollection } = useCollectionContext();
 	const { stacks, isLoading: isHydrating, totalExpected } = useCollectionCards(entries);
 	const importCtx = useImportContext();
 
@@ -162,36 +162,7 @@ export default function CollectionPage() {
 							renderOverlay={(card) => {
 								const stack = stackByCardId.get(card.id);
 								const count = stack?.cards.length ?? 1;
-								return (
-									<>
-										{count > 1 && <span className={styles.cardBadge}>x{count}</span>}
-										<button
-											type="button"
-											className={`${styles.cardRemoveButton} ${cardListOverlayStyles.removeButton}`}
-											onClick={(e) => {
-												e.stopPropagation();
-												decrementCard(card.id);
-											}}
-											aria-label={`Remove one ${card.name}`}
-										>
-											<svg
-												width="14"
-												height="14"
-												viewBox="0 0 14 14"
-												fill="none"
-												aria-hidden="true"
-											>
-												<path
-													d="M2 4h10M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1M6 6.5v3M8 6.5v3M3 4l.5 7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1L11 4"
-													stroke="currentColor"
-													strokeWidth="1.2"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-												/>
-											</svg>
-										</button>
-									</>
-								);
+								return count > 1 ? <span className={styles.cardBadge}>x{count}</span> : null;
 							}}
 							sortOrder={filters.order}
 							sortDir={filters.dir}

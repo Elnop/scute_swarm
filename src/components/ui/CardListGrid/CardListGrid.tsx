@@ -3,8 +3,6 @@ import { CardImage } from '@/components/ui/CardImage/CardImage';
 import type { CardListGridProps } from './CardListGrid.types';
 import styles from './CardListGrid.module.css';
 
-export { styles as cardListGridStyles };
-
 const DEFAULT_SKELETON_COUNT = 12;
 
 export function CardListGrid({

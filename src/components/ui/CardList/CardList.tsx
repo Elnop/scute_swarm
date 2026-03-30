@@ -3,17 +3,11 @@
 import { useState } from 'react';
 import type { CardListProps } from './CardList.types';
 import { isSections } from './CardList.types';
-import { CardListGrid, cardListGridStyles } from '@/components/ui/CardListGrid/CardListGrid';
+import { CardListGrid } from '@/components/ui/CardListGrid/CardListGrid';
 import { CardListTable } from '@/components/ui/CardListTable/CardListTable';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { PAGE_SIZE } from '@/lib/collection/constants';
 import styles from './CardList.module.css';
-
-// cardListOverlayStyles stays exported from here for backwards compat with consumers
-// The actual CSS class lives in CardListGrid.module.css
-export const cardListOverlayStyles = {
-	removeButton: cardListGridStyles.cardRemoveBtn,
-};
 
 export function CardList({
 	cards: cardsOrSections,

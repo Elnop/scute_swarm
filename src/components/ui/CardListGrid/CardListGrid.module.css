@@ -83,23 +83,6 @@
 	text-align: center;
 }
 
-/* Overlay remove button — used via renderOverlay */
-
-.cardRemoveBtn {
-	opacity: 0;
-	transition: opacity 0.15s;
-}
-
-.imageWrapper:hover .cardRemoveBtn {
-	opacity: 1;
-}
-
-@media (max-width: 768px) {
-	.cardRemoveBtn {
-		opacity: 1;
-	}
-}
-
 /* Grid fixe (cardsPerLine) */
 
 .gridFixed {
