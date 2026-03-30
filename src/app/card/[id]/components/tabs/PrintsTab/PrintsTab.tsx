@@ -8,7 +8,7 @@ import type { Card, CardEntry } from '@/types/cards';
 import { useCardPrints } from '@/lib/scryfall/hooks/useCardPrints';
 import { CardList } from '@/components/ui/CardList/CardList';
 import type { CardListSection } from '@/components/ui/CardList/CardList.types';
-import { CopyEditModal } from '@/lib/collection/CardCollectionModal/components/CopyEditModal/CopyEditModal';
+import { CopyEditModal } from '@/lib/CopyEditModal/CopyEditModal';
 import { useCollectionContext } from '@/lib/collection/context/CollectionContext';
 import styles from './PrintsTab.module.css';
 

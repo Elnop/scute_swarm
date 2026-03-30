@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { Card, CardStack, CardEntry } from '@/types/cards';
+import type { Card, CardEntry } from '@/types/cards';
 import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { CardImage } from '@/components/ui/CardImage/CardImage';
 import { CardLightbox } from '@/components/ui/CardLightbox/CardLightbox';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
 import { SymbolText } from '@/components/ui/SymbolText';
-import { CopyEditModal } from './components/CopyEditModal/CopyEditModal';
+import { CopyEditModal } from '@/lib/CopyEditModal/CopyEditModal';
 import { ConfirmModal } from '@/components/ui/ConfirmModal/ConfirmModal';
 import { Modal } from '@/components/ui/Modal/Modal';
 import styles from './CardCollectionModal.module.css';
@@ -22,7 +22,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 interface Props {
-	stack: CardStack | null;
+	cards: Card | Card[] | null;
 	onClose: () => void;
 	onSave: (rowId: string, updates: Partial<CardEntry>) => void;
 	onRemove: (scryfallId: string) => void;
@@ -34,7 +34,7 @@ interface Props {
 }
 
 interface InnerProps {
-	stack: CardStack;
+	cards: Card[];
 	onClose: () => void;
 	onSave: (rowId: string, updates: Partial<CardEntry>) => void;
 	onRemove: (scryfallId: string) => void;
@@ -46,7 +46,7 @@ interface InnerProps {
 }
 
 function CardCollectionModalInner({
-	stack,
+	cards,
 	onClose,
 	onSave,
 	onRemove,
@@ -56,19 +56,17 @@ function CardCollectionModalInner({
 	onIncrement,
 }: InnerProps) {
 	const [lightbox, setLightbox] = useState(false);
-	const [selectedRowId, setSelectedRowId] = useState<string>(stack.cards[0].entry.rowId);
+	const [selectedRowId, setSelectedRowId] = useState<string>(cards[0].entry.rowId);
 	const [editingRowId, setEditingRowId] = useState<string | null>(null);
 	const [confirmRemoveAll, setConfirmRemoveAll] = useState(false);
 	const symbolMap = useScryfallSymbols();
 
-	const count = stack.cards.length;
+	const count = cards.length;
 
-	// Keep selectedRowId valid if stack updates
-	const selectedCard: Card =
-		stack.cards.find((c) => c.entry.rowId === selectedRowId) ?? stack.cards[0];
+	const selectedCard: Card = cards.find((c) => c.entry.rowId === selectedRowId) ?? cards[0];
 
 	const editingCard = editingRowId
-		? (stack.cards.find((c) => c.entry.rowId === editingRowId) ?? null)
+		? (cards.find((c) => c.entry.rowId === editingRowId) ?? null)
 		: null;
 
 	function handleRemoveCopy(card: Card) {
@@ -76,8 +74,8 @@ function CardCollectionModalInner({
 			onRemove(card.id);
 		} else {
 			if (card.entry.rowId === selectedRowId) {
-				const idx = stack.cards.indexOf(card);
-				const next = stack.cards[idx === 0 ? 1 : idx - 1];
+				const idx = cards.indexOf(card);
+				const next = cards[idx === 0 ? 1 : idx - 1];
 				setSelectedRowId(next.entry.rowId);
 			}
 			onRemoveEntry(card.entry.rowId);
@@ -195,7 +193,7 @@ function CardCollectionModalInner({
 							</div>
 						</div>
 
-						{/* Copies list */}
+						{/* Cards list */}
 						<div className={styles.copiesSection}>
 							<div className={styles.copiesHeader}>
 								<span className={styles.copiesTitle}>Copies ({count})</span>
@@ -209,7 +207,7 @@ function CardCollectionModalInner({
 								</button>
 							</div>
 							<ul className={styles.copiesList}>
-								{stack.cards.map((card) => {
+								{cards.map((card) => {
 									const isActive = card.entry.rowId === selectedRowId;
 									return (
 										<li
@@ -287,13 +285,13 @@ function CardCollectionModalInner({
 				<ConfirmModal
 					message={
 						<>
-							Remove all {stack.cards.length} cop{stack.cards.length === 1 ? 'y' : 'ies'} of{' '}
-							<strong>{stack.name}</strong>?
+							Remove all {cards.length} cop{cards.length === 1 ? 'y' : 'ies'} of{' '}
+							<strong>{selectedCard.name}</strong>?
 						</>
 					}
 					confirmLabel="Remove all"
 					onConfirm={() => {
-						const uniqueIds = [...new Set(stack.cards.map((c) => c.id))];
+						const uniqueIds = [...new Set(cards.map((c) => c.id))];
 						uniqueIds.forEach((id) => onRemove(id));
 					}}
 					onClose={() => setConfirmRemoveAll(false)}
@@ -315,7 +313,7 @@ function CardCollectionModalInner({
 }
 
 export function CardCollectionModal({
-	stack,
+	cards,
 	onClose,
 	onSave,
 	onRemove,
@@ -325,11 +323,12 @@ export function CardCollectionModal({
 	onIncrement,
 	onDecrement,
 }: Props) {
-	if (!stack || stack.cards.length === 0) return null;
+	const normalizedCards = cards === null ? null : Array.isArray(cards) ? cards : [cards];
+	if (!normalizedCards || normalizedCards.length === 0) return null;
 	return (
 		<CardCollectionModalInner
-			key={stack.oracleId}
-			stack={stack}
+			key={normalizedCards[0].oracle_id}
+			cards={normalizedCards}
 			onClose={onClose}
 			onSave={onSave}
 			onRemove={onRemove}
