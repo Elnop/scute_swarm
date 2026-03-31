@@ -2,7 +2,7 @@
 
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
-import { SymbolText } from '@/components/SymbolText';
+import { SymbolText } from '@/lib/card/components/SymbolText';
 import styles from './OverviewTab.module.css';
 
 const colorNames: Record<ScryfallColor, string> = {
