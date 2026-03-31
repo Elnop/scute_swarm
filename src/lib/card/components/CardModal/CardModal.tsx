@@ -6,7 +6,7 @@ import type { ScryfallCard } from '@/lib/scryfall/types/scryfall';
 import { CardImage } from '@/lib/card/components/CardImage/CardImage';
 import { CardLightbox } from '@/lib/card/components/CardLightbox/CardLightbox';
 import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
-import { SymbolText } from '@/lib/card/components/SymbolText';
+import { SymbolText } from '@/lib/scryfall/components/SymbolText';
 import { EditCardModal } from '@/lib/card/components/EditCardModal/EditCardModal';
 import { ConfirmModal } from '@/components/ConfirmModal/ConfirmModal';
 import { Modal } from '@/components/Modal/Modal';

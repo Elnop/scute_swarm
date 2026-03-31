@@ -13,8 +13,5 @@ export function ManaSymbol({ symbol, symbolMap }: ManaSymbolProps) {
 		return <span>{symbol}</span>;
 	}
 
-	return (
-		// eslint-disable-next-line @next/next/no-img-element
-		<img src={data.svg_uri} alt={data.english} className={styles.manaSymbol} />
-	);
+	return <img src={data.svg_uri} alt={data.english} className={styles.manaSymbol} />;
 }
