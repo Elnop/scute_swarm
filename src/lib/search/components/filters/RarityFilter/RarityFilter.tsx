@@ -1,5 +1,6 @@
 'use client';
 
+import { useMultiSelect } from '@/lib/search/hooks/useMultiSelect';
 import styles from './RarityFilter.module.css';
 
 const rarities: { id: string; name: string }[] = [
@@ -46,13 +47,7 @@ export interface RarityFilterProps {
 }
 
 export function RarityFilter({ value, onChange }: RarityFilterProps) {
-	const handleToggle = (id: string) => {
-		if (value.includes(id)) {
-			onChange(value.filter((r) => r !== id));
-		} else {
-			onChange([...value, id]);
-		}
-	};
+	const { toggle: handleToggle } = useMultiSelect(value, onChange);
 
 	return (
 		<div className={styles.container}>

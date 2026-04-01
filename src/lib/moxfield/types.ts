@@ -15,20 +15,6 @@ export const MOXFIELD_COLLECTION_HEADERS = [
 	'Purchase Price',
 ] as const;
 
-// Format "Haves" export (lighter, different columns)
-export const MOXFIELD_HAVES_HEADERS = [
-	'Count',
-	'Name',
-	'Edition',
-	'Collector Number',
-	'Condition',
-	'Language',
-	'Foil',
-	'Etched',
-	'Artist',
-	'Tag',
-] as const;
-
 // Export header used when serializing (Collection format)
 export const MOXFIELD_CSV_HEADERS = MOXFIELD_COLLECTION_HEADERS;
 
@@ -47,10 +33,4 @@ export interface MoxfieldRow {
 	alter: boolean;
 	proxy: boolean;
 	purchasePrice: string;
-}
-
-export interface ImportResult {
-	imported: number;
-	notFound: number;
-	errors: string[];
 }

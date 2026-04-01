@@ -2,6 +2,8 @@
 
 import type { ScryfallColor, ScryfallCardSymbol } from '@/lib/scryfall/types/scryfall';
 import { ManaSymbol } from '@/lib/scryfall/components/ManaSymbol/ManaSymbol';
+import { MTG_COLORS } from '@/lib/mtg/colors';
+import { useMultiSelect } from '@/lib/search/hooks/useMultiSelect';
 import styles from './ColorFilter.module.css';
 
 export interface ColorFilterProps {
@@ -11,14 +13,6 @@ export interface ColorFilterProps {
 	onColorMatchChange?: (match: 'exact' | 'include' | 'atMost') => void;
 	symbolMap?: Record<string, ScryfallCardSymbol>;
 }
-
-const colors: { id: ScryfallColor; name: string; symbol: string }[] = [
-	{ id: 'W', name: 'White', symbol: 'W' },
-	{ id: 'U', name: 'Blue', symbol: 'U' },
-	{ id: 'B', name: 'Black', symbol: 'B' },
-	{ id: 'R', name: 'Red', symbol: 'R' },
-	{ id: 'G', name: 'Green', symbol: 'G' },
-];
 
 const matchOptions: { value: 'include' | 'exact' | 'atMost'; label: string }[] = [
 	{ value: 'include', label: 'Inclut' },
@@ -33,19 +27,13 @@ export function ColorFilter({
 	onColorMatchChange,
 	symbolMap = {},
 }: ColorFilterProps) {
-	const handleToggle = (color: ScryfallColor) => {
-		if (selected.includes(color)) {
-			onChange(selected.filter((c) => c !== color));
-		} else {
-			onChange([...selected, color]);
-		}
-	};
+	const { toggle: handleToggle } = useMultiSelect(selected, onChange);
 
 	return (
 		<div className={styles.container}>
 			<span className={styles.label}>Colors</span>
 			<div className={styles.colors}>
-				{colors.map((color) => (
+				{MTG_COLORS.map((color) => (
 					<button
 						key={color.id}
 						type="button"
