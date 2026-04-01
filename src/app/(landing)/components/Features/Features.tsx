@@ -1,6 +1,6 @@
 'use client';
 
-import { useInView } from '@/hooks/useInView';
+import { useInView } from '@/app/(landing)/hooks/useInView';
 import styles from './Features.module.css';
 
 const FEATURES = [

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { getScryfallCardImageUriBySize } from '@/lib/scryfall/utils/scryfall-query';
-import { useLocalizedImage } from '@/hooks/useLocalizedImage';
+import { useLocalizedImage } from '@/lib/scryfall/hooks/useLocalizedImage';
 import styles from './CardImage.module.css';
 
 type CardImageCard = {

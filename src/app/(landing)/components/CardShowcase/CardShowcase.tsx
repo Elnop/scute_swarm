@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useInView } from '@/hooks/useInView';
+import { useInView } from '@/app/(landing)/hooks/useInView';
 import styles from './CardShowcase.module.css';
 
 const SHOWCASE_CARDS = [

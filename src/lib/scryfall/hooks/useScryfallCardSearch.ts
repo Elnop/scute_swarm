@@ -5,7 +5,7 @@ import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall'
 import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
 import { searchCards } from '@/lib/scryfall/endpoints/cards';
 import { buildScryfallQuery } from '@/lib/scryfall/utils/scryfall-query';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@/lib/search/hooks/useDebounce';
 
 export interface SearchFilters {
 	name: string;
