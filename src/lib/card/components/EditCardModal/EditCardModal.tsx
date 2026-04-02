@@ -36,21 +36,26 @@ const DEFAULT_ENTRY: Partial<CardEntry> = {};
 export function EditCardModal(props: Props) {
 	const addMode = isAddMode(props);
 
-	const [draftEntry, setDraftEntry] = useState<Partial<CardEntry>>(DEFAULT_ENTRY);
+	const [draftEntry, setDraftEntry] = useState<Partial<CardEntry>>(
+		addMode ? DEFAULT_ENTRY : { ...props.card.entry }
+	);
 	const [selectedPrint, setSelectedPrint] = useState<ScryfallCard>(
 		addMode ? props.scryfallCard : props.card
 	);
 
-	const entry: Partial<CardEntry> = addMode ? draftEntry : props.card.entry;
+	const entry: Partial<CardEntry> = draftEntry;
 	const [showPrintPicker, setShowPrintPicker] = useState(false);
 	const [tagInput, setTagInput] = useState('');
 	const isFoil = entry.isFoil ?? false;
 
 	function save(patch: Partial<CardEntry>) {
-		if (addMode) {
-			setDraftEntry((prev) => ({ ...prev, ...patch }));
-		} else {
-			props.onSave({ ...props.card.entry, ...patch });
+		setDraftEntry((prev) => ({ ...prev, ...patch }));
+	}
+
+	function handleSave() {
+		if (!addMode) {
+			props.onSave(draftEntry);
+			props.onClose();
 		}
 	}
 
@@ -233,6 +238,11 @@ export function EditCardModal(props: Props) {
 					{addMode && (
 						<button type="button" className={styles.changePrintBtn} onClick={handleConfirmAdd}>
 							Confirmer l&apos;ajout
+						</button>
+					)}
+					{!addMode && (
+						<button type="button" className={styles.saveBtn} onClick={handleSave}>
+							Sauvegarder
 						</button>
 					)}
 				</div>

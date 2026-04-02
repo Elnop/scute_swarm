@@ -29,7 +29,7 @@ interface Props {
 	onRemoveEntry: (rowId: string) => void;
 	onDuplicate?: (scryfallId: string, entry: CardEntry) => void;
 	onChangePrint?: (rowId: string, newCard: ScryfallCard) => void;
-	onIncrement?: () => void;
+	onIncrement?: (entry: Partial<CardEntry>) => void;
 	onDecrement?: () => void;
 }
 
@@ -41,7 +41,7 @@ interface InnerProps {
 	onRemoveEntry: (rowId: string) => void;
 	onDuplicate?: (scryfallId: string, entry: CardEntry) => void;
 	onChangePrint?: (rowId: string, newCard: ScryfallCard) => void;
-	onIncrement?: () => void;
+	onIncrement?: (entry: Partial<CardEntry>) => void;
 	onDecrement?: () => void;
 }
 
@@ -58,6 +58,7 @@ function CardModalInner({
 	const [lightbox, setLightbox] = useState(false);
 	const [selectedRowId, setSelectedRowId] = useState<string>(cards[0].entry.rowId);
 	const [editingRowId, setEditingRowId] = useState<string | null>(null);
+	const [addingCopy, setAddingCopy] = useState(false);
 	const [confirmRemoveAll, setConfirmRemoveAll] = useState(false);
 	const symbolMap = useScryfallSymbols();
 
@@ -199,7 +200,7 @@ function CardModalInner({
 								<span className={styles.copiesTitle}>Copies ({count})</span>
 								<button
 									type="button"
-									onClick={() => onIncrement?.()}
+									onClick={() => setAddingCopy(true)}
 									className={styles.addCopyBtn}
 									aria-label="Add copy"
 								>
@@ -300,12 +301,25 @@ function CardModalInner({
 
 			{editingCard && (
 				<EditCardModal
+					key={editingCard.entry.rowId}
 					card={editingCard}
 					onSave={(patch) => onSave(editingCard.entry.rowId, patch)}
 					onChangePrint={(newCard) => {
 						onChangePrint?.(editingCard.entry.rowId, newCard);
 					}}
 					onClose={() => setEditingRowId(null)}
+				/>
+			)}
+
+			{addingCopy && (
+				<EditCardModal
+					mode="add"
+					scryfallCard={selectedCard}
+					onAdd={(_print, entry) => {
+						onIncrement?.(entry);
+						setAddingCopy(false);
+					}}
+					onClose={() => setAddingCopy(false)}
 				/>
 			)}
 		</>

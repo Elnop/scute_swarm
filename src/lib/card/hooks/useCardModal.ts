@@ -53,11 +53,14 @@ export function useCardModal(stacks: CardStack[]) {
 		[removeCard]
 	);
 
-	const handleIncrementModal = useCallback(() => {
-		if (resolvedStack && resolvedStack.cards.length > 0) {
-			addCard(resolvedStack.cards[0]);
-		}
-	}, [resolvedStack, addCard]);
+	const handleIncrementModal = useCallback(
+		(entryPatch?: Partial<CardEntry>) => {
+			if (resolvedStack && resolvedStack.cards.length > 0) {
+				addCard(resolvedStack.cards[0], entryPatch);
+			}
+		},
+		[resolvedStack, addCard]
+	);
 
 	const handleDecrementModal = useCallback(() => {
 		if (resolvedStack && resolvedStack.cards.length > 0) {

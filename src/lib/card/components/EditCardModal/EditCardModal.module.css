@@ -181,3 +181,24 @@
 	background: var(--surface-hover, rgba(255, 255, 255, 0.1));
 	border-color: var(--primary, #7c3aed);
 }
+
+.saveBtn {
+	display: block;
+	width: 100%;
+	background: var(--primary, #7c3aed);
+	border: 1px solid transparent;
+	border-radius: 8px;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	padding: 8px 12px;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		opacity 0.15s;
+	text-align: center;
+}
+
+.saveBtn:hover {
+	opacity: 0.88;
+}
