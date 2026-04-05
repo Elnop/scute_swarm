@@ -4,7 +4,7 @@ import { LibraryCardGrid } from './LibraryCardGrid';
 import { LibraryCardFrame } from '../LibraryCardFrame/LibraryCardFrame';
 import { MOCK_CARDS } from '@/themes/_shared/mockData';
 
-export default {
+const fixtures = {
 	'4 Columns': (
 		<LibraryCardGrid columns={4}>
 			{MOCK_CARDS.map((card) => (
@@ -13,3 +13,5 @@ export default {
 		</LibraryCardGrid>
 	),
 };
+
+export default fixtures;

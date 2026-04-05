@@ -13,7 +13,7 @@ const MANA_GLOW: Record<string, string> = {
 	B: 'var(--mana-black)',
 };
 
-export default {
+const fixtures = {
 	'Mana Glows': (
 		<ForgeCardGrid columns={3}>
 			{MOCK_CARDS.map((card) => (
@@ -29,3 +29,5 @@ export default {
 		</ForgeCardGrid>
 	),
 };
+
+export default fixtures;

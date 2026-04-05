@@ -2,7 +2,7 @@
 
 import { LibrarySpinner } from './LibrarySpinner';
 
-export default {
+const fixtures = {
 	'All Sizes': (
 		<div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
 			<LibrarySpinner size="sm" />
@@ -11,3 +11,5 @@ export default {
 		</div>
 	),
 };
+
+export default fixtures;

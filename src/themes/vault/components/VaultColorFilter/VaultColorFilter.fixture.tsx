@@ -32,4 +32,6 @@ function Preselected() {
 	);
 }
 
-export default { Interactive, Preselected };
+const fixtures = { Interactive, Preselected };
+
+export default fixtures;

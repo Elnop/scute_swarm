@@ -115,27 +115,54 @@ const FEATURES = [
 ];
 
 export function Features() {
-	const [ref, inView] = useInView({ threshold: 0.1 });
+	const [headerRef, headerInView] = useInView({ threshold: 0.3 });
+	const [mainRef, mainInView] = useInView({ threshold: 0.15 });
+	const [sideRef, sideInView] = useInView({ threshold: 0.15 });
+
+	const mainFeatures = FEATURES.slice(0, 2);
+	const sideFeatures = FEATURES.slice(2);
 
 	return (
-		<section ref={ref} className={`${styles.features} ${inView ? styles.visible : ''}`}>
-			<h2 className={styles.heading}>Everything You Need</h2>
-			<p className={styles.subheading}>
-				Powerful tools for searching, collecting, and managing your Magic cards.
-			</p>
+		<section className={styles.section}>
+			<div ref={headerRef} className={`${styles.header} ${headerInView ? styles.visible : ''}`}>
+				<div className={styles.ornamentLine} />
+				<h2 className={styles.heading}>Everything You Need</h2>
+				<div className={styles.ornamentLine} />
+			</div>
 
-			<div className={styles.grid}>
-				{FEATURES.map((feature, i) => (
-					<div
-						key={feature.title}
-						className={styles.card}
-						style={{ '--delay': `${i * 0.08}s` } as React.CSSProperties}
-					>
-						<div className={styles.icon}>{feature.icon}</div>
-						<h3 className={styles.cardTitle}>{feature.title}</h3>
-						<p className={styles.cardDescription}>{feature.description}</p>
-					</div>
-				))}
+			<div className={styles.layout}>
+				<div ref={mainRef} className={`${styles.mainColumn} ${mainInView ? styles.visible : ''}`}>
+					{mainFeatures.map((feature, i) => (
+						<div
+							key={feature.title}
+							className={styles.mainCard}
+							style={{ transitionDelay: `${i * 0.15}s` }}
+						>
+							<div className={styles.cornerTL} />
+							<div className={styles.cornerBR} />
+							<div className={styles.mainIcon}>{feature.icon}</div>
+							<h3 className={styles.mainTitle}>{feature.title}</h3>
+							<p className={styles.mainDescription}>{feature.description}</p>
+							<div className={styles.cardShine} />
+						</div>
+					))}
+				</div>
+
+				<div ref={sideRef} className={`${styles.sideColumn} ${sideInView ? styles.visible : ''}`}>
+					{sideFeatures.map((feature, i) => (
+						<div
+							key={feature.title}
+							className={styles.sideCard}
+							style={{ transitionDelay: `${i * 0.1}s` }}
+						>
+							<div className={styles.sideIcon}>{feature.icon}</div>
+							<div>
+								<h3 className={styles.sideTitle}>{feature.title}</h3>
+								<p className={styles.sideDescription}>{feature.description}</p>
+							</div>
+						</div>
+					))}
+				</div>
 			</div>
 		</section>
 	);

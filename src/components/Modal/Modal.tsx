@@ -30,6 +30,10 @@ export function Modal({ children, onClose, className, zIndex }: ModalProps) {
 				className={`${styles.modal}${className ? ` ${className}` : ''}`}
 				onClick={(e) => e.stopPropagation()}
 			>
+				<div className={styles.cornerTL} />
+				<div className={styles.cornerTR} />
+				<div className={styles.cornerBL} />
+				<div className={styles.cornerBR} />
 				{children}
 			</div>
 		</div>

@@ -13,7 +13,7 @@ function WithValue() {
 	return <VaultSearchBar value={value} onChange={setValue} />;
 }
 
-export default {
+const fixtures = {
 	Interactive,
 	'With Value': WithValue,
 	'Custom Placeholder': function CustomPlaceholder() {
@@ -21,3 +21,5 @@ export default {
 		return <VaultSearchBar value={value} onChange={setValue} placeholder="Search the vault..." />;
 	},
 };
+
+export default fixtures;

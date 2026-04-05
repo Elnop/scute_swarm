@@ -3,7 +3,7 @@
 import { ForgeCardFrame } from './ForgeCardFrame';
 import { MOCK_CARDS } from '@/themes/_shared/mockData';
 
-export default {
+const fixtures = {
 	'Default Glow': <ForgeCardFrame src={MOCK_CARDS[0].src} alt={MOCK_CARDS[0].name} />,
 	'Red Glow': (
 		<ForgeCardFrame src={MOCK_CARDS[1].src} alt={MOCK_CARDS[1].name} glowColor="var(--mana-red)" />
@@ -12,3 +12,5 @@ export default {
 		<ForgeCardFrame src={MOCK_CARDS[2].src} alt={MOCK_CARDS[2].name} glowColor="var(--mana-blue)" />
 	),
 };
+
+export default fixtures;

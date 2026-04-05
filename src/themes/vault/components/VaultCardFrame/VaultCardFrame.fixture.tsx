@@ -3,7 +3,7 @@
 import { VaultCardFrame } from './VaultCardFrame';
 import { MOCK_CARDS } from '@/themes/_shared/mockData';
 
-export default {
+const fixtures = {
 	'Single Card': <VaultCardFrame src={MOCK_CARDS[0].src} alt={MOCK_CARDS[0].name} />,
 	'Clickable Card': (
 		<VaultCardFrame
@@ -16,3 +16,5 @@ export default {
 		<VaultCardFrame src={MOCK_CARDS[2].src} alt={MOCK_CARDS[2].name} width={146} height={204} />
 	),
 };
+
+export default fixtures;

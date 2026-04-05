@@ -13,4 +13,6 @@ function Preselected() {
 	return <VaultRarityFilter value={value} onChange={setValue} />;
 }
 
-export default { Interactive, Preselected };
+const fixtures = { Interactive, Preselected };
+
+export default fixtures;

@@ -2,7 +2,7 @@
 
 import { ForgeSpinner } from './ForgeSpinner';
 
-export default {
+const fixtures = {
 	'All Sizes': (
 		<div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
 			<ForgeSpinner size="sm" />
@@ -11,3 +11,5 @@ export default {
 		</div>
 	),
 };
+
+export default fixtures;

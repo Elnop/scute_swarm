@@ -17,4 +17,6 @@ function Interactive() {
 	);
 }
 
-export default { Interactive };
+const fixtures = { Interactive };
+
+export default fixtures;

@@ -4,7 +4,7 @@ import { VaultCardGrid } from './VaultCardGrid';
 import { VaultCardFrame } from '../VaultCardFrame/VaultCardFrame';
 import { MOCK_CARDS } from '@/themes/_shared/mockData';
 
-export default {
+const fixtures = {
 	'4 Columns': (
 		<VaultCardGrid columns={4}>
 			{MOCK_CARDS.map((card) => (
@@ -20,3 +20,5 @@ export default {
 		</VaultCardGrid>
 	),
 };
+
+export default fixtures;

@@ -37,4 +37,6 @@ function ToggleModal() {
 	);
 }
 
-export default { 'Toggle Modal': ToggleModal };
+const fixtures = { 'Toggle Modal': ToggleModal };
+
+export default fixtures;

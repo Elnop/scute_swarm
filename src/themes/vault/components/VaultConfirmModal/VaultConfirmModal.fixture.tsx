@@ -23,4 +23,6 @@ function ToggleConfirm() {
 	);
 }
 
-export default { 'Toggle Confirm': ToggleConfirm };
+const fixtures = { 'Toggle Confirm': ToggleConfirm };
+
+export default fixtures;

@@ -21,7 +21,7 @@ function Interactive() {
 	);
 }
 
-export default {
+const fixtures = {
 	Interactive,
 	'All Variants': (
 		<div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -41,3 +41,5 @@ export default {
 	Loading: <VaultButton isLoading>Loading</VaultButton>,
 	Disabled: <VaultButton disabled>Disabled</VaultButton>,
 };
+
+export default fixtures;

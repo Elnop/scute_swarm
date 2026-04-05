@@ -8,32 +8,34 @@
 .icon {
 	position: absolute;
 	left: 16px;
-	color: var(--text-muted);
+	color: var(--brass);
 	pointer-events: none;
 }
 
 .input {
 	width: 100%;
-	padding: 14px 48px 14px 48px;
-	font-size: 16px;
-	font-family: inherit;
+	padding: 14px 48px;
+	font-size: 15px;
+	font-family: var(--font-body);
 	color: var(--foreground);
-	background: var(--surface);
-	border: 1px solid var(--border);
-	border-radius: 12px;
+	background: var(--glass-bg);
+	border: 1px solid var(--glass-border);
+	border-radius: 2px;
 	outline: none;
+	backdrop-filter: blur(var(--glass-blur));
 	transition:
-		border-color 0.2s,
-		box-shadow 0.2s;
+		border-color 0.25s,
+		box-shadow 0.25s;
 }
 
 .input::placeholder {
 	color: var(--text-muted);
+	font-style: italic;
 }
 
 .input:focus {
-	border-color: var(--primary);
-	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+	border-color: var(--gold);
+	box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.15);
 }
 
 .clearButton {
@@ -48,7 +50,7 @@
 	color: var(--text-muted);
 	background: transparent;
 	border: none;
-	border-radius: 6px;
+	border-radius: 2px;
 	cursor: pointer;
 	transition:
 		color 0.2s,
@@ -56,6 +58,6 @@
 }
 
 .clearButton:hover {
-	color: var(--foreground);
-	background: var(--surface-hover);
+	color: var(--gold);
+	background: rgba(201, 168, 76, 0.1);
 }

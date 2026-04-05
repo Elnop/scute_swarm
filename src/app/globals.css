@@ -1,14 +1,25 @@
 :root {
 	color-scheme: dark;
 	--navbar-height: 57px;
-	--background: #0a0a0a;
-	--foreground: #ededed;
-	--primary: #6366f1;
-	--primary-hover: #4f46e5;
-	--surface: #18181b;
-	--surface-hover: #27272a;
-	--border: #27272a;
-	--text-muted: #a1a1aa;
+
+	/* Base palette */
+	--background: #0b0c10;
+	--foreground: #e8e0d0;
+	--primary: #c9a84c;
+	--primary-hover: #b8963e;
+	--surface: #1a1a2e;
+	--surface-hover: #252540;
+	--border: #2a2a3e;
+	--text-muted: #8a8a9a;
+
+	/* Art Deco accents */
+	--gold: #c9a84c;
+	--brass: #b5a06c;
+	--jade: #4a8c6f;
+	--deep-navy: #0f1b2d;
+	--glass-bg: rgba(26, 26, 46, 0.6);
+	--glass-border: rgba(201, 168, 76, 0.2);
+	--glass-blur: 12px;
 
 	/* Mana colors */
 	--mana-white: #f8e7b9;
@@ -18,10 +29,14 @@
 	--mana-green: #00733e;
 	--mana-colorless: #ccc2c0;
 
-	/* Functional colors */
-	--success: #22c55e;
-	--warning: #eab308;
-	--error: #ef4444;
+	/* Functional */
+	--success: #4a8c6f;
+	--warning: #c9a84c;
+	--error: #c0392b;
+
+	/* Typography */
+	--font-display: var(--font-cinzel), 'Georgia', serif;
+	--font-body: var(--font-geist-sans), 'Arial', sans-serif;
 }
 
 html,

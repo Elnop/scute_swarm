@@ -13,4 +13,6 @@ function WithValue() {
 	return <LibrarySearchBar value={value} onChange={setValue} />;
 }
 
-export default { Interactive, 'With Value': WithValue };
+const fixtures = { Interactive, 'With Value': WithValue };
+
+export default fixtures;

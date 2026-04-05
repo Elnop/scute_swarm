@@ -19,7 +19,7 @@ function Interactive() {
 	);
 }
 
-export default {
+const fixtures = {
 	Interactive,
 	'All Variants': (
 		<div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -39,3 +39,5 @@ export default {
 	Loading: <LibraryButton isLoading>Loading</LibraryButton>,
 	Disabled: <LibraryButton disabled>Disabled</LibraryButton>,
 };
+
+export default fixtures;

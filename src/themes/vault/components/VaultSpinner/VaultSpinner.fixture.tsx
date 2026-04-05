@@ -2,7 +2,7 @@
 
 import { VaultSpinner } from './VaultSpinner';
 
-export default {
+const fixtures = {
 	Small: <VaultSpinner size="sm" />,
 	Medium: <VaultSpinner size="md" />,
 	Large: <VaultSpinner size="lg" />,
@@ -14,3 +14,5 @@ export default {
 		</div>
 	),
 };
+
+export default fixtures;

@@ -8,4 +8,6 @@ function Interactive() {
 	return <ForgeRarityFilter value={value} onChange={setValue} />;
 }
 
-export default { Interactive };
+const fixtures = { Interactive };
+
+export default fixtures;
