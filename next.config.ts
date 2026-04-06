@@ -1,6 +1,13 @@
 import type { NextConfig } from 'next';
 
+const isDev = process.env.NODE_ENV === 'development';
+
+const pageExtensions = isDev
+	? ['tsx', 'ts', 'jsx', 'js', 'cosmos.tsx', 'cosmos.ts']
+	: ['tsx', 'ts', 'jsx', 'js'];
+
 const nextConfig: NextConfig = {
+	pageExtensions,
 	reactCompiler: false,
 	allowedDevOrigins: ['192.168.1.25'],
 	images: {

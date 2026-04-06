@@ -1,6 +1,6 @@
 import { nextCosmosStaticParams } from 'react-cosmos-next';
 import * as cosmosImports from '../../../../cosmos.imports';
-import { CosmosFixtureLoader } from './CosmosFixtureLoader';
+import { CosmosFixtureLoader } from './CosmosFixtureLoader.cosmos';
 
 export const generateStaticParams = nextCosmosStaticParams(cosmosImports);
 
