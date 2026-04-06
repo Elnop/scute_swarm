@@ -9,7 +9,7 @@
 		"lint": "eslint",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"check": "tsc --noEmit && eslint && prettier --check .",
+		"check": "cosmos-export --expose-imports && tsc --noEmit && eslint && prettier --check .",
 		"check:fix": "eslint --fix && prettier --write .",
 		"prepare": "husky",
 		"sb": "supabase",

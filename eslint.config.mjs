@@ -7,7 +7,15 @@ const eslintConfig = defineConfig([
 	...nextVitals,
 	...nextTs,
 	prettier,
-	globalIgnores(['.next/**', 'out/**', 'build/**', 'tmp/**', 'next-env.d.ts']),
+	globalIgnores([
+		'.next/**',
+		'out/**',
+		'build/**',
+		'tmp/**',
+		'next-env.d.ts',
+		'cosmos-export/**',
+		'cosmos.imports.ts',
+	]),
 ]);
 
 export default eslintConfig;
