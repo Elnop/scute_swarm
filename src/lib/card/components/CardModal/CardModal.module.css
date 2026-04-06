@@ -259,7 +259,7 @@
 	align-items: center;
 	gap: 4px;
 	background: var(--primary, #7c3aed);
-	color: #fff;
+	color: var(--primary-text, #fff);
 	border-radius: 4px;
 	padding: 3px 8px;
 	font-size: 13px;

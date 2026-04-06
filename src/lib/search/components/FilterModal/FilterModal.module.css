@@ -124,7 +124,7 @@
 	background: var(--primary);
 	border: 1px solid var(--primary);
 	border-radius: 10px;
-	color: white;
+	color: var(--primary-text);
 	cursor: pointer;
 	font-size: 14px;
 	font-weight: 600;

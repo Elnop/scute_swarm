@@ -167,7 +167,7 @@ details[open] > .accordionSummary::before {
 .selectBtn:hover {
 	background: var(--primary, #7c3aed);
 	border-color: var(--primary, #7c3aed);
-	color: #fff;
+	color: var(--primary-text, #fff);
 }
 
 .selectBtnActive {
@@ -178,5 +178,5 @@ details[open] > .accordionSummary::before {
 
 .selectBtnActive:hover {
 	background: var(--primary, #7c3aed);
-	color: #fff;
+	color: var(--primary-text, #fff);
 }

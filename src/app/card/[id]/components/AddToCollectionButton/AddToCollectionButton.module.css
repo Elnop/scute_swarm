@@ -46,7 +46,7 @@
 .quantityButton:hover {
 	background: var(--primary);
 	border-color: var(--primary);
-	color: white;
+	color: var(--primary-text);
 }
 
 .quantity {

@@ -28,7 +28,7 @@
 	padding: 6px 12px;
 	border-radius: 6px;
 	background: var(--primary);
-	color: #fff;
+	color: var(--primary-text);
 	border: none;
 	cursor: pointer;
 	transition: opacity 0.15s;
@@ -44,5 +44,5 @@
 	padding: 3px 8px;
 	border-radius: 10px;
 	background: var(--primary);
-	color: #fff;
+	color: var(--primary-text);
 }

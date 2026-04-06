@@ -128,7 +128,7 @@
 	align-items: center;
 	gap: 4px;
 	background: var(--primary, #7c3aed);
-	color: #fff;
+	color: var(--primary-text, #fff);
 	border-radius: 4px;
 	padding: 3px 8px;
 	font-size: 13px;
@@ -188,7 +188,7 @@
 	background: var(--primary, #7c3aed);
 	border: 1px solid transparent;
 	border-radius: 8px;
-	color: #fff;
+	color: var(--primary-text, #fff);
 	font-size: 13px;
 	font-weight: 600;
 	padding: 8px 12px;
