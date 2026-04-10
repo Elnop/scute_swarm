@@ -13,6 +13,7 @@ import { useDeckCardSections } from './hooks/useDeckCardSections';
 import { DeckHeader } from './components/DeckHeader/DeckHeader';
 import { DeckStats } from './components/DeckStats/DeckStats';
 import { DeckCardOverlay } from './components/DeckCardOverlay/DeckCardOverlay';
+import { DeckFooter } from './components/DeckFooter/DeckFooter';
 import { AddCardModal } from './components/AddCardModal/AddCardModal';
 import type { DeckZone } from '@/types/decks';
 import styles from './page.module.css';
@@ -122,6 +123,8 @@ export default function DeckDetailPage() {
 
 				<DeckStats stats={stats} warnings={warnings} />
 			</div>
+
+			<DeckFooter stats={stats} format={deck.format} />
 
 			{showAddCard && (
 				<AddCardModal

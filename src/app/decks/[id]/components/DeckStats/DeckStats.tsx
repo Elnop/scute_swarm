@@ -32,39 +32,13 @@ export function DeckStats({ stats, warnings }: Props) {
 
 	return (
 		<div className={styles.container}>
-			<div className={styles.counts}>
-				<div className={styles.stat}>
-					<span className={styles.statValue}>{stats.totalCards}</span>
-					<span className={styles.statLabel}>Total</span>
-				</div>
-				<div className={styles.stat}>
-					<span className={styles.statValue}>{stats.mainboardCount}</span>
-					<span className={styles.statLabel}>Main</span>
-				</div>
-				{stats.sideboardCount > 0 && (
-					<div className={styles.stat}>
-						<span className={styles.statValue}>{stats.sideboardCount}</span>
-						<span className={styles.statLabel}>Side</span>
-					</div>
-				)}
-				{stats.commanderCount > 0 && (
-					<div className={styles.stat}>
-						<span className={styles.statValue}>{stats.commanderCount}</span>
-						<span className={styles.statLabel}>Cmdr</span>
-					</div>
-				)}
-				<div className={styles.stat}>
-					<span className={styles.statValue}>{stats.averageCmc.toFixed(1)}</span>
-					<span className={styles.statLabel}>Avg CMC</span>
-				</div>
-			</div>
-
-			<div className={styles.curve}>
+			<div className={styles.section}>
+				<h3 className={styles.sectionTitle}>Mana Curve</h3>
 				<ManaCurve curve={stats.manaCurve} />
 			</div>
 
 			{colorEntries.length > 0 && (
-				<div className={styles.colors}>
+				<div className={styles.section}>
 					<h3 className={styles.sectionTitle}>Colors</h3>
 					<div className={styles.colorBar}>
 						{colorEntries.map(([color, count]) => (
@@ -94,7 +68,7 @@ export function DeckStats({ stats, warnings }: Props) {
 			)}
 
 			{warnings.length > 0 && (
-				<div className={styles.warnings}>
+				<div className={styles.section}>
 					<h3 className={styles.sectionTitle}>Warnings</h3>
 					{warnings.map((w, i) => (
 						<div key={i} className={styles.warning}>

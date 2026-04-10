@@ -21,7 +21,6 @@ export function ManaCurve({ curve }: Props) {
 
 	return (
 		<div className={styles.container}>
-			<h3 className={styles.title}>Mana Curve</h3>
 			<div className={styles.chart}>
 				{grouped.map((entry) => (
 					<div key={entry.cmc} className={styles.column}>

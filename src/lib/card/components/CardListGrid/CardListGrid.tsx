@@ -101,31 +101,39 @@ export function CardListGrid({
 			.filter(Boolean)
 			.join(' ');
 
-		const labelContent = (
-			<span>
+		const labelText = (
+			<>
 				{labelName}
 				{labelCount && <span className={styles.sectionCount}> {labelCount}</span>}
-			</span>
+			</>
 		);
+
+		const Heading = `h${Math.min(depth + 2, 6)}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 		const hasChildren = section.children && section.children.length > 0;
 
 		return (
 			<div key={sectionKey} className={wrapperClass}>
-				{isCollapsible ? (
-					<button type="button" className={headerClass} onClick={() => onSectionToggle(sectionKey)}>
-						{labelContent}
-						<span
-							className={[styles.chevron, collapsed ? styles.chevronCollapsed : '']
-								.filter(Boolean)
-								.join(' ')}
+				<Heading className={styles.sectionHeading}>
+					{isCollapsible ? (
+						<button
+							type="button"
+							className={headerClass}
+							onClick={() => onSectionToggle(sectionKey)}
 						>
-							▾
-						</span>
-					</button>
-				) : (
-					<div className={headerClass}>{labelContent}</div>
-				)}
+							{labelText}
+							<span
+								className={[styles.chevron, collapsed ? styles.chevronCollapsed : '']
+									.filter(Boolean)
+									.join(' ')}
+							>
+								▾
+							</span>
+						</button>
+					) : (
+						<span className={headerClass}>{labelText}</span>
+					)}
+				</Heading>
 				{!collapsed && (
 					<div className={styles.sectionBody}>
 						{hasChildren
