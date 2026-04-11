@@ -138,6 +138,59 @@ export async function deleteDeck(userId: string, deckId: string): Promise<void> 
 	}
 }
 
+/** Fetch distinct scryfall_ids for each of the given deck IDs in a single query. */
+export async function fetchDeckScryfallIds(deckIds: string[]): Promise<Record<string, string[]>> {
+	if (deckIds.length === 0) return {};
+	const supabase = createClient();
+	const { data, error } = await supabase
+		.from('cards')
+		.select('deck_id, scryfall_id')
+		.in('deck_id', deckIds);
+
+	if (error) {
+		throw new Error(`[decks] fetchDeckScryfallIds error: ${error.message}`);
+	}
+
+	const result: Record<string, Set<string>> = {};
+	for (const row of data as Array<{ deck_id: string; scryfall_id: string }>) {
+		if (!result[row.deck_id]) result[row.deck_id] = new Set();
+		result[row.deck_id].add(row.scryfall_id);
+	}
+
+	const out: Record<string, string[]> = {};
+	for (const [deckId, ids] of Object.entries(result)) {
+		out[deckId] = [...ids];
+	}
+	return out;
+}
+
+/** Fetch scryfall_id + tags for each card in the given decks (single query). */
+export async function fetchDeckCardEntries(
+	deckIds: string[]
+): Promise<Record<string, Array<{ scryfallId: string; tags: string[] | null }>>> {
+	if (deckIds.length === 0) return {};
+	const supabase = createClient();
+	const { data, error } = await supabase
+		.from('cards')
+		.select('deck_id, scryfall_id, tags')
+		.in('deck_id', deckIds);
+
+	if (error) {
+		throw new Error(`[decks] fetchDeckCardEntries error: ${error.message}`);
+	}
+
+	const result: Record<string, Array<{ scryfallId: string; tags: string[] | null }>> = {};
+	for (const row of data as Array<{
+		deck_id: string;
+		scryfall_id: string;
+		tags: string[] | null;
+	}>) {
+		if (!result[row.deck_id]) result[row.deck_id] = [];
+		result[row.deck_id].push({ scryfallId: row.scryfall_id, tags: row.tags });
+	}
+	return result;
+}
+
 // --- Deck card operations (cards table with deck_id) ---
 
 export async function fetchDeckCards(

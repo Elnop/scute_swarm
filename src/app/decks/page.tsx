@@ -3,17 +3,21 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDeckContext } from '@/lib/deck/context/DeckContext';
+import { useScryfallSymbols } from '@/lib/scryfall/hooks/useScryfallSymbols';
 import { Button } from '@/components/Button/Button';
 import { ConfirmModal } from '@/components/ConfirmModal/ConfirmModal';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { CreateDeckModal } from './components/CreateDeckModal/CreateDeckModal';
 import { ImportDeckModal } from './components/ImportDeckModal/ImportDeckModal';
 import { DeckCard } from './components/DeckCard/DeckCard';
+import { useDeckSummaries } from './hooks/useDeckSummaries';
 import styles from './page.module.css';
 
 export default function DecksPage() {
 	const { decks, isLoaded, createDeck, deleteDeck } = useDeckContext();
 	const router = useRouter();
+	const symbolMap = useScryfallSymbols();
+	const summaryMap = useDeckSummaries(decks);
 
 	const [showCreate, setShowCreate] = useState(false);
 	const [showImport, setShowImport] = useState(false);
@@ -59,6 +63,8 @@ export default function DecksPage() {
 							<DeckCard
 								key={deck.id}
 								deck={deck}
+								summary={summaryMap[deck.id]}
+								symbolMap={symbolMap}
 								onClick={() => router.push(`/decks/${deck.id}`)}
 								onDelete={() => setDeckToDelete(deck.id)}
 							/>

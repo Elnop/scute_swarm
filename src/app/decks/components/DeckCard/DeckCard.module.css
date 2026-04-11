@@ -1,8 +1,11 @@
 .card {
+	position: relative;
+	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	padding: 20px;
+	min-height: 280px;
+	padding: 20px 20px 24px;
 	background: var(--glass-bg);
 	backdrop-filter: blur(var(--glass-blur));
 	border: 1px solid var(--glass-border);
@@ -20,7 +23,37 @@
 	box-shadow: 0 0 16px rgba(201, 168, 76, 0.15);
 }
 
+.card:hover .artCrop {
+	opacity: 0.55;
+}
+
+.artCrop {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: 0.4;
+	pointer-events: none;
+	transition: opacity 0.15s;
+}
+
+.artOverlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0.3) 0%,
+		rgba(0, 0, 0, 0.15) 30%,
+		rgba(0, 0, 0, 0.5) 70%,
+		rgba(0, 0, 0, 0.8) 100%
+	);
+	pointer-events: none;
+}
+
 .header {
+	position: relative;
+	z-index: 1;
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
@@ -32,6 +65,20 @@
 	font-weight: 600;
 	color: var(--foreground);
 	margin: 0;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.commanderName {
+	position: relative;
+	z-index: 1;
+	font-size: 13px;
+	font-style: italic;
+	color: var(--text-muted);
+	margin: 0;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .deleteBtn {
@@ -58,6 +105,8 @@
 }
 
 .format {
+	position: relative;
+	z-index: 1;
 	display: inline-block;
 	width: fit-content;
 	padding: 2px 10px;
@@ -71,6 +120,8 @@
 }
 
 .description {
+	position: relative;
+	z-index: 1;
 	font-size: 13px;
 	color: var(--text-muted);
 	margin: 0;
@@ -80,13 +131,23 @@
 	overflow: hidden;
 }
 
+.colors {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	gap: 4px;
+	align-items: center;
+}
+
 .footer {
+	position: relative;
+	z-index: 1;
 	margin-top: auto;
 	padding-top: 8px;
 	border-top: 1px solid var(--border);
 }
 
-.count {
-	font-size: 13px;
+.updatedAt {
+	font-size: 12px;
 	color: var(--text-muted);
 }
