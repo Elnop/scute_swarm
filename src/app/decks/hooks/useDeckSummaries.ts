@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useState, useRef } from 'react';
 import type { ScryfallCard, ScryfallColor } from '@/lib/scryfall/types/scryfall';
-import type { DeckMeta } from '@/types/decks';
+import type { DeckMeta, DeckZone } from '@/types/decks';
+import { getDeckZone } from '@/types/decks';
 import { fetchDeckCardEntries } from '@/lib/deck/db/decks';
 import { getCardsFromCache, putCardsInCache } from '@/lib/scryfall/card-cache';
 import { getCardCollection } from '@/lib/scryfall/endpoints/cards';
+import { computeDeckStats } from '@/lib/deck/utils/deck-stats';
+import { validateDeck, getFormatRules } from '@/lib/deck/utils/format-rules';
 
 const WUBRG_ORDER: ScryfallColor[] = ['W', 'U', 'B', 'R', 'G'];
 
@@ -14,6 +17,12 @@ export type DeckSummary = {
 	colors: ScryfallColor[];
 	commanderName: string | undefined;
 	manaCurve: Record<number, number>;
+	totalCards: number;
+	targetCards: number | null;
+	landCount: number;
+	averageCmc: number;
+	warningCount: number;
+	warnings: string[];
 };
 
 const EMPTY: Record<string, DeckSummary> = {};
@@ -156,13 +165,39 @@ export function useDeckSummaries(decks: DeckMeta[]): Record<string, DeckSummary>
 
 			if (runIdRef.current !== currentRunId) return;
 
+			const deckFormatMap = new Map(decks.map((d) => [d.id, d.format]));
+
 			const result: Record<string, DeckSummary> = {};
 			for (const [deckId, entries] of Object.entries(deckEntries)) {
+				// Build resolved cards with zones for stats/validation
+				const resolvedCards: Array<{ card: ScryfallCard; zone: DeckZone }> = [];
+				for (const e of entries) {
+					const card = cached.get(e.scryfallId);
+					if (card) {
+						resolvedCards.push({ card, zone: getDeckZone(e.tags ?? undefined) });
+					}
+				}
+
+				const stats = computeDeckStats(resolvedCards);
+				const format = deckFormatMap.get(deckId) ?? null;
+				const commanderCards = resolvedCards.filter((c) => c.zone === 'commander');
+				const nonCommanderCards = resolvedCards.filter((c) => c.zone !== 'commander');
+				const warnings = validateDeck(format, nonCommanderCards, commanderCards);
+
+				const rules = format ? getFormatRules(format) : null;
+				const targetCards = rules ? rules.minMainboard + rules.commanderCount : null;
+
 				result[deckId] = {
 					artCropUrl: pickArtCrop(entries, cached),
 					colors: computeColors(entries, cached),
 					commanderName: findCommanderName(entries, cached),
 					manaCurve: computeManaCurve(entries, cached),
+					totalCards: stats.totalCards,
+					targetCards,
+					landCount: stats.landCount,
+					averageCmc: stats.averageCmc,
+					warningCount: warnings.length,
+					warnings: warnings.map((w) => w.message),
 				};
 			}
 
@@ -174,7 +209,7 @@ export function useDeckSummaries(decks: DeckMeta[]): Record<string, DeckSummary>
 		return () => {
 			runIdRef.current++; // eslint-disable-line react-hooks/exhaustive-deps
 		};
-	}, [deckIds]);
+	}, [deckIds, decks]);
 
 	return summaries;
 }

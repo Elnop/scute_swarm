@@ -54,40 +54,85 @@ export function DeckCard({ deck, summary, symbolMap, onClick, onDelete }: Props)
 				if (e.key === 'Enter') onClick();
 			}}
 		>
-			{summary?.artCropUrl && (
-				<>
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img src={summary.artCropUrl} alt="" className={styles.artCrop} />
-					<div className={styles.artOverlay} />
-				</>
-			)}
+			{/* ── Header bar ── */}
 			<div className={styles.header}>
 				<h3 className={styles.name}>{deck.name}</h3>
-				<button
-					type="button"
-					className={styles.deleteBtn}
-					onClick={(e) => {
-						e.stopPropagation();
-						onDelete();
-					}}
-					aria-label="Delete deck"
-				>
-					&times;
-				</button>
-			</div>
-			{summary?.commanderName && <p className={styles.commanderName}>{summary.commanderName}</p>}
-			{colors && colors.length > 0 && (
-				<div className={styles.colors}>
-					{colors.map((color) => (
-						<ManaSymbol key={color} symbol={`{${color}}`} symbolMap={symbolMap} />
-					))}
+				<div className={styles.headerRight}>
+					{colors && colors.length > 0 && (
+						<div className={styles.colors}>
+							{colors.map((color) => (
+								<ManaSymbol key={color} symbol={`{${color}}`} symbolMap={symbolMap} />
+							))}
+						</div>
+					)}
+					<button
+						type="button"
+						className={styles.deleteBtn}
+						onClick={(e) => {
+							e.stopPropagation();
+							onDelete();
+						}}
+						aria-label="Delete deck"
+					>
+						&times;
+					</button>
 				</div>
-			)}
-			{deck.format && <span className={styles.format}>{deck.format}</span>}
-			{deck.description && <p className={styles.description}>{deck.description}</p>}
-			{hasManaCurve && <MiniManaCurve curve={summary!.manaCurve} />}
-			<div className={styles.footer}>
-				<span className={styles.updatedAt}>{formatRelativeDate(deck.updatedAt)}</span>
+			</div>
+
+			{/* ── Image zone ── */}
+			<div className={styles.imageZone}>
+				{summary?.artCropUrl && (
+					<>
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img src={summary.artCropUrl} alt="" className={styles.artCrop} />
+						<div className={styles.artOverlay} />
+					</>
+				)}
+				{hasManaCurve && (
+					<div className={styles.curveOverlay}>
+						<MiniManaCurve curve={summary!.manaCurve} />
+					</div>
+				)}
+			</div>
+
+			{/* ── Body zone ── */}
+			<div className={styles.body}>
+				{summary?.commanderName && <p className={styles.commanderName}>{summary.commanderName}</p>}
+				<div className={styles.metaRow}>
+					{deck.format && <span className={styles.format}>{deck.format}</span>}
+					{summary && deck.format && summary.warningCount > 0 && (
+						<span className={styles.warningBadge}>
+							{summary.warningCount} warning{summary.warningCount !== 1 ? 's' : ''}
+							<span className={styles.warningTooltip}>
+								{summary.warnings.map((msg, i) => (
+									<span key={i} className={styles.warningTooltipItem}>
+										{msg}
+									</span>
+								))}
+							</span>
+						</span>
+					)}
+				</div>
+				{deck.description && <p className={styles.description}>{deck.description}</p>}
+				<div className={styles.footer}>
+					{summary && summary.totalCards > 0 ? (
+						<div className={styles.statsRow}>
+							<span className={styles.stat}>
+								{summary.targetCards !== null
+									? `${summary.totalCards}/${summary.targetCards}`
+									: summary.totalCards}{' '}
+								cards
+							</span>
+							<span className={styles.statSep}>·</span>
+							<span className={styles.stat}>{summary.landCount} lands</span>
+							<span className={styles.statSep}>·</span>
+							<span className={styles.stat}>{summary.averageCmc.toFixed(1)} CMC</span>
+						</div>
+					) : (
+						<div />
+					)}
+					<span className={styles.updatedAt}>{formatRelativeDate(deck.updatedAt)}</span>
+				</div>
 			</div>
 		</div>
 	);
