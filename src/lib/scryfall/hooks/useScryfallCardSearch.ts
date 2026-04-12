@@ -42,6 +42,7 @@ export function useScryfallCardSearch(filters: SearchFilters): UseScryfallCardSe
 
 	const debouncedName = useDebounce(filters.name, 300);
 	const lastSearchKeyRef = useRef<string>('');
+	const abortControllerRef = useRef<AbortController | null>(null);
 
 	const order = filters.order ?? 'name';
 	const dir = filters.dir ?? 'auto';
@@ -72,6 +73,12 @@ export function useScryfallCardSearch(filters: SearchFilters): UseScryfallCardSe
 
 	const fetchCards = useCallback(
 		async (query: string, pageNum: number, isNewSearch: boolean) => {
+			if (isNewSearch) {
+				abortControllerRef.current?.abort();
+				abortControllerRef.current = new AbortController();
+			}
+			const signal = abortControllerRef.current?.signal;
+
 			if (!query.trim()) {
 				setCards([]);
 				setHasMore(false);
@@ -87,12 +94,7 @@ export function useScryfallCardSearch(filters: SearchFilters): UseScryfallCardSe
 				}
 				setError(null);
 
-				const result = await searchCards({
-					q: query,
-					page: pageNum,
-					order,
-					dir,
-				});
+				const result = await searchCards({ q: query, page: pageNum, order, dir }, signal);
 
 				if (isNewSearch) {
 					setCards(result.data);
@@ -129,6 +131,12 @@ export function useScryfallCardSearch(filters: SearchFilters): UseScryfallCardSe
 			fetchCards(query, 1, true);
 		}
 	}, [debouncedName, buildQuery, fetchCards, order, dir]);
+
+	useEffect(() => {
+		return () => {
+			abortControllerRef.current?.abort();
+		};
+	}, []);
 
 	const lastQueryRef = useRef<string>('');
 

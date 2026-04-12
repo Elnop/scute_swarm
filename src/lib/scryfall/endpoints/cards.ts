@@ -12,7 +12,10 @@ import type {
 } from '../types/scryfall';
 import type { ScryfallSearchParams } from '../types/api';
 
-export async function searchCards(params: ScryfallSearchParams): Promise<ScryfallCardSearchResult> {
+export async function searchCards(
+	params: ScryfallSearchParams,
+	signal?: AbortSignal
+): Promise<ScryfallCardSearchResult> {
 	const queryParams: Record<string, string> = { q: params.q };
 
 	if (params.unique) queryParams.unique = params.unique;
@@ -27,7 +30,7 @@ export async function searchCards(params: ScryfallSearchParams): Promise<Scryfal
 	if (params.page) queryParams.page = String(params.page);
 	if (params.format) queryParams.format = params.format;
 
-	return scryfallGet<ScryfallCardSearchResult>('/cards/search', queryParams);
+	return scryfallGet<ScryfallCardSearchResult>('/cards/search', queryParams, signal);
 }
 
 export async function getCardByName(name: string, set?: string): Promise<ScryfallCard> {

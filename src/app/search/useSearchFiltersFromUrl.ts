@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { ScryfallColor } from '@/lib/scryfall/types/scryfall';
 import type { ScryfallSortOrder, ScryfallSortDir } from '@/lib/scryfall/types/sort';
-import { useDebounce } from '@/lib/search/hooks/useDebounce';
 import { countActiveFilters } from '@/lib/search/types';
 
 const VALID_COLORS = new Set(['W', 'U', 'B', 'R', 'G']);
@@ -89,7 +88,6 @@ export function useSearchFiltersFromUrl() {
 	);
 	const [dir, setDir] = useState<ScryfallSortDir>(() => parseDir(searchParams.get('dir')));
 
-	const debouncedName = useDebounce(name, 300);
 	const isInitialMount = useRef(true);
 
 	// Sync state to URL when filters change
@@ -99,7 +97,7 @@ export function useSearchFiltersFromUrl() {
 			return;
 		}
 		const params = new URLSearchParams();
-		if (debouncedName) params.set('name', debouncedName);
+		if (name) params.set('name', name);
 		if (colors.length > 0) params.set('colors', colors.join(','));
 		if (colorMatch !== 'include') params.set('colorMatch', colorMatch);
 		if (type) params.set('type', type);
@@ -112,7 +110,7 @@ export function useSearchFiltersFromUrl() {
 
 		const queryString = params.toString();
 		router.replace(queryString ? `/search?${queryString}` : '/search', { scroll: false });
-	}, [debouncedName, colors, colorMatch, type, set, rarities, oracleText, cmc, order, dir, router]);
+	}, [name, colors, colorMatch, type, set, rarities, oracleText, cmc, order, dir, router]);
 
 	const applyFilters = (filters: SearchFilters) => {
 		setColors(filters.colors);
